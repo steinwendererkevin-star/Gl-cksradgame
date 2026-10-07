@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V13 Online Host</title>
+<title>Challenge Roulette V14 Online Host</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -945,12 +945,16 @@ function acceptRemote(conn){
     setOnlineState("connected","Handy verbunden");
     $("remotePill").classList.add("show");
     sendRemoteStatus();
+    sendRemoteSettings();
     if(remoteStatusTimer)clearInterval(remoteStatusTimer);
     remoteStatusTimer=setInterval(sendRemoteStatus,400);
     setTimeout(hideConnectOverlay,450);
   });
   conn.on("data",msg=>{
-    if(msg&&msg.type==="command")runRemoteCommand(msg.action);
+    if(!msg)return;
+    if(msg.type==="command")runRemoteCommand(msg.action);
+    else if(msg.type==="request_settings")sendRemoteSettings();
+    else if(msg.type==="save_settings")applyRemoteSettings(msg.settings);
   });
   conn.on("close",()=>{
     remoteConnected=false;
@@ -959,6 +963,80 @@ function acceptRemote(conn){
   });
   conn.on("error",()=>{remoteConnected=false;$("remotePill").classList.remove("show")});
 }
+
+function publicSettings(){
+  return JSON.parse(JSON.stringify(settings));
+}
+function sendRemoteSettings(){
+  if(remoteConn&&remoteConn.open){
+    try{remoteConn.send({type:"settings",settings:publicSettings()})}catch(e){}
+  }
+}
+function sanitizeRemoteSettings(s){
+  if(!s || typeof s!=="object")return null;
+  const out=JSON.parse(JSON.stringify(settings));
+
+  if(["standard","halloween","birthday"].includes(s.mode))out.mode=s.mode;
+  out.hours=clamp(s.hours,0,99);
+  out.minutes=clamp(s.minutes,0,59);
+  out.seconds=clamp(s.seconds,0,59);
+  out.rounds=clamp(s.rounds,0,99);
+  if(["creepy","gameshow","funny","dramatic"].includes(s.soundPack))out.soundPack=s.soundPack;
+  out.mysteryChance=clamp(s.mysteryChance,0,100);
+
+  ["noRepeatPlayer","noRepeatChallenge","doubleEnabled","jumpscareEnabled","fakeCountdownEnabled","tvMode","hostMode","nightMode"].forEach(k=>{
+    if(typeof s[k]==="boolean")out[k]=s[k];
+  });
+
+  if(Array.isArray(s.players)){
+    const players=s.players.slice(0,40).map(p=>({
+      name:String(p?.name||"").trim().slice(0,60),
+      active:!!p?.active,
+      birthday:!!p?.birthday
+    })).filter(p=>p.name);
+    if(players.length && players.some(p=>p.active)){
+      let birthdayFound=false;
+      players.forEach(p=>{
+        if(p.birthday && !birthdayFound)birthdayFound=true;
+        else if(p.birthday) p.birthday=false;
+      });
+      out.players=players;
+    }
+  }
+
+  if(Array.isArray(s.challenges)){
+    const arr=s.challenges.slice(0,100).map(c=>({
+      text:String(c?.text||"").trim().slice(0,180),
+      seconds:clamp(c?.seconds,1,3600),
+      difficulty:["leicht","mittel","schwer"].includes(c?.difficulty)?c.difficulty:"mittel",
+      weight:clamp(c?.weight,1,5)
+    })).filter(c=>c.text);
+    if(arr.length)out.challenges=arr;
+  }
+
+  if(Array.isArray(s.penalties)){
+    const arr=s.penalties.slice(0,100).map(p=>({
+      text:String(p?.text||"").trim().slice(0,180),
+      seconds:clamp(p?.seconds,1,3600)
+    })).filter(p=>p.text);
+    if(arr.length)out.penalties=arr;
+  }
+  return out;
+}
+function applyRemoteSettings(incoming){
+  const cleaned=sanitizeRemoteSettings(incoming);
+  if(!cleaned)return;
+  settings=cleaned;
+  save();
+  applyTheme();
+  syncSettingsUI();
+  initGame(true);
+  show("start");
+  restartCountdown();
+  sendRemoteSettings();
+  setTimeout(sendRemoteStatus,80);
+}
+
 function runRemoteCommand(action){
   ensureAudio();
   if(action==="start"){
