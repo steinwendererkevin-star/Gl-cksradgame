@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080a0f">
+<title>Challenge Roulette Host</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{padding:18px;padding-top:max(18px,env(safe-area-inset-top));padding-bottom:max(24px,env(safe-area-inset-bottom))}
+button{font:inherit;-webkit-tap-highlight-color:transparent}
+.wrap{width:min(680px,100%);margin:0 auto}
+.header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.brand{font-size:12px;font-weight:950;letter-spacing:.15em;color:#aeb6c7}
+.status{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:#111621;font-size:12px;font-weight:900}
+.dot{width:9px;height:9px;border-radius:50%;background:#f0a51d}.status.ok .dot{background:#36df83;box-shadow:0 0 14px rgba(54,223,131,.55)}.status.bad .dot{background:#ff536d}
+.hero{border:1px solid rgba(255,255,255,.11);border-radius:26px;background:linear-gradient(180deg,#141a27,#0e121b);padding:20px;margin-bottom:14px}
+.eyebrow{font-size:11px;letter-spacing:.15em;color:#9ea8bb;font-weight:900;margin-bottom:8px}
+.player{font-size:clamp(34px,10vw,62px);font-weight:1000;line-height:1;margin:0 0 12px}
+.challenge{font-size:clamp(19px,5vw,28px);line-height:1.25;font-weight:800;color:#f0f3f8;min-height:32px}
+.timer{font-size:clamp(48px,15vw,86px);font-weight:1000;font-variant-numeric:tabular-nums;letter-spacing:-.045em;margin-top:14px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.pill{padding:7px 10px;border-radius:999px;background:#1a2130;border:1px solid rgba(255,255,255,.09);font-size:12px;font-weight:900}
+.main-start{width:100%;min-height:82px;border:0;border-radius:23px;background:linear-gradient(135deg,#7659ff,#4e32d4);color:#fff;font-size:clamp(25px,7vw,38px);font-weight:1000;margin-bottom:12px;box-shadow:0 18px 40px rgba(103,78,255,.27)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button.action{min-height:62px;border-radius:18px;border:1px solid rgba(255,255,255,.11);background:#151b27;color:#fff;font-size:16px;font-weight:900;padding:10px}
+button.action:active,.main-start:active{transform:scale(.98)}
+button.finish{background:linear-gradient(135deg,#19a866,#0b6f46)}
+button.joker{background:linear-gradient(135deg,#f5c744,#c68000);color:#241700}
+button.penalty{background:linear-gradient(135deg,#dc3656,#8e1730)}
+button.end{background:#2a1017;color:#ffb8c4}
+.section-title{font-size:12px;letter-spacing:.13em;color:#9fa9ba;font-weight:900;margin:19px 3px 9px}
+.note{font-size:12px;color:#8791a3;line-height:1.45;margin-top:14px;text-align:center}
+.connect-card{border:1px solid rgba(255,255,255,.11);border-radius:24px;background:#111621;padding:22px;text-align:center;margin-top:40px}
+.connect-card h1{margin:0 0 8px}.connect-card p{color:#9fa9ba;line-height:1.45}
+@media(max-width:360px){.grid{grid-template-columns:1fr}.hero{padding:17px}}
+</style>
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div id="controller" style="display:none">
+    <div class="header">
+      <div class="brand">CHALLENGE ROULETTE · HOST</div>
+      <div id="status" class="status"><span class="dot"></span><span>Verbinde …</span></div>
+    </div>
+    <div class="hero">
+      <div id="screenLabel" class="eyebrow">WARTE AUF GAME</div>
+      <h1 id="player" class="player">—</h1>
+      <div id="challenge" class="challenge">Verbindung wird hergestellt …</div>
+      <div id="timer" class="timer"></div>
+      <div class="meta">
+        <div id="round" class="pill">Runde —</div><div id="points" class="pill">0 Punkte</div>
+        <div id="streak" class="pill">🔥 0</div><div id="jokerState" class="pill">🃏 0</div>
+      </div>
+    </div>
+    <button id="startBtn" class="main-start" type="button">JETZT STARTEN</button>
+    <div class="grid">
+      <button id="finishBtn" class="action finish" type="button">✅ FERTIG</button>
+      <button id="jokerBtn" class="action joker" type="button">🃏 JOKER</button>
+      <button id="penaltyBtn" class="action penalty" type="button">😈 STRAFE</button>
+      <button id="skipBtn" class="action" type="button">⏱️ COUNTDOWN BEENDEN</button>
+    </div>
+    <div class="section-title">SPIELSTEUERUNG</div>
+    <div class="grid">
+      <button id="nextBtn" class="action" type="button">⏭️ NÄCHSTE RUNDE</button>
+      <button id="restartBtn" class="action" type="button">↻ NEUSTART</button>
+      <button id="endBtn" class="action end" type="button">■ SPIEL BEENDEN</button>
+    </div>
+    <div class="note">Die Steuerbefehle werden direkt an den PC-Browser gesendet.</div>
+  </div>
+
+  <div id="connectCard" class="connect-card">
+    <h1>📱 Host</h1>
+    <p id="connectText">Verbindung zum Game wird hergestellt …</p>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const qs=new URLSearchParams(location.search);
+const gamePeer=qs.get("peer"),token=qs.get("token");
+let peer=null,conn=null,reconnectTimer=null;
+
+function status(ok,text){
+  const s=$("status");s.classList.toggle("ok",!!ok);s.classList.toggle("bad",ok===false);
+  s.querySelector("span:last-child").textContent=text;
+}
+function send(action){
+  if(conn&&conn.open)conn.send({type:"command",action});
+}
+function screenName(s){
+  return ({start:"STARTBILDSCHIRM",name:"NAMENSRAD",challenge:"CHALLENGE-RAD",result:"CHALLENGE",penalty:"STRAFRAD",penaltyResult:"STRAFE",mystery:"MYSTERY EVENT",double:"DOUBLE OR NOTHING",doubleWheel:"DOUBLE-RAD",stats:"ERGEBNIS"})[s]||String(s||"GAME").toUpperCase();
+}
+function render(s){
+  $("screenLabel").textContent=screenName(s.screen);$("player").textContent=s.player||"—";
+  let text=s.challenge||"";if(s.screen==="penalty"||s.screen==="penaltyResult")text=s.penalty||text;
+  if(!text&&s.screen==="start")text=s.ready?"Bereit zum Starten":"Countdown läuft";
+  $("challenge").textContent=text||"—";$("timer").textContent=s.timer||"";
+  $("round").textContent=s.rounds?`Runde ${s.round} / ${s.rounds}`:`Runde ${s.round}`;
+  $("points").textContent=`${s.points||0} Punkte`;$("streak").textContent=`🔥 ${s.streak||0}`;$("jokerState").textContent=`🃏 ${s.joker||0}`;
+  $("startBtn").textContent=s.screen==="start"&&s.ready?"JETZT STARTEN":"START / SOFORT STARTEN";
+}
+function connect(){
+  if(!gamePeer||!token){
+    $("connectText").textContent="Ungültiger QR-Link. Scanne den QR-Code am PC erneut.";
+    return;
+  }
+  if(typeof Peer==="undefined"){
+    $("connectText").textContent="PeerJS konnte nicht geladen werden.";
+    return;
+  }
+  try{
+    peer=new Peer(undefined,{debug:1});
+    peer.on("open",()=>{
+      conn=peer.connect(gamePeer,{reliable:true,metadata:{role:"host",token}});
+      conn.on("open",()=>{
+        $("connectCard").style.display="none";$("controller").style.display="block";status(true,"Verbunden");
+      });
+      conn.on("data",m=>{if(m&&m.type==="status")render(m)});
+      conn.on("close",()=>{status(false,"Getrennt");$("connectText").textContent="Verbindung verloren. Seite neu laden oder QR erneut scannen."});
+      conn.on("error",()=>status(false,"Fehler"));
+    });
+    peer.on("error",err=>{
+      $("connectText").textContent="Verbindung fehlgeschlagen: "+(err?.type||"unbekannt")+". QR-Code ggf. neu scannen.";
+    });
+  }catch(e){
+    $("connectText").textContent="Verbindung konnte nicht gestartet werden.";
+  }
+}
+$("startBtn").onclick=()=>send("start");$("finishBtn").onclick=()=>send("finish");$("jokerBtn").onclick=()=>send("joker");
+$("penaltyBtn").onclick=()=>send("penalty");$("skipBtn").onclick=()=>send("skip_countdown");$("nextBtn").onclick=()=>send("next");
+$("restartBtn").onclick=()=>{if(confirm("Spiel wirklich neu starten?"))send("restart")};
+$("endBtn").onclick=()=>{if(confirm("Spiel beenden und Statistik anzeigen?"))send("end")};
+connect();
+})();
+</script>
+</body>
+</html>

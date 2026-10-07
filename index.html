@@ -1,0 +1,1062 @@
+<!doctype html>
+<html lang="de" data-theme="standard">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090b10">
+<title>Challenge Roulette V13 Online Host</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{overscroll-behavior:none}
+button,input,select,textarea{font:inherit}
+button{-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#080a0f;--bg2:#111520;--panel:rgba(19,23,33,.92);--line:rgba(255,255,255,.12);
+  --muted:#aab2c1;--accent:#7c5cff;--accent2:#16d7ff;--accent3:#4d34d3;--glow:rgba(124,92,255,.36);
+}
+html[data-theme="halloween"]{
+  --bg:#050304;--bg2:#180a05;--panel:rgba(27,12,8,.94);--line:rgba(255,132,23,.20);
+  --muted:#d0a988;--accent:#ff7600;--accent2:#a34cff;--accent3:#8f3000;--glow:rgba(255,104,0,.42);
+}
+html[data-theme="birthday"]{
+  --bg:#10091f;--bg2:#211344;--panel:rgba(30,20,57,.94);--line:rgba(255,255,255,.16);
+  --muted:#ded4ef;--accent:#ff4f9a;--accent2:#59ddff;--accent3:#8650ff;--glow:rgba(255,79,154,.38);
+}
+.screen{
+  position:fixed;inset:0;display:none;align-items:center;justify-content:center;overflow:hidden;padding:18px;
+  background:
+   radial-gradient(circle at 50% 10%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 34%),
+   radial-gradient(circle at 80% 86%,color-mix(in srgb,var(--accent2) 12%,transparent),transparent 30%),
+   linear-gradient(180deg,var(--bg2),var(--bg));
+}
+.screen.active{display:flex}
+.noise{position:absolute;inset:0;pointer-events:none;opacity:.12;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:38px 38px;mask-image:linear-gradient(#000,transparent 85%)}
+.night-layer{position:fixed;inset:0;background:#000;opacity:var(--night,.0);pointer-events:none;z-index:50;transition:opacity .8s}
+.theme-decor{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+.halloween-decor,.birthday-decor{display:none}
+html[data-theme="halloween"] .halloween-decor{display:block}
+html[data-theme="birthday"] .birthday-decor{display:block}
+.bat{position:absolute;font-size:clamp(24px,6vw,50px);opacity:.27;animation:bat 8s ease-in-out infinite}
+.bat.a{left:7%;top:13%}.bat.b{right:8%;top:28%;animation-delay:-2s}.bat.c{left:18%;bottom:12%;animation-delay:-4s}
+@keyframes bat{50%{transform:translateY(-17px) rotate(8deg)}}
+.pumpkin{position:absolute;right:4%;bottom:4%;font-size:clamp(56px,13vw,104px);opacity:.63;filter:drop-shadow(0 0 24px rgba(255,99,0,.35))}
+.balloon{position:absolute;font-size:clamp(44px,10vw,84px);opacity:.58;animation:balloon 7s ease-in-out infinite}
+.balloon.a{left:3%;bottom:-8%}.balloon.b{right:4%;bottom:-5%;animation-delay:-3s}.balloon.c{left:18%;top:8%;font-size:42px;animation-delay:-5s}
+@keyframes balloon{50%{transform:translateY(-24px) rotate(5deg)}}
+.confetti-dot{position:absolute;width:8px;height:23px;border-radius:9px;background:#ffd45c;opacity:.55;transform:rotate(25deg)}
+.d1{left:10%;top:18%}.d2{right:12%;top:15%;background:#62ddff;transform:rotate(-24deg)}.d3{left:16%;bottom:20%;background:#ff72ae}.d4{right:18%;bottom:18%;background:#7cff8a}
+.topbar{position:absolute;z-index:10;top:max(14px,env(safe-area-inset-top));left:14px;right:14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pill{padding:9px 13px;border:1px solid var(--line);border-radius:999px;background:color-mix(in srgb,var(--panel) 72%,transparent);backdrop-filter:blur(14px);font-size:12px;font-weight:900;color:#e7eaf0}
+.hud{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.settings-btn,.host-btn,.sound-btn{
+  position:fixed;z-index:90;bottom:max(18px,env(safe-area-inset-bottom));width:56px;height:56px;border-radius:18px;border:1px solid var(--line);
+  background:color-mix(in srgb,var(--panel) 84%,transparent);color:#fff;display:grid;place-items:center;font-size:25px;cursor:pointer;backdrop-filter:blur(15px)
+}
+.settings-btn{left:max(18px,env(safe-area-inset-left))}
+.host-btn{right:max(18px,env(safe-area-inset-right));display:none}
+.sound-btn{right:max(18px,env(safe-area-inset-right));bottom:86px;display:none;font-size:21px}
+body.host-enabled .host-btn{display:grid}
+html[data-theme="halloween"] .sound-btn{display:grid}
+.center{position:relative;z-index:4;text-align:center;width:min(920px,100%)}
+.brand{font-size:clamp(13px,2.6vw,18px);letter-spacing:.22em;font-weight:950;color:#bbc3d4;margin-bottom:24px}
+html[data-theme="halloween"] .brand,html[data-theme="birthday"] .brand{display:none}
+.start-main{width:min(68vw,300px);aspect-ratio:1;border-radius:50%;border:1px solid rgba(255,255,255,.15);background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.30),transparent 22%),linear-gradient(145deg,var(--accent),var(--accent3) 66%);box-shadow:0 0 0 10px color-mix(in srgb,var(--accent) 8%,transparent),0 0 60px var(--glow),inset 0 -18px 40px rgba(0,0,0,.25);color:white;font-size:clamp(34px,8vw,58px);font-weight:1000;cursor:pointer}
+.event-start-wrap{display:none}
+html[data-theme="halloween"] .event-start-wrap,html[data-theme="birthday"] .event-start-wrap{display:block}
+html[data-theme="halloween"] .start-main,html[data-theme="birthday"] .start-main{display:none}
+.event-countdown{font-size:clamp(76px,22vw,142px);font-weight:1000;font-variant-numeric:tabular-nums;letter-spacing:-.045em;text-shadow:0 0 34px var(--glow)}
+.event-go{display:none;border:0;border-radius:22px;padding:18px 30px;min-width:min(74vw,330px);font-size:clamp(24px,7vw,38px);font-weight:1000;color:white;background:linear-gradient(135deg,var(--accent),var(--accent3));box-shadow:0 18px 44px var(--glow);cursor:pointer}
+.game-shell{position:relative;z-index:4;width:min(920px,100%);height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px}
+.heading{text-align:center;margin-top:35px}
+.heading h1{margin:0;font-size:clamp(26px,5vw,46px);line-height:1.05}
+.heading p{margin:8px 0 0;color:var(--muted);font-size:14px}
+.wheel-wrap{position:relative;width:min(78vw,520px);aspect-ratio:1;display:grid;place-items:center;filter:drop-shadow(0 25px 44px rgba(0,0,0,.44))}
+.wheel{width:100%;height:100%;border-radius:50%;transition:transform 5.3s cubic-bezier(.08,.74,.08,1);will-change:transform}
+.wheel-ring{position:absolute;inset:-7px;border-radius:50%;border:7px solid rgba(255,255,255,.92);box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 18%,transparent),0 0 40px var(--glow);pointer-events:none}
+.pointer{position:absolute;top:-18px;left:50%;transform:translateX(-50%);z-index:6;width:0;height:0;border-left:19px solid transparent;border-right:19px solid transparent;border-top:38px solid white;filter:drop-shadow(0 5px 8px rgba(0,0,0,.4))}
+.primary{border:0;border-radius:18px;padding:15px 28px;min-width:190px;color:white;font-size:18px;font-weight:950;background:linear-gradient(135deg,var(--accent),var(--accent3));box-shadow:0 14px 34px color-mix(in srgb,var(--accent) 28%,transparent);cursor:pointer}
+.primary:disabled{opacity:.38;cursor:default}
+.secondary{border:1px solid var(--line);border-radius:16px;padding:13px 20px;background:rgba(255,255,255,.07);color:#fff;font-weight:900;cursor:pointer}
+.danger{background:linear-gradient(135deg,#ff4a68,#a10d35)}
+.picked{min-height:28px;font-weight:900;text-align:center}
+.result-card{position:relative;z-index:4;width:min(830px,100%);padding:clamp(28px,7vw,58px);border:1px solid var(--line);border-radius:32px;background:color-mix(in srgb,var(--panel) 85%,transparent);backdrop-filter:blur(18px);box-shadow:0 34px 90px rgba(0,0,0,.46),0 0 65px color-mix(in srgb,var(--accent) 14%,transparent);text-align:center}
+.kicker{font-size:12px;letter-spacing:.17em;font-weight:950;color:var(--muted);margin-bottom:14px}
+.big-name{font-size:clamp(38px,9vw,78px);font-weight:1000;line-height:1;margin:0 0 20px}
+.big-text{font-size:clamp(22px,5vw,38px);line-height:1.2;margin:0 auto 24px;max-width:700px}
+.timer-box{display:none;margin:0 auto 24px;max-width:430px;padding:17px 22px;border:1px solid var(--line);border-radius:22px;background:rgba(0,0,0,.2)}
+.event-mode .timer-box{display:block}
+.timer-label{font-size:12px;letter-spacing:.16em;color:var(--muted);font-weight:900}
+.challenge-timer,.penalty-timer{font-size:clamp(50px,12vw,86px);font-weight:1000;font-variant-numeric:tabular-nums;line-height:1.05;text-shadow:0 0 24px var(--glow)}
+.action-row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.joker-btn{display:none;background:linear-gradient(135deg,#ffce4b,#d78d00);color:#231600}
+.joker-btn.available{display:inline-block}
+.badge-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 0 20px}
+.badge{padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-size:12px;font-weight:900}
+.flash{position:fixed;inset:0;z-index:250;display:none;align-items:center;justify-content:center;text-align:center;font-size:clamp(52px,15vw,130px);font-weight:1000;letter-spacing:.03em;background:rgba(0,0,0,.92)}
+.flash.show{display:flex;animation:flashIn .9s ease both}
+.flash.success{background:rgba(4,73,34,.94)}
+.flash.fail{background:rgba(91,0,14,.95)}
+@keyframes flashIn{0%{opacity:0;transform:scale(.85)}30%{opacity:1;transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
+.jumpscare{position:fixed;inset:0;z-index:400;display:none;align-items:center;justify-content:center;background:#000;font-size:min(55vw,300px)}
+.jumpscare.show{display:flex;animation:scare .6s ease both}
+@keyframes scare{0%{transform:scale(.2);filter:brightness(3)}45%{transform:scale(1.18)}100%{transform:scale(1)}}
+.modal{position:fixed;inset:0;z-index:180;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(1,2,5,.74);backdrop-filter:blur(12px)}
+.modal.open{display:flex}
+.modal-card{width:min(780px,100%);max-height:92%;overflow:auto;border:1px solid var(--line);border-radius:28px;background:linear-gradient(180deg,var(--panel),color-mix(in srgb,var(--bg) 98%,transparent));padding:22px;box-shadow:0 35px 90px rgba(0,0,0,.6)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}
+.modal-head h2{margin:0;font-size:25px}
+.close{width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:white;font-size:24px;cursor:pointer}
+.field{margin:17px 0}
+.field>label{display:block;font-weight:900;margin-bottom:8px}
+.help{display:block;color:var(--muted);font-size:12px;line-height:1.45;margin-top:6px}
+input,select,textarea{width:100%;min-height:44px;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--bg) 86%,#000);color:white;padding:11px 12px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}
+.mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mode-card input{position:absolute;opacity:0;pointer-events:none}
+.mode-card span{display:flex;min-height:78px;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);font-weight:900;cursor:pointer}
+.mode-card b{font-size:24px}
+.mode-card input:checked+span{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 13%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 11%,transparent)}
+.time-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.switch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.switch{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:rgba(255,255,255,.035)}
+.switch input{width:20px;min-height:auto;height:20px;accent-color:var(--accent)}
+.editor-head,.player-row,.challenge-row,.penalty-row{display:grid;align-items:center;gap:7px;margin-bottom:7px}
+.player-row{grid-template-columns:minmax(0,1fr) 58px 58px 40px}
+.challenge-row{grid-template-columns:minmax(0,1fr) 72px 92px 78px 40px}
+.penalty-row{grid-template-columns:minmax(0,1fr) 82px 40px}
+.editor-head.player{grid-template-columns:minmax(0,1fr) 58px 58px 40px}
+.editor-head.challenge{grid-template-columns:minmax(0,1fr) 72px 92px 78px 40px}
+.editor-head.penalty{grid-template-columns:minmax(0,1fr) 82px 40px}
+.editor-head{font-size:11px;color:var(--muted);font-weight:900;padding:0 4px}
+.editor-head span:not(:first-child){text-align:center}
+.row-check{display:grid;place-items:center}
+.row-check input{width:20px;height:20px;min-height:auto;accent-color:var(--accent)}
+.remove{width:40px;height:40px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.06);color:white;font-size:20px;cursor:pointer}
+.add{width:100%;border:1px dashed color-mix(in srgb,var(--accent) 58%,transparent);border-radius:14px;background:color-mix(in srgb,var(--accent) 8%,transparent);color:white;font-weight:900;padding:11px;cursor:pointer}
+.save{width:100%;border:0;border-radius:17px;background:linear-gradient(135deg,var(--accent),var(--accent3));color:white;padding:15px;font-weight:950;font-size:17px;cursor:pointer;margin-top:10px}
+.event-only{display:none}
+.event-settings .event-only{display:block}
+.stat-table{width:100%;border-collapse:collapse;margin-top:16px}
+.stat-table th,.stat-table td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:center;font-size:13px}
+.stat-table th:first-child,.stat-table td:first-child{text-align:left}
+.winner{font-size:clamp(32px,8vw,66px);font-weight:1000;margin:8px 0 4px}
+.mystery-card{max-width:650px}
+.mystery-icon{font-size:70px;margin-bottom:8px}
+.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
+.choice-grid button{min-height:54px}
+.host-panel{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.host-panel button{min-height:50px}
+.tv-mode .settings-btn,.tv-mode .sound-btn,.tv-mode .host-btn{opacity:.10}
+.tv-mode .pill{font-size:16px;padding:11px 16px}
+.tv-mode .heading h1{font-size:clamp(35px,7vw,64px)}
+.tv-mode .wheel-wrap{width:min(82vw,600px)}
+.tv-mode .big-text{font-size:clamp(30px,6vw,54px)}
+@media(max-width:700px){
+  .challenge-row{grid-template-columns:minmax(0,1fr) 62px 76px 68px 36px}
+  .penalty-row{grid-template-columns:minmax(0,1fr) 70px 36px}
+  .player-row{grid-template-columns:minmax(0,1fr) 52px 52px 36px}
+  .challenge-row input,.challenge-row select,.penalty-row input,.player-row input{padding:8px 7px;font-size:13px}
+  .switch-grid{grid-template-columns:1fr}
+}
+@media(max-height:700px){
+  .wheel-wrap{width:min(61vh,72vw)}
+  .heading{margin-top:44px}
+  .heading p{display:none}
+  .event-countdown{font-size:76px}
+}
+
+.online-connect{
+  position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+  padding:22px;background:rgba(2,3,7,.90);backdrop-filter:blur(16px)
+}
+.online-connect.hidden{display:none}
+.online-card{
+  width:min(620px,100%);border:1px solid var(--line);border-radius:30px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--panel) 96%,transparent),color-mix(in srgb,var(--bg) 98%,transparent));
+  padding:26px;text-align:center;box-shadow:0 35px 100px rgba(0,0,0,.62)
+}
+.online-card h1{margin:0 0 8px;font-size:clamp(28px,6vw,46px)}
+.online-card p{margin:0;color:var(--muted);line-height:1.45}
+.online-qr{
+  width:230px;height:230px;margin:22px auto 14px;padding:12px;border-radius:22px;background:#fff;
+  display:grid;place-items:center
+}
+.online-qr img,.online-qr canvas{max-width:100%;max-height:100%}
+.online-url{
+  margin:10px auto 14px;max-width:100%;padding:10px 12px;border-radius:13px;
+  border:1px solid var(--line);background:rgba(255,255,255,.05);font-size:12px;
+  font-weight:800;overflow-wrap:anywhere;color:#eef1f7
+}
+.online-state{
+  display:inline-flex;align-items:center;gap:8px;margin-top:8px;padding:8px 12px;border-radius:999px;
+  border:1px solid var(--line);background:rgba(255,255,255,.05);font-size:12px;font-weight:900
+}
+.online-dot{width:9px;height:9px;border-radius:50%;background:#ffb020;box-shadow:0 0 14px currentColor}
+.online-state.connected .online-dot{background:#37df82}
+.online-state.error .online-dot{background:#ff4d67}
+.online-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+.remote-pill{
+  position:fixed;right:14px;bottom:14px;z-index:70;display:none;align-items:center;gap:7px;
+  padding:8px 11px;border-radius:999px;border:1px solid var(--line);background:rgba(10,14,22,.76);
+  backdrop-filter:blur(12px);font-size:11px;font-weight:900;color:#cfd6e2
+}
+.remote-pill.show{display:flex}.remote-pill .dot{width:8px;height:8px;border-radius:50%;background:#38df82}
+
+</style>
+</head>
+<body>
+
+<div id="onlineConnect" class="online-connect">
+  <div class="online-card">
+    <h1>📱 Handy verbinden</h1>
+    <p>Scanne den QR-Code mit deinem Handy. Die Host-Steuerung läuft komplett im Browser.</p>
+    <div id="onlineQr" class="online-qr"></div>
+    <div id="onlineUrl" class="online-url">Sitzung wird erstellt …</div>
+    <div id="onlineState" class="online-state"><span class="online-dot"></span><span>Verbindung wird vorbereitet …</span></div>
+    <div class="online-actions">
+      <button id="withoutPhoneBtn" class="secondary" type="button">OHNE HANDY FORTFAHREN</button>
+    </div>
+  </div>
+</div>
+<div id="remotePill" class="remote-pill"><span class="dot"></span><span>HOST VERBUNDEN</span></div>
+
+<div class="night-layer"></div>
+
+<section id="startScreen" class="screen active">
+  <div class="noise"></div>
+  <div class="theme-decor halloween-decor"><div class="bat a">🦇</div><div class="bat b">🦇</div><div class="bat c">🦇</div><div class="pumpkin">🎃</div></div>
+  <div class="theme-decor birthday-decor"><div class="balloon a">🎈</div><div class="balloon b">🎈</div><div class="balloon c">🎈</div><div class="confetti-dot d1"></div><div class="confetti-dot d2"></div><div class="confetti-dot d3"></div><div class="confetti-dot d4"></div></div>
+  <div class="center">
+    <div class="brand">CHALLENGE ROULETTE</div>
+    <button id="standardStartBtn" class="start-main" type="button">START</button>
+    <div class="event-start-wrap">
+      <div id="eventCountdown" class="event-countdown">00:30</div>
+      <button id="eventStartBtn" class="event-go" type="button">Jetzt Starten</button>
+    </div>
+  </div>
+  <button id="settingsBtn" class="settings-btn" type="button">⚙️</button>
+  <button id="hostBtn" class="host-btn" type="button">🎛️</button>
+  <button id="soundBtn" class="sound-btn" type="button">🔊</button>
+</section>
+
+<section id="nameScreen" class="screen">
+  <div class="noise"></div>
+  <div class="topbar"><div id="roundPill1" class="pill">RUNDE 1</div><div class="hud"><div id="modePill1" class="pill">STANDARD</div></div></div>
+  <div class="game-shell">
+    <div class="heading"><h1>Wer ist dran?</h1><p id="nameHint">Dreh das Rad.</p></div>
+    <div class="wheel-wrap"><div class="pointer"></div><canvas id="nameWheel" class="wheel" width="900" height="900"></canvas><div class="wheel-ring"></div></div>
+    <div id="namePicked" class="picked"></div>
+    <button id="spinNameBtn" class="primary" type="button">DREHEN</button>
+  </div>
+</section>
+
+<section id="challengeScreen" class="screen">
+  <div class="noise"></div>
+  <div class="topbar"><div id="roundPill2" class="pill">RUNDE 1</div><div class="hud"><div id="modePill2" class="pill">STANDARD</div></div></div>
+  <div class="game-shell">
+    <div class="heading"><h1 id="challengeTitle">Deine Challenge</h1><p id="challengeHint">Jetzt wird’s ernst.</p></div>
+    <div class="wheel-wrap"><div class="pointer"></div><canvas id="challengeWheel" class="wheel" width="900" height="900"></canvas><div class="wheel-ring"></div></div>
+    <div id="challengePicked" class="picked"></div>
+    <button id="spinChallengeBtn" class="primary" type="button">DREHEN</button>
+  </div>
+</section>
+
+<section id="resultScreen" class="screen">
+  <div class="noise"></div>
+  <div class="topbar"><div id="roundPill3" class="pill">RUNDE 1</div><div class="hud"><div id="resultScorePill" class="pill">0 PUNKTE</div><div id="resultStreakPill" class="pill">🔥 0</div></div></div>
+  <div class="result-card">
+    <div class="kicker">AUSGELOST</div>
+    <h1 id="resultName" class="big-name">Elias</h1>
+    <div id="resultBadges" class="badge-row"></div>
+    <p id="resultText" class="big-text">deine Challenge ist …</p>
+    <div class="timer-box"><div class="timer-label">ZEIT</div><div id="challengeTimer" class="challenge-timer">00:30</div></div>
+    <div class="action-row">
+      <button id="jokerBtn" class="primary joker-btn" type="button">🃏 JOKER</button>
+      <button id="finishBtn" class="primary" type="button">FERTIG</button>
+    </div>
+  </div>
+</section>
+
+<section id="penaltyScreen" class="screen">
+  <div class="noise"></div>
+  <div class="topbar"><div class="pill">STRAFRAD</div><div id="modePill4" class="pill">STANDARD</div></div>
+  <div class="game-shell">
+    <div class="heading"><h1>Zu langsam 😈</h1><p>Jetzt entscheidet das Strafrad.</p></div>
+    <div class="wheel-wrap"><div class="pointer"></div><canvas id="penaltyWheel" class="wheel" width="900" height="900"></canvas><div class="wheel-ring"></div></div>
+    <div id="penaltyPicked" class="picked"></div>
+  </div>
+</section>
+
+<section id="penaltyResultScreen" class="screen">
+  <div class="noise"></div>
+  <div class="result-card">
+    <div class="kicker">STRAFE</div>
+    <h1 id="penaltyName" class="big-name">Elias</h1>
+    <p id="penaltyText" class="big-text">deine Strafe ist …</p>
+    <div class="timer-box event-mode" style="display:block"><div class="timer-label">STRAFZEIT</div><div id="penaltyTimer" class="penalty-timer">00:30</div></div>
+    <button id="penaltyFinishBtn" class="primary" type="button">FERTIG</button>
+  </div>
+</section>
+
+<section id="mysteryScreen" class="screen">
+  <div class="noise"></div>
+  <div class="result-card mystery-card">
+    <div class="mystery-icon">❓</div>
+    <div class="kicker">MYSTERY EVENT</div>
+    <h1 id="mysteryTitle" class="big-name" style="font-size:clamp(34px,8vw,62px)">???</h1>
+    <p id="mysteryText" class="big-text" style="font-size:clamp(20px,4.5vw,32px)"></p>
+    <div id="mysteryChoiceArea" class="choice-grid"></div>
+    <button id="mysteryContinueBtn" class="primary" type="button">WEITER</button>
+  </div>
+</section>
+
+<section id="doubleScreen" class="screen">
+  <div class="noise"></div>
+  <div class="result-card">
+    <div class="kicker">BONUS EVENT</div>
+    <h1 class="big-name" style="font-size:clamp(36px,8vw,66px)">DOUBLE OR NOTHING?</h1>
+    <p class="big-text" style="font-size:clamp(20px,4.5vw,32px)">Riskierst du deinen Punkt für einen Bonuspunkt?</p>
+    <div class="action-row">
+      <button id="doubleNoBtn" class="secondary" type="button">NEIN</button>
+      <button id="doubleYesBtn" class="primary" type="button">RISIKO</button>
+    </div>
+  </div>
+</section>
+
+<section id="doubleWheelScreen" class="screen">
+  <div class="noise"></div>
+  <div class="game-shell">
+    <div class="heading"><h1>Double or Nothing</h1></div>
+    <div class="wheel-wrap"><div class="pointer"></div><canvas id="doubleWheel" class="wheel" width="900" height="900"></canvas><div class="wheel-ring"></div></div>
+    <div id="doublePicked" class="picked"></div>
+  </div>
+</section>
+
+<section id="statsScreen" class="screen">
+  <div class="noise"></div>
+  <div class="result-card" style="max-height:92%;overflow:auto">
+    <div class="kicker">SPIEL BEENDET</div>
+    <div id="winnerName" class="winner">🏆 Kevin</div>
+    <p id="winnerSub" style="color:var(--muted);font-weight:800;margin-top:0">hat gewonnen</p>
+    <div id="statsWrap"></div>
+    <div class="action-row" style="margin-top:20px">
+      <button id="playAgainBtn" class="primary" type="button">NOCHMAL</button>
+      <button id="backHomeBtn" class="secondary" type="button">STARTSEITE</button>
+    </div>
+  </div>
+</section>
+
+<div id="flash" class="flash"></div>
+<div id="jumpscare" class="jumpscare">👹</div>
+
+<div id="settingsModal" class="modal">
+  <div id="settingsCard" class="modal-card">
+    <div class="modal-head"><h2>⚙️ Einstellungen</h2><button id="settingsClose" class="close" type="button">×</button></div>
+
+    <div class="field">
+      <label>Modus</label>
+      <div class="mode-grid">
+        <label class="mode-card"><input type="radio" name="mode" value="standard"><span><b>🎯</b>Standard</span></label>
+        <label class="mode-card"><input type="radio" name="mode" value="halloween"><span><b>🎃</b>Halloween</span></label>
+        <label class="mode-card"><input type="radio" name="mode" value="birthday"><span><b>🎂</b>Geburtstag</span></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Start-Countdown</label>
+      <div class="time-grid">
+        <input id="hoursInput" type="number" min="0" max="99" inputmode="numeric" placeholder="Std.">
+        <input id="minutesInput" type="number" min="0" max="59" inputmode="numeric" placeholder="Min.">
+        <input id="secondsInput" type="number" min="0" max="59" inputmode="numeric" placeholder="Sek.">
+      </div>
+      <span class="help event-only">Bei 00:00 erscheint nur „Jetzt Starten“.</span>
+    </div>
+
+    <div class="field">
+      <label>Spiel</label>
+      <div class="time-grid">
+        <input id="roundsInput" type="number" min="0" max="99" inputmode="numeric" placeholder="Runden">
+        <select id="soundPack">
+          <option value="creepy">Creepy Sound</option>
+          <option value="gameshow">Game Show</option>
+          <option value="funny">Funny</option>
+          <option value="dramatic">Dramatic</option>
+        </select>
+        <select id="mysteryChance">
+          <option value="0">Mystery aus</option>
+          <option value="5">Mystery 5%</option>
+          <option value="10">Mystery 10%</option>
+          <option value="20">Mystery 20%</option>
+        </select>
+      </div>
+      <span class="help">0 Runden = endlos. Boss-Challenge kommt standardmäßig jede 5. Runde.</span>
+    </div>
+
+    <div class="field">
+      <label>Extras</label>
+      <div class="switch-grid">
+        <label class="switch"><input id="noRepeatPlayer" type="checkbox"><span>Kein Spieler zweimal</span></label>
+        <label class="switch"><input id="noRepeatChallenge" type="checkbox"><span>Keine Challenge zweimal</span></label>
+        <label class="switch"><input id="doubleEnabled" type="checkbox"><span>Double or Nothing</span></label>
+        <label class="switch"><input id="jumpscareEnabled" type="checkbox"><span>Halloween Jumpscare</span></label>
+        <label class="switch"><input id="fakeCountdownEnabled" type="checkbox"><span>Fake Countdown</span></label>
+        <label class="switch"><input id="tvModeEnabled" type="checkbox"><span>TV-Modus</span></label>
+        <label class="switch"><input id="hostModeEnabled" type="checkbox"><span>Host-Steuerung</span></label>
+        <label class="switch"><input id="nightModeEnabled" type="checkbox"><span>Halloween wird dunkler</span></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Spieler</label>
+      <div class="editor-head player"><span>Name</span><span>Aktiv</span><span>🎂</span><span></span></div>
+      <div id="playerEditor"></div>
+      <button id="addPlayerBtn" class="add" type="button">+ Spieler hinzufügen</button>
+      <span class="help">🎂 markiert das Geburtstagskind. Jeder aktive Spieler startet mit einem Joker.</span>
+    </div>
+
+    <div class="field">
+      <label>Challenges</label>
+      <div class="editor-head challenge"><span>Challenge</span><span>Zeit</span><span>Schwere</span><span>Chance</span><span></span></div>
+      <div id="challengeEditor"></div>
+      <button id="addChallengeBtn" class="add" type="button">+ Challenge hinzufügen</button>
+    </div>
+
+    <div class="field event-only">
+      <label>Strafen</label>
+      <div class="editor-head penalty"><span>Strafe</span><span>Zeit</span><span></span></div>
+      <div id="penaltyEditor"></div>
+      <button id="addPenaltyBtn" class="add" type="button">+ Strafe hinzufügen</button>
+    </div>
+
+    <button id="saveBtn" class="save" type="button">SPEICHERN</button>
+  </div>
+</div>
+
+<div id="hostModal" class="modal">
+  <div class="modal-card" style="max-width:520px">
+    <div class="modal-head"><h2>🎛️ Host</h2><button id="hostClose" class="close" type="button">×</button></div>
+    <div class="host-panel">
+      <button id="hostSkipCountdown" class="secondary" type="button">Countdown beenden</button>
+      <button id="hostPenalty" class="secondary" type="button">Strafe erzwingen</button>
+      <button id="hostNext" class="secondary" type="button">Nächste Runde</button>
+      <button id="hostEnd" class="secondary danger" type="button">Spiel beenden</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+const $=id=>document.getElementById(id);
+const screens={
+  start:$("startScreen"),name:$("nameScreen"),challenge:$("challengeScreen"),result:$("resultScreen"),
+  penalty:$("penaltyScreen"),penaltyResult:$("penaltyResultScreen"),mystery:$("mysteryScreen"),
+  double:$("doubleScreen"),doubleWheel:$("doubleWheelScreen"),stats:$("statsScreen")
+};
+
+let settings={
+  mode:"standard",hours:0,minutes:0,seconds:30,rounds:10,
+  soundPack:"creepy",mysteryChance:5,
+  noRepeatPlayer:true,noRepeatChallenge:true,doubleEnabled:true,jumpscareEnabled:true,
+  fakeCountdownEnabled:false,tvMode:false,hostMode:false,nightMode:true,
+  players:[
+    {name:"Kevin",active:true,birthday:false},
+    {name:"Elias",active:true,birthday:false},
+    {name:"Marco",active:true,birthday:false},
+    {name:"Florian",active:true,birthday:false}
+  ],
+  challenges:[
+    {text:"20 Liegestütze",seconds:45,difficulty:"mittel",weight:2},
+    {text:"1 Minute Plank",seconds:60,difficulty:"schwer",weight:1},
+    {text:"30 Kniebeugen",seconds:60,difficulty:"mittel",weight:2},
+    {text:"10 Burpees",seconds:45,difficulty:"schwer",weight:1},
+    {text:"5-mal Fußball jonglieren",seconds:30,difficulty:"leicht",weight:3},
+    {text:"30 Sekunden Zombie-Walk",seconds:30,difficulty:"leicht",weight:3}
+  ],
+  penalties:[
+    {text:"10 Hampelmänner",seconds:30},
+    {text:"20 Sekunden Plank",seconds:20},
+    {text:"10 Kniebeugen extra",seconds:30},
+    {text:"30 Sekunden Zombie-Tanz",seconds:30},
+    {text:"Wie ein Werwolf heulen",seconds:20},
+    {text:"Ein Kinderlied in Horror-Stimme singen",seconds:45}
+  ]
+};
+
+let game=null;
+let nameRotation=0,challengeRotation=0,penaltyRotation=0,doubleRotation=0;
+let autoTimer=null,challengeTimerHandle=null,penaltyTimerHandle=null,wheelClickTimer=null;
+let autoEndsAt=0,challengeEndsAt=0,penaltyEndsAt=0;
+let autoRunning=false,challengeExpired=false,fakeUsed=false;
+let audioCtx=null,masterGain=null,ambienceNodes=[],ambienceTimer=null,audioUnlocked=false;
+
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function clamp(n,a,b){n=Number(n);if(!Number.isFinite(n))return a;return Math.max(a,Math.min(b,n))}
+function rand(n){if(n<=1)return 0;try{let a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n}catch(e){return Math.floor(Math.random()*n)}}
+function chance(p){return Math.random()*100<p}
+function formatTime(sec){sec=Math.max(0,Math.ceil(sec));const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;return h?`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`}
+function activePlayers(){return settings.players.filter(p=>p.active&&p.name.trim())}
+function playerState(name){return game?.players[name]||null}
+
+function load(){
+  try{
+    const raw=localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
+    if(!raw)return;
+    const s=JSON.parse(raw);
+    if(!s)return;
+    settings={...settings,...s};
+    if(Array.isArray(s.players))settings.players=s.players;
+    else if(Array.isArray(s.names))settings.players=s.names.map(n=>({name:String(n),active:true,birthday:false}));
+    if(Array.isArray(s.challenges))settings.challenges=s.challenges.map(c=>typeof c==="string"?{text:c,seconds:60,difficulty:"mittel",weight:2}:{text:String(c.text||"Challenge"),seconds:clamp(c.seconds||60,1,3600),difficulty:c.difficulty||"mittel",weight:clamp(c.weight||2,1,5)});
+    if(Array.isArray(s.penalties))settings.penalties=s.penalties.map(p=>typeof p==="string"?{text:p,seconds:30}:{text:String(p.text||"Strafe"),seconds:clamp(p.seconds||30,1,3600)});
+  }catch(e){}
+}
+function save(){try{localStorage.setItem("challengeRouletteSettingsV11",JSON.stringify(settings))}catch(e){}}
+
+function initGame(reset=true){
+  if(!reset&&game)return;
+  game={round:1,lastPlayer:null,lastChallenge:null,currentPlayer:null,currentChallenge:null,currentPenalty:null,boss:false,doubleChallenge:false,allPlayers:false,secretEvent:false,
+    players:{}
+  };
+  activePlayers().forEach(p=>game.players[p.name]={points:0,success:0,fails:0,penalties:0,streak:0,maxStreak:0,picks:0,joker:1});
+  updateRoundUI();
+}
+function updateRoundUI(){
+  const total=settings.rounds>0?` / ${settings.rounds}`:"";
+  ["roundPill1","roundPill2","roundPill3"].forEach(id=>$(id).textContent=`RUNDE ${game?.round||1}${total}`);
+  const factor=(settings.mode==="halloween"&&settings.nightMode)?Math.min(.38,((game?.round||1)-1)*.035):0;
+  document.documentElement.style.setProperty("--night",factor);
+}
+function show(name){
+  Object.values(screens).forEach(s=>s.classList.remove("active"));
+  screens[name].classList.add("active");
+  if(game)game._screen=name;
+  syncAudio();
+}
+function modeLabel(){return settings.mode==="halloween"?"🎃 HALLOWEEN":settings.mode==="birthday"?"🎂 GEBURTSTAG":"🎯 STANDARD"}
+
+function applyTheme(){
+  document.documentElement.dataset.theme=settings.mode;
+  document.body.classList.toggle("event-mode",settings.mode!=="standard");
+  document.body.classList.toggle("tv-mode",!!settings.tvMode);
+  document.body.classList.toggle("host-enabled",!!settings.hostMode);
+  $("settingsCard").classList.toggle("event-settings",settings.mode!=="standard");
+  ["modePill1","modePill2","modePill4"].forEach(id=>$(id).textContent=modeLabel());
+  $("nameHint").textContent=settings.mode==="standard"?"Dreh das Rad.":"";
+  $("challengeHint").textContent=settings.mode==="standard"?"Jetzt wird’s ernst.":"";
+  updateRoundUI();
+}
+
+function colorFor(i,total,kind="normal"){
+  if(kind==="double")return i===0?"hsl(145 75% 46%)":"hsl(350 80% 52%)";
+  if(settings.mode==="halloween"){const hs=[26,280,10,45,304,2];return`hsl(${hs[i%hs.length]} 88% ${i%2?44:53}%)`}
+  if(settings.mode==="birthday"){const hs=[334,194,48,270,145,8];return`hsl(${hs[i%hs.length]} 87% ${i%2?58:64}%)`}
+  const hue=(250+i*(330/Math.max(1,total)))%360;return`hsl(${hue} 82% ${i%2?49:56}%)`;
+}
+function drawWheel(canvas,items,kind="normal"){
+  const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=w*.47,count=Math.max(1,items.length),slice=Math.PI*2/count;
+  ctx.clearRect(0,0,w,h);
+  items.forEach((txt,i)=>{
+    const start=-Math.PI/2+i*slice,end=start+slice;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();ctx.fillStyle=colorFor(i,count,kind);ctx.fill();
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(start+slice/2);ctx.textAlign="right";ctx.textBaseline="middle";ctx.fillStyle="#fff";
+    ctx.font=`800 ${Math.max(22,Math.min(40,310/count+18))}px system-ui`;ctx.shadowColor="rgba(0,0,0,.42)";ctx.shadowBlur=8;
+    let label=String(txt);const max=count>8?15:22;if(label.length>max)label=label.slice(0,max-1)+"…";
+    ctx.fillText(label,r-42,0);ctx.restore();
+  });
+  ctx.beginPath();ctx.arc(cx,cy,r*.19,0,Math.PI*2);ctx.fillStyle=settings.mode==="halloween"?"#180905":settings.mode==="birthday"?"#21103e":"#0f1320";ctx.fill();
+  ctx.lineWidth=9;ctx.strokeStyle="rgba(255,255,255,.92)";ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,r*.055,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();
+}
+function weightedChallengeIndex(list){
+  const weights=list.map(c=>Math.max(1,Number(c.weight)||1)),sum=weights.reduce((a,b)=>a+b,0);
+  let r=Math.random()*sum;for(let i=0;i<list.length;i++){r-=weights[i];if(r<=0)return i}return list.length-1;
+}
+function spin(canvas,count,rotation,idx,cb){
+  const slice=360/count,turns=7+rand(3),cur=((rotation%360)+360)%360,targetBase=-((idx+.5)*slice);
+  const target=rotation+turns*360+((targetBase-cur+360)%360);
+  startWheelClicks(5300);
+  canvas.style.transition="transform 5.3s cubic-bezier(.08,.74,.08,1)";
+  canvas.style.transform=`rotate(${target}deg)`;
+  setTimeout(()=>{stopWheelClicks();cb(target)},5450);
+  return target;
+}
+
+function pickPlayer(){
+  let arr=activePlayers();
+  if(!arr.length)return null;
+  if(settings.noRepeatPlayer&&game.lastPlayer&&arr.length>1)arr=arr.filter(p=>p.name!==game.lastPlayer);
+  return arr[rand(arr.length)];
+}
+function eligibleChallenges(){
+  let arr=settings.challenges.filter(c=>c.text.trim());
+  if(game.boss){
+    const hard=arr.filter(c=>c.difficulty==="schwer");
+    if(hard.length)arr=hard;
+  }
+  if(settings.noRepeatChallenge&&game.lastChallenge&&arr.length>1){
+    const f=arr.filter(c=>c.text!==game.lastChallenge);if(f.length)arr=f;
+  }
+  return arr;
+}
+function diffIcon(d){return d==="leicht"?"🟢":d==="schwer"?"🔴":"🟡"}
+
+function beginRound(){
+  challengeExpired=false;game.boss=(game.round%5===0);game.doubleChallenge=false;game.allPlayers=false;game.secretEvent=false;
+  game.currentChallenge=null;game.currentPenalty=null;
+  const p=pickPlayer();if(!p){alert("Aktiviere mindestens einen Spieler.");show("start");return}
+  game.currentPlayer=p.name;game.lastPlayer=p.name;
+  if(game.players[p.name])game.players[p.name].picks++;
+  updateRoundUI();
+  drawWheel($("nameWheel"),activePlayers().map(x=>x.name));
+  show("name");
+  const displayList=activePlayers();
+  const idx=displayList.findIndex(x=>x.name===p.name);
+  if(settings.mode==="standard"){$("spinNameBtn").style.display="inline-block";$("spinNameBtn").disabled=false;$("spinNameBtn").onclick=()=>spinNameTo(idx)}
+  else{$("spinNameBtn").style.display="none";setTimeout(()=>spinNameTo(idx),650)}
+}
+function spinNameTo(idx){
+  $("spinNameBtn").disabled=true;$("namePicked").textContent="Das Rad entscheidet …";
+  nameRotation=spin($("nameWheel"),activePlayers().length,nameRotation,idx,(rot)=>{
+    nameRotation=rot;$("namePicked").textContent=`${game.currentPlayer} ist dran!`;
+    setTimeout(afterName,900);
+  });
+}
+function afterName(){
+  if(settings.mode!=="standard"&&chance(1)){game.secretEvent=true;game.allPlayers=true;return showMystery("🌑","SECRET EVENT","ALLE müssen die nächste Challenge machen!",()=>openChallengeWheel())}
+  if(settings.mysteryChance>0&&chance(settings.mysteryChance))return randomMystery();
+  if(game.boss)return showMystery("👹","BOSS CHALLENGE","Boss-Runde! Eine schwere Challenge wartet. Sie zählt doppelt.",()=>openChallengeWheel());
+  openChallengeWheel();
+}
+function randomMystery(){
+  const events=["free","jackpot","all","choose","penalty","double"];
+  const e=events[rand(events.length)];
+  if(e==="free")return showMystery("🕊️","FREIFAHRT","Keine Challenge. +1 Punkt.",()=>{awardSuccess(1);completeRound()});
+  if(e==="jackpot")return showMystery("💎","JACKPOT","+2 Punkte ohne Challenge!",()=>{awardSuccess(2);completeRound()});
+  if(e==="all"){game.allPlayers=true;return showMystery("👥","ALLE","Alle müssen die nächste Challenge machen.",()=>openChallengeWheel())}
+  if(e==="penalty")return showMystery("😈","STRAFE DIREKT","Keine Challenge. Sofort zum Strafrad.",()=>triggerPenalty());
+  if(e==="double"){game.doubleChallenge=true;return showMystery("✌️","DOPPELTE CHALLENGE","Die ausgeloste Challenge muss doppelt gemacht werden.",()=>openChallengeWheel())}
+  if(e==="choose"){
+    const area=$("mysteryChoiceArea");area.innerHTML="";
+    activePlayers().forEach(p=>{const b=document.createElement("button");b.className="secondary";b.textContent=p.name;b.addEventListener("click",()=>{game.currentPlayer=p.name;game.lastPlayer=p.name;if(game.players[p.name])game.players[p.name].picks++;$("mysteryChoiceArea").innerHTML="";openChallengeWheel()});area.appendChild(b)});
+    $("mysteryContinueBtn").style.display="none";
+    $("mysteryScreen").querySelector(".mystery-icon").textContent="👉";$("mysteryTitle").textContent="WÄHLE JEMANDEN";$("mysteryText").textContent="Du darfst bestimmen, wer die nächste Challenge machen muss.";show("mystery");
+  }
+}
+function showMystery(icon,title,text,next){
+  $("mysteryScreen").querySelector(".mystery-icon").textContent=icon;$("mysteryTitle").textContent=title;$("mysteryText").textContent=text;
+  $("mysteryChoiceArea").innerHTML="";$("mysteryContinueBtn").style.display="inline-block";$("mysteryContinueBtn").onclick=next;show("mystery");
+}
+function openChallengeWheel(){
+  const list=eligibleChallenges();if(!list.length){alert("Bitte mindestens eine Challenge eintragen.");show("start");return}
+  game._challengeList=list;
+  drawWheel($("challengeWheel"),list.map(c=>`${diffIcon(c.difficulty)} ${c.text}`));
+  $("challengeTitle").textContent=game.allPlayers?"ALLE – eure Challenge":`${game.currentPlayer} – deine Challenge`;
+  $("challengePicked").textContent="";
+  show("challenge");
+  const idx=weightedChallengeIndex(list);
+  if(settings.mode==="standard"){$("spinChallengeBtn").style.display="inline-block";$("spinChallengeBtn").disabled=false;$("spinChallengeBtn").onclick=()=>spinChallengeTo(idx)}
+  else{$("spinChallengeBtn").style.display="none";setTimeout(()=>spinChallengeTo(idx),650)}
+}
+function spinChallengeTo(idx){
+  $("spinChallengeBtn").disabled=true;$("challengePicked").textContent="Das Rad entscheidet …";
+  const list=game._challengeList;
+  challengeRotation=spin($("challengeWheel"),list.length,challengeRotation,idx,(rot)=>{
+    challengeRotation=rot;game.currentChallenge=clone(list[idx]);game.lastChallenge=game.currentChallenge.text;
+    $("challengePicked").textContent=game.currentChallenge.text;
+    setTimeout(showChallengeResult,900);
+  });
+}
+function showChallengeResult(){
+  const p=playerState(game.currentPlayer),mult=game.doubleChallenge?2:1;
+  $("resultName").textContent=game.allPlayers?"ALLE":game.currentPlayer;
+  $("resultText").textContent=`${game.allPlayers?"eure":"deine"} Challenge ist: ${game.currentChallenge.text}${mult===2?" ×2":""}`;
+  const badges=[`${diffIcon(game.currentChallenge.difficulty)} ${game.currentChallenge.difficulty.toUpperCase()}`];
+  if(game.boss)badges.push("👹 BOSS ×2 PUNKTE");if(game.doubleChallenge)badges.push("✌️ DOPPELT");if(settings.mode==="birthday"&&settings.players.find(x=>x.name===game.currentPlayer)?.birthday)badges.push("🎂 BIRTHDAY BONUS");
+  $("resultBadges").innerHTML=badges.map(x=>`<span class="badge">${x}</span>`).join("");
+  $("resultScorePill").textContent=`${p?p.points:0} PUNKTE`;$("resultStreakPill").textContent=`🔥 ${p?p.streak:0}`;
+  const joker=p&&p.joker>0&&!game.allPlayers;$("jokerBtn").classList.toggle("available",!!joker);$("jokerBtn").textContent=`🃏 JOKER (${p?p.joker:0})`;
+  $("finishBtn").disabled=false;challengeExpired=false;show("result");resultStinger();
+  if(settings.mode!=="standard")startChallengeTimer(game.currentChallenge.seconds*(game.doubleChallenge?2:1));
+}
+function useJoker(){
+  const p=playerState(game.currentPlayer);if(!p||p.joker<=0||challengeExpired)return;
+  p.joker--;stopChallengeTimer();$("jokerBtn").classList.remove("available");openChallengeWheel();
+}
+function startChallengeTimer(seconds){
+  stopChallengeTimer();challengeExpired=false;challengeEndsAt=Date.now()+Math.max(1,seconds)*1000;
+  const el=$("challengeTimer");let last=-1;
+  const tick=()=>{
+    const remain=Math.max(0,Math.ceil((challengeEndsAt-Date.now())/1000));el.textContent=formatTime(remain);
+    if(settings.mode==="halloween"&&remain<=10&&remain>0&&remain!==last){last=remain;heartbeat(11-remain)}
+    if(remain<=0){stopChallengeTimer();challengeExpired=true;$("finishBtn").disabled=true;showFlash("ZU SPÄT","fail",()=>triggerPenalty())}
+  };
+  tick();challengeTimerHandle=setInterval(tick,200);
+}
+function stopChallengeTimer(){if(challengeTimerHandle){clearInterval(challengeTimerHandle);challengeTimerHandle=null}}
+
+function successfulFinish(){
+  if(challengeExpired)return;stopChallengeTimer();awardSuccess(game.boss?2:1);
+  showFlash("GESCHAFFT!","success",()=>{
+    if(settings.doubleEnabled&&chance(18))show("double");
+    else completeRound();
+  });
+}
+function awardSuccess(points){
+  if(game.allPlayers){
+    activePlayers().forEach(pl=>{const p=playerState(pl.name);if(!p)return;p.points+=points;p.success++;p.streak++;p.maxStreak=Math.max(p.maxStreak,p.streak)});
+  }else{
+    const p=playerState(game.currentPlayer);if(!p)return;
+    let bonus=(settings.mode==="birthday"&&settings.players.find(x=>x.name===game.currentPlayer)?.birthday)?1:0;
+    p.points+=points+bonus;p.success++;p.streak++;p.maxStreak=Math.max(p.maxStreak,p.streak);
+  }
+}
+function triggerPenalty(){
+  stopChallengeTimer();challengeExpired=true;
+  if(game.allPlayers){
+    activePlayers().forEach(pl=>{const p=playerState(pl.name);if(p){p.fails++;p.penalties++;p.streak=0;p.points=Math.max(0,p.points-1)}})
+  }else{
+    const p=playerState(game.currentPlayer);if(p){p.fails++;p.penalties++;p.streak=0;p.points=Math.max(0,p.points-1)}
+  }
+  penaltyStinger();
+  const list=settings.penalties.filter(p=>p.text.trim());if(!list.length){completeRound();return}
+  game.currentPenalty=clone(list[rand(list.length)]);
+  drawWheel($("penaltyWheel"),list.map(p=>p.text));show("penalty");$("penaltyPicked").textContent="Deine Strafe wird ausgelost …";
+  const idx=list.findIndex(p=>p.text===game.currentPenalty.text);
+  setTimeout(()=>{penaltyRotation=spin($("penaltyWheel"),list.length,penaltyRotation,idx,(rot)=>{penaltyRotation=rot;$("penaltyPicked").textContent=game.currentPenalty.text;setTimeout(showPenaltyResult,900)})},450);
+}
+function showPenaltyResult(){
+  $("penaltyName").textContent=game.allPlayers?"ALLE":game.currentPlayer;$("penaltyText").textContent=`deine Strafe ist: ${game.currentPenalty.text}`;show("penaltyResult");penaltyStinger();startPenaltyTimer(game.currentPenalty.seconds);
+}
+function startPenaltyTimer(seconds){
+  stopPenaltyTimer();penaltyEndsAt=Date.now()+Math.max(1,seconds)*1000;
+  const tick=()=>{const r=Math.max(0,Math.ceil((penaltyEndsAt-Date.now())/1000));$("penaltyTimer").textContent=formatTime(r);if(r<=0){stopPenaltyTimer();$("penaltyTimer").textContent="ZEIT ABGELAUFEN"}};
+  tick();penaltyTimerHandle=setInterval(tick,250);
+}
+function stopPenaltyTimer(){if(penaltyTimerHandle){clearInterval(penaltyTimerHandle);penaltyTimerHandle=null}}
+
+function doubleRisk(){
+  drawWheel($("doubleWheel"),["DOUBLE WIN","STRAFE"],"double");$("doublePicked").textContent="";show("doubleWheel");
+  const idx=rand(2);setTimeout(()=>{doubleRotation=spin($("doubleWheel"),2,doubleRotation,idx,(rot)=>{doubleRotation=rot;const win=idx===0;$("doublePicked").textContent=win?"DOUBLE WIN!":"STRAFE!";setTimeout(()=>{if(win){const p=playerState(game.currentPlayer);if(p)p.points+=1;showFlash("+1 BONUS","success",completeRound)}else triggerPenalty()},900)})},450);
+}
+function completeRound(){
+  stopChallengeTimer();stopPenaltyTimer();
+  if(settings.rounds>0&&game.round>=settings.rounds)return showStats();
+  game.round++;updateRoundUI();show("start");restartCountdown();
+}
+function showStats(){
+  const rows=Object.entries(game.players).map(([name,s])=>({name,...s})).sort((a,b)=>b.points-a.points||b.success-a.success||a.fails-b.fails);
+  const win=rows[0];$("winnerName").textContent=win?`🏆 ${win.name}`:"🏆 Ende";$("winnerSub").textContent=win?`${win.points} Punkte`:"";
+  $("statsWrap").innerHTML=`<table class="stat-table"><thead><tr><th>Spieler</th><th>Punkte</th><th>✅</th><th>❌</th><th>🔥</th><th>🎯</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${escapeHtml(r.name)}</td><td><b>${r.points}</b></td><td>${r.success}</td><td>${r.fails}</td><td>${r.maxStreak}</td><td>${r.picks}</td></tr>`).join("")}</tbody></table>`;
+  show("stats");
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+function showFlash(text,type,next){
+  const f=$("flash");f.textContent=text;f.className=`flash show ${type||""}`;
+  if(type==="fail")maybeJumpscare();
+  setTimeout(()=>{f.className="flash";if(next)next()},1050);
+}
+function maybeJumpscare(){
+  if(settings.mode!=="halloween"||!settings.jumpscareEnabled||!chance(18))return;
+  const j=$("jumpscare");j.textContent=["👹","💀","👻","🎃"][rand(4)];j.classList.add("show");scareSound();setTimeout(()=>j.classList.remove("show"),620);
+}
+
+/* ---------- start countdown ---------- */
+function clearAuto(){if(autoTimer){clearInterval(autoTimer);autoTimer=null}autoRunning=false}
+function setReady(ready){$("eventCountdown").style.display=ready?"none":"block";$("eventStartBtn").style.display=ready?"inline-block":"none"}
+function restartCountdown(){
+  clearAuto();fakeUsed=false;if(game)game._lastTick=null;setReady(false);
+  if(settings.mode==="standard"){stopAmbience();return}
+  const total=settings.hours*3600+settings.minutes*60+settings.seconds;
+  if(total<=0){$("eventCountdown").textContent="00:00";setReady(true);stopAmbience();return}
+  autoEndsAt=Date.now()+total*1000;autoRunning=true;updateAuto();autoTimer=setInterval(updateAuto,200);if(settings.mode==="halloween")startAmbience();
+}
+function updateAuto(){
+  let remain=Math.max(0,Math.ceil((autoEndsAt-Date.now())/1000));
+  if(settings.fakeCountdownEnabled&&!fakeUsed&&remain<=3&&remain>0){fakeUsed=true;autoEndsAt+=3*1000;remain+=3}
+  $("eventCountdown").textContent=formatTime(remain);
+  if(settings.mode==="halloween"&&remain<=30&&remain>0&&game._lastTick!==remain){game._lastTick=remain;tickSound()}
+  if(remain<=0&&autoRunning){clearAuto();stopAmbience();setReady(true)}
+}
+
+/* ---------- audio ---------- */
+function ensureAudio(){
+  try{
+    if(!audioCtx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;audioCtx=new AC();masterGain=audioCtx.createGain();masterGain.gain.value=.28;masterGain.connect(audioCtx.destination)}
+    if(audioCtx.state==="suspended")audioCtx.resume();audioUnlocked=true;return true;
+  }catch(e){return false}
+}
+function tone(freq,dur,vol=.06,type="sine",delay=0){
+  if(!ensureAudio())return;const t=audioCtx.currentTime+delay,o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,vol),t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(masterGain);o.start(t);o.stop(t+dur+.04)
+}
+function noise(d=.04,v=.03){if(!ensureAudio())return;const sr=audioCtx.sampleRate,b=audioCtx.createBuffer(1,Math.floor(sr*d),sr),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=(Math.random()*2-1)*(1-i/a.length);const s=audioCtx.createBufferSource(),g=audioCtx.createGain();s.buffer=b;g.gain.value=v;s.connect(g);g.connect(masterGain);s.start()}
+function tickSound(){
+  if(settings.soundPack==="funny")return tone(900,.04,.10,"square");
+  if(settings.soundPack==="gameshow")return tone(1200,.035,.10,"square");
+  tone(1120,.055,.13,"square");tone(690,.045,.06,"square",.02)
+}
+function heartbeat(level=1){if(settings.mode!=="halloween")return;const v=.07+Math.min(.08,level*.006);tone(82,.12,v,"sine");tone(72,.15,v*.8,"sine",.16)}
+function startWheelClicks(ms){
+  if(!ensureAudio())return;stopWheelClicks();const st=Date.now();
+  const loop=()=>{const p=Math.min(1,(Date.now()-st)/ms);tone(settings.soundPack==="funny"?560:760,.025,.055*(1-p*.45),"square");noise(.022,.018);if(p<1)wheelClickTimer=setTimeout(loop,55+Math.pow(p,2.2)*265)};
+  loop();
+}
+function stopWheelClicks(){if(wheelClickTimer){clearTimeout(wheelClickTimer);wheelClickTimer=null}}
+function resultStinger(){
+  if(settings.soundPack==="funny"){tone(440,.18,.10,"square");tone(660,.18,.10,"square",.15);return}
+  if(settings.soundPack==="gameshow"){tone(523,.2,.10,"triangle");tone(659,.2,.10,"triangle",.16);tone(784,.3,.11,"triangle",.32);return}
+  tone(220,.38,.10,"sawtooth");tone(165,.52,.08,"sine",.08);tone(110,.62,.08,"sine",.16)
+}
+function penaltyStinger(){tone(180,.26,.12,"sawtooth");tone(130,.35,.12,"sawtooth",.14);tone(82,.68,.13,"sine",.28);noise(.35,.035)}
+function scareSound(){tone(80,.55,.18,"sawtooth");noise(.35,.10)}
+function startAmbience(){
+  if(settings.mode!=="halloween"||!ensureAudio()||ambienceNodes.length)return;
+  const g=audioCtx.createGain();g.gain.value=.03;g.connect(masterGain);
+  const o1=audioCtx.createOscillator(),o2=audioCtx.createOscillator(),lfo=audioCtx.createOscillator(),lg=audioCtx.createGain();
+  o1.type="sine";o1.frequency.value=55;o2.type="triangle";o2.frequency.value=82.4;lfo.frequency.value=.12;lg.gain.value=7;lfo.connect(lg);lg.connect(o2.frequency);o1.connect(g);o2.connect(g);o1.start();o2.start();lfo.start();ambienceNodes=[o1,o2,lfo,g];
+  ambienceTimer=setInterval(()=>{if(settings.mode==="halloween"&&screens.start.classList.contains("active")&&autoRunning)tone([146,155,174,196][rand(4)],1.7,.016,"sine")},4300)
+}
+function stopAmbience(){if(ambienceTimer){clearInterval(ambienceTimer);ambienceTimer=null}ambienceNodes.forEach(n=>{try{n.stop()}catch(e){}try{n.disconnect()}catch(e){}});ambienceNodes=[]}
+function syncAudio(){if(settings.mode==="halloween"&&screens.start.classList.contains("active")&&autoRunning)startAmbience();else stopAmbience()}
+
+/* ---------- settings editors ---------- */
+function renderPlayers(){
+  const root=$("playerEditor");root.innerHTML="";
+  settings.players.forEach((p,i)=>{
+    const row=document.createElement("div");row.className="player-row";
+    row.innerHTML=`<input class="p-name" value="${escapeHtml(p.name)}"><label class="row-check"><input class="p-active" type="checkbox" ${p.active?"checked":""}></label><label class="row-check"><input class="p-bday" type="radio" name="birthdayPerson" ${p.birthday?"checked":""}></label><button class="remove" type="button">×</button>`;
+    row.querySelector(".remove").onclick=()=>{captureEditors();settings.players.splice(i,1);if(!settings.players.length)settings.players.push({name:"Spieler",active:true,birthday:false});renderPlayers()};
+    root.appendChild(row)
+  })
+}
+function renderChallenges(){
+  const root=$("challengeEditor");root.innerHTML="";
+  settings.challenges.forEach((c,i)=>{
+    const row=document.createElement("div");row.className="challenge-row";
+    row.innerHTML=`<input class="c-text" value="${escapeHtml(c.text)}"><input class="c-sec" type="number" min="1" max="3600" value="${c.seconds}"><select class="c-diff"><option value="leicht">Leicht</option><option value="mittel">Mittel</option><option value="schwer">Schwer</option></select><select class="c-weight"><option value="1">Selten</option><option value="2">Normal</option><option value="3">Häufig</option><option value="5">Sehr oft</option></select><button class="remove" type="button">×</button>`;
+    row.querySelector(".c-diff").value=c.difficulty;row.querySelector(".c-weight").value=String(c.weight);
+    row.querySelector(".remove").onclick=()=>{captureEditors();settings.challenges.splice(i,1);if(!settings.challenges.length)settings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",weight:2});renderChallenges()};
+    root.appendChild(row)
+  })
+}
+function renderPenalties(){
+  const root=$("penaltyEditor");root.innerHTML="";
+  settings.penalties.forEach((p,i)=>{
+    const row=document.createElement("div");row.className="penalty-row";
+    row.innerHTML=`<input class="r-text" value="${escapeHtml(p.text)}"><input class="r-sec" type="number" min="1" max="3600" value="${p.seconds}"><button class="remove" type="button">×</button>`;
+    row.querySelector(".remove").onclick=()=>{captureEditors();settings.penalties.splice(i,1);if(!settings.penalties.length)settings.penalties.push({text:"Neue Strafe",seconds:30});renderPenalties()};
+    root.appendChild(row)
+  })
+}
+function captureEditors(){
+  const pr=[...document.querySelectorAll(".player-row")];
+  settings.players=pr.map((r,i)=>({name:r.querySelector(".p-name").value.trim(),active:r.querySelector(".p-active").checked,birthday:r.querySelector(".p-bday").checked})).filter(p=>p.name);
+  settings.challenges=[...document.querySelectorAll(".challenge-row")].map(r=>({text:r.querySelector(".c-text").value.trim(),seconds:clamp(r.querySelector(".c-sec").value,1,3600),difficulty:r.querySelector(".c-diff").value,weight:clamp(r.querySelector(".c-weight").value,1,5)})).filter(c=>c.text);
+  settings.penalties=[...document.querySelectorAll(".penalty-row")].map(r=>({text:r.querySelector(".r-text").value.trim(),seconds:clamp(r.querySelector(".r-sec").value,1,3600)})).filter(p=>p.text);
+}
+function syncSettingsUI(){
+  document.querySelector(`input[name="mode"][value="${settings.mode}"]`).checked=true;
+  $("hoursInput").value=settings.hours;$("minutesInput").value=settings.minutes;$("secondsInput").value=settings.seconds;$("roundsInput").value=settings.rounds;
+  $("soundPack").value=settings.soundPack;$("mysteryChance").value=String(settings.mysteryChance);
+  $("noRepeatPlayer").checked=settings.noRepeatPlayer;$("noRepeatChallenge").checked=settings.noRepeatChallenge;$("doubleEnabled").checked=settings.doubleEnabled;$("jumpscareEnabled").checked=settings.jumpscareEnabled;$("fakeCountdownEnabled").checked=settings.fakeCountdownEnabled;$("tvModeEnabled").checked=settings.tvMode;$("hostModeEnabled").checked=settings.hostMode;$("nightModeEnabled").checked=settings.nightMode;
+  renderPlayers();renderChallenges();renderPenalties();$("settingsCard").classList.toggle("event-settings",settings.mode!=="standard")
+}
+function saveSettings(){
+  captureEditors();
+  const mode=document.querySelector('input[name="mode"]:checked').value;
+  if(!settings.players.some(p=>p.active)){alert("Mindestens ein Spieler muss aktiv sein.");return}
+  if(!settings.challenges.length){alert("Mindestens eine Challenge eintragen.");return}
+  settings.mode=mode;settings.hours=clamp($("hoursInput").value,0,99);settings.minutes=clamp($("minutesInput").value,0,59);settings.seconds=clamp($("secondsInput").value,0,59);settings.rounds=clamp($("roundsInput").value,0,99);
+  settings.soundPack=$("soundPack").value;settings.mysteryChance=clamp($("mysteryChance").value,0,100);
+  settings.noRepeatPlayer=$("noRepeatPlayer").checked;settings.noRepeatChallenge=$("noRepeatChallenge").checked;settings.doubleEnabled=$("doubleEnabled").checked;settings.jumpscareEnabled=$("jumpscareEnabled").checked;settings.fakeCountdownEnabled=$("fakeCountdownEnabled").checked;settings.tvMode=$("tvModeEnabled").checked;settings.hostMode=$("hostModeEnabled").checked;settings.nightMode=$("nightModeEnabled").checked;
+  save();applyTheme();$("settingsModal").classList.remove("open");initGame(true);show("start");restartCountdown();ensureAudio()
+}
+
+
+/* ---------- ONLINE P2P HOST ---------- */
+let remotePeer=null,remoteConn=null,remoteStatusTimer=null,remoteConnected=false,onlineStarted=false;
+let remoteToken="";
+
+function randomToken(){
+  const a=new Uint8Array(18);
+  if(window.crypto&&crypto.getRandomValues)crypto.getRandomValues(a);
+  else for(let i=0;i<a.length;i++)a[i]=Math.floor(Math.random()*256);
+  return Array.from(a,b=>b.toString(16).padStart(2,"0")).join("");
+}
+function remoteStatus(){
+  const p=game?.currentPlayer?playerState(game.currentPlayer):null;
+  let timer="";
+  if(game?._screen==="start")timer=$("eventCountdown")?.textContent||"";
+  if(game?._screen==="result")timer=$("challengeTimer")?.textContent||"";
+  if(game?._screen==="penaltyResult")timer=$("penaltyTimer")?.textContent||"";
+  return {
+    type:"status",
+    screen:game?game._screen:"start",
+    mode:settings.mode,
+    round:game?.round||1,
+    rounds:settings.rounds||0,
+    player:game?.allPlayers?"ALLE":(game?.currentPlayer||""),
+    challenge:game?.currentChallenge?.text||"",
+    penalty:game?.currentPenalty?.text||"",
+    timer,
+    points:p?.points||0,
+    streak:p?.streak||0,
+    joker:p?.joker||0,
+    ready:$("eventStartBtn")?.style.display==="inline-block",
+    challengeExpired:!!challengeExpired
+  };
+}
+function sendRemoteStatus(){
+  if(remoteConn&&remoteConn.open){
+    try{remoteConn.send(remoteStatus())}catch(e){}
+  }
+}
+function setOnlineState(kind,text){
+  const s=$("onlineState");
+  s.classList.remove("connected","error");
+  if(kind)s.classList.add(kind);
+  s.querySelector("span:last-child").textContent=text;
+}
+function hideConnectOverlay(){
+  $("onlineConnect").classList.add("hidden");
+  if(!onlineStarted){
+    onlineStarted=true;
+    show("start");
+    restartCountdown();
+  }
+}
+function acceptRemote(conn){
+  const md=conn.metadata||{};
+  if(md.token!==remoteToken||md.role!=="host"){
+    try{conn.close()}catch(e){}
+    return;
+  }
+  if(remoteConn&&remoteConn.open){
+    try{remoteConn.close()}catch(e){}
+  }
+  remoteConn=conn;
+  conn.on("open",()=>{
+    remoteConnected=true;
+    setOnlineState("connected","Handy verbunden");
+    $("remotePill").classList.add("show");
+    sendRemoteStatus();
+    if(remoteStatusTimer)clearInterval(remoteStatusTimer);
+    remoteStatusTimer=setInterval(sendRemoteStatus,400);
+    setTimeout(hideConnectOverlay,450);
+  });
+  conn.on("data",msg=>{
+    if(msg&&msg.type==="command")runRemoteCommand(msg.action);
+  });
+  conn.on("close",()=>{
+    remoteConnected=false;
+    $("remotePill").classList.remove("show");
+    if(remoteStatusTimer){clearInterval(remoteStatusTimer);remoteStatusTimer=null}
+  });
+  conn.on("error",()=>{remoteConnected=false;$("remotePill").classList.remove("show")});
+}
+function runRemoteCommand(action){
+  ensureAudio();
+  if(action==="start"){
+    clearAuto();stopAmbience();setReady(false);
+    if(!game)initGame(true);
+    beginRound();
+  }else if(action==="finish"){
+    if(game?._screen==="result"&&!challengeExpired&&!$("finishBtn").disabled)successfulFinish();
+    else if(game?._screen==="penaltyResult"){stopPenaltyTimer();completeRound()}
+  }else if(action==="joker"){
+    if(game?._screen==="result")useJoker();
+  }else if(action==="penalty"){
+    if(game?.currentPlayer)triggerPenalty();
+  }else if(action==="skip_countdown"){
+    if(game?._screen==="start"){clearAuto();stopAmbience();setReady(true)}
+  }else if(action==="next"){
+    if(game)completeRound();
+  }else if(action==="end"){
+    if(game)showStats();
+  }else if(action==="restart"){
+    initGame(true);show("start");restartCountdown();
+  }
+  setTimeout(sendRemoteStatus,80);
+}
+function createOnlineSession(){
+  if(location.protocol==="file:"){
+    setOnlineState("error","Diese Version muss online gehostet werden.");
+    $("onlineUrl").textContent="Lokal per Doppelklick kann das Handy die Seite nicht öffnen.";
+    return;
+  }
+  if(typeof Peer==="undefined"){
+    setOnlineState("error","PeerJS konnte nicht geladen werden.");
+    return;
+  }
+  remoteToken=randomToken();
+  setOnlineState("","Sitzung wird erstellt …");
+  try{
+    remotePeer=new Peer(undefined,{debug:1});
+    remotePeer.on("open",id=>{
+      const hostUrl=new URL("host.html",location.href);
+      hostUrl.search="";
+      hostUrl.hash="";
+      hostUrl.searchParams.set("peer",id);
+      hostUrl.searchParams.set("token",remoteToken);
+      $("onlineUrl").textContent=hostUrl.toString();
+      $("onlineQr").innerHTML="";
+      if(typeof QRCode!=="undefined"){
+        new QRCode($("onlineQr"),{text:hostUrl.toString(),width:200,height:200,correctLevel:QRCode.CorrectLevel.M});
+      }else{
+        $("onlineQr").innerHTML="<div style='color:#111;font-weight:900'>QR-Code konnte nicht geladen werden.</div>";
+      }
+      setOnlineState("","QR-Code mit dem Handy scannen");
+    });
+    remotePeer.on("connection",acceptRemote);
+    remotePeer.on("error",err=>{
+      setOnlineState("error","Verbindungsfehler: "+(err?.type||"unbekannt"));
+    });
+    remotePeer.on("disconnected",()=>{
+      setOnlineState("error","Verbindungsdienst getrennt – verbinde neu …");
+      try{remotePeer.reconnect()}catch(e){}
+    });
+  }catch(e){
+    setOnlineState("error","Sitzung konnte nicht erstellt werden.");
+  }
+}
+
+/* ---------- controls ---------- */
+$("standardStartBtn").onclick=()=>{ensureAudio();beginRound()};
+$("withoutPhoneBtn").onclick=hideConnectOverlay;
+$("eventStartBtn").onclick=()=>{ensureAudio();setReady(false);initGame(game?false:true);beginRound()};
+$("finishBtn").onclick=successfulFinish;
+$("jokerBtn").onclick=useJoker;
+$("penaltyFinishBtn").onclick=()=>{stopPenaltyTimer();completeRound()};
+$("doubleNoBtn").onclick=completeRound;
+$("doubleYesBtn").onclick=doubleRisk;
+$("playAgainBtn").onclick=()=>{initGame(true);show("start");restartCountdown()};
+$("backHomeBtn").onclick=()=>{initGame(true);show("start");restartCountdown()};
+$("settingsBtn").onclick=()=>{clearAuto();stopAmbience();syncSettingsUI();$("settingsModal").classList.add("open")};
+$("settingsClose").onclick=()=>{$("settingsModal").classList.remove("open");show("start");restartCountdown()};
+$("hostBtn").onclick=()=>$("hostModal").classList.add("open");
+$("hostClose").onclick=()=>$("hostModal").classList.remove("open");
+$("soundBtn").onclick=()=>{ensureAudio();if(settings.mode==="halloween"&&screens.start.classList.contains("active")&&autoRunning)startAmbience()};
+$("addPlayerBtn").onclick=()=>{captureEditors();settings.players.push({name:"Neuer Spieler",active:true,birthday:false});renderPlayers()};
+$("addChallengeBtn").onclick=()=>{captureEditors();settings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",weight:2});renderChallenges()};
+$("addPenaltyBtn").onclick=()=>{captureEditors();settings.penalties.push({text:"Neue Strafe",seconds:30});renderPenalties()};
+$("saveBtn").onclick=saveSettings;
+document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener("change",()=>{$("settingsCard").classList.toggle("event-settings",r.checked&&r.value!=="standard")}));
+
+$("hostSkipCountdown").onclick=()=>{clearAuto();stopAmbience();setReady(true);$("hostModal").classList.remove("open")};
+$("hostPenalty").onclick=()=>{$("hostModal").classList.remove("open");if(game?.currentPlayer)triggerPenalty()};
+$("hostNext").onclick=()=>{$("hostModal").classList.remove("open");completeRound()};
+$("hostEnd").onclick=()=>{$("hostModal").classList.remove("open");showStats()};
+
+["pointerdown","touchstart","keydown"].forEach(evt=>window.addEventListener(evt,()=>ensureAudio(),{once:true,passive:true}));
+
+load();applyTheme();syncSettingsUI();initGame(true);drawWheel($("doubleWheel"),["DOUBLE WIN","STRAFE"],"double");show("start");createOnlineSession();
+
+})();
+</script>
+</body>
+</html>
