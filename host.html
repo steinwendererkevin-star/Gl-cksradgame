@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080a0f">
-<title>Challenge Roulette Host V14</title>
+<title>Challenge Roulette Host V15</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -59,7 +59,7 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
 .editor-head,.player-row,.challenge-row,.penalty-row{display:grid;align-items:center;gap:6px;margin-bottom:7px}
 .player-row,.editor-head.player{grid-template-columns:minmax(0,1fr) 52px 52px 38px}
 .challenge-row,.editor-head.challenge{grid-template-columns:minmax(0,1fr) 62px 78px 72px 38px}
-.penalty-row,.editor-head.penalty{grid-template-columns:minmax(0,1fr) 70px 38px}
+.penalty-row,.editor-head.penalty{grid-template-columns:minmax(0,1fr) 64px 64px 34px}
 .editor-head{font-size:10px;color:#8f99aa;font-weight:900;padding:0 3px}
 .editor-head span:not(:first-child){text-align:center}
 .row-check{display:grid;place-items:center}.row-check input{width:20px;height:20px;min-height:auto;accent-color:#7659ff}
@@ -73,6 +73,15 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
   .challenge-row,.editor-head.challenge{grid-template-columns:minmax(0,1fr) 55px 70px 66px 34px}
   .player-row,.editor-head.player{grid-template-columns:minmax(0,1fr) 46px 46px 34px}
 }
+
+.chance-grid,.volume-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.percent-field{display:grid;grid-template-columns:minmax(0,1fr) 84px;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.11);border-radius:13px;padding:9px 10px;background:#131925}
+.percent-field span{font-size:12px;font-weight:850;line-height:1.2}
+.percent-field input{text-align:center}
+.mode-extra-title{font-size:14px;font-weight:1000;margin:16px 0 8px}
+.chance-total{text-align:right;color:#8f99aa;font-size:12px;font-weight:900;margin:6px 2px}.chance-total.bad{color:#ff6f85}
+@media(max-width:520px){.chance-grid,.volume-grid{grid-template-columns:1fr}}
+
 </style>
 <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
 </head>
@@ -148,22 +157,54 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
       <div class="time-grid">
         <input id="roundsInput" type="number" min="0" max="99" inputmode="numeric" placeholder="Runden">
         <select id="soundPack"><option value="creepy">Creepy</option><option value="gameshow">Game Show</option><option value="funny">Funny</option><option value="dramatic">Dramatic</option></select>
-        <select id="mysteryChance"><option value="0">Mystery aus</option><option value="5">Mystery 5%</option><option value="10">Mystery 10%</option><option value="20">Mystery 20%</option></select>
+        <input id="mysteryChance" type="number" min="0" max="100" step="1" placeholder="Mystery %">
       </div>
       <span class="help">0 Runden = endlos.</span>
     </div>
 
     <div class="field">
-      <label>Extras</label>
+      <label>Allgemeine Extras</label>
       <div class="switch-grid">
         <label class="switch"><input id="noRepeatPlayer" type="checkbox"><span>Kein Spieler zweimal</span></label>
         <label class="switch"><input id="noRepeatChallenge" type="checkbox"><span>Keine Challenge zweimal</span></label>
         <label class="switch"><input id="doubleEnabled" type="checkbox"><span>Double or Nothing</span></label>
-        <label class="switch"><input id="jumpscareEnabled" type="checkbox"><span>Halloween Jumpscare</span></label>
-        <label class="switch"><input id="fakeCountdownEnabled" type="checkbox"><span>Fake Countdown</span></label>
         <label class="switch"><input id="tvModeEnabled" type="checkbox"><span>TV-Modus</span></label>
         <label class="switch"><input id="hostModeEnabled" type="checkbox"><span>Host-Taste am PC</span></label>
-        <label class="switch"><input id="nightModeEnabled" type="checkbox"><span>Halloween wird dunkler</span></label>
+      </div>
+
+      <div class="mode-extra-title">🎃 Halloween – Seltenheit (%)</div>
+      <div class="chance-grid">
+        <label class="percent-field"><span>🎃 Böses Lachen</span><input id="halloweenLaughChance" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>👹 Jumpscare</span><input id="halloweenJumpscareChance" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>⏱️ Fake Countdown</span><input id="halloweenFakeCountdownChance" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>🌑 Dunkler</span><input id="halloweenDarkChance" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>🌑 Secret Event</span><input id="halloweenSecretChance" type="number" min="0" max="100"></label>
+      </div>
+
+      <div class="mode-extra-title">🎂 Geburtstag – Seltenheit (%)</div>
+      <div class="chance-grid">
+        <label class="percent-field"><span>🎊 Konfettikanonen</span><input id="birthdayConfettiChance" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>🎉 Party-Überraschung</span><input id="birthdayPartyChance" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>🎁 Überraschungsgeschenk</span><input id="birthdayGiftChance" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>⏱️ Fake Countdown</span><input id="birthdayFakeCountdownChance" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>✨ Secret Event</span><input id="birthdaySecretChance" type="number" min="0" max="100"></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>🔊 Sound-Lautstärken (%)</label>
+      <div class="volume-grid">
+        <label class="percent-field"><span>🎵 Creepy Hintergrund</span><input id="musicVolume" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>⏱️ Countdown-Ticken</span><input id="tickVolume" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>❤️ Herzschlag</span><input id="heartbeatVolume" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>🎡 Rad-Drehen</span><input id="wheelVolume" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>✅ Ergebnis</span><input id="resultVolume" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>😈 Strafe</span><input id="penaltyVolume" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>👹 Jumpscare</span><input id="jumpscareVolume" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>🎃 Böses Lachen</span><input id="evilLaughVolume" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>🎊 Konfettischuss</span><input id="confettiVolume" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>🎉 Party</span><input id="partyVolume" type="number" min="0" max="100"></label>
+        <label class="percent-field"><span>🎁 Geschenk</span><input id="giftVolume" type="number" min="0" max="100"></label>
       </div>
     </div>
 
@@ -176,15 +217,17 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
 
     <div class="field">
       <label>Challenges</label>
-      <div class="editor-head challenge"><span>Challenge</span><span>Zeit</span><span>Schwere</span><span>Chance</span><span></span></div>
+      <div class="editor-head challenge"><span>Challenge</span><span>Zeit</span><span>Schwere</span><span>Chance %</span><span></span></div>
       <div id="challengeEditor"></div>
+      <div id="challengeChanceTotal" class="chance-total">Gesamt: 100%</div>
       <button id="addChallengeBtn" class="add" type="button">+ Challenge hinzufügen</button>
     </div>
 
     <div class="field">
       <label>Strafen</label>
-      <div class="editor-head penalty"><span>Strafe</span><span>Zeit</span><span></span></div>
+      <div class="editor-head penalty"><span>Strafe</span><span>Zeit</span><span>Chance %</span><span></span></div>
       <div id="penaltyEditor"></div>
+      <div id="penaltyChanceTotal" class="chance-total">Gesamt: 100%</div>
       <button id="addPenaltyBtn" class="add" type="button">+ Strafe hinzufügen</button>
     </div>
 
@@ -202,6 +245,8 @@ const gamePeer=qs.get("peer"),token=qs.get("token");
 let peer=null,conn=null,currentSettings=null;
 
 function clamp(n,a,b){n=Number(n);return Number.isFinite(n)?Math.max(a,Math.min(b,n)):a}
+function pct(v){return clamp(v,0,100)}
+function totalChance(list){return Math.round((list||[]).reduce((s,x)=>s+(Number(x.chance)||0),0)*100)/100}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function status(ok,text){
   const s=$("status");s.classList.toggle("ok",!!ok);s.classList.toggle("bad",ok===false);
@@ -255,50 +300,67 @@ function renderPlayers(){
     root.appendChild(row)
   });
 }
+function updateChanceTotals(){
+  const ct=$("challengeChanceTotal"),pt=$("penaltyChanceTotal");
+  if(ct){const t=totalChance(currentSettings.challenges);ct.textContent=`Gesamt: ${t}%`;ct.classList.toggle("bad",Math.abs(t-100)>.01)}
+  if(pt){const t=totalChance(currentSettings.penalties);pt.textContent=`Gesamt: ${t}%`;pt.classList.toggle("bad",Math.abs(t-100)>.01)}
+}
 function renderChallenges(){
   const root=$("challengeEditor");root.innerHTML="";
   (currentSettings.challenges||[]).forEach((c,i)=>{
     const row=document.createElement("div");row.className="challenge-row";
-    row.innerHTML=`<input class="c-text" value="${esc(c.text)}"><input class="c-sec" type="number" min="1" max="3600" value="${c.seconds}"><select class="c-diff"><option value="leicht">Leicht</option><option value="mittel">Mittel</option><option value="schwer">Schwer</option></select><select class="c-weight"><option value="1">Selten</option><option value="2">Normal</option><option value="3">Häufig</option><option value="5">Sehr oft</option></select><button class="remove" type="button">×</button>`;
-    row.querySelector(".c-diff").value=c.difficulty;row.querySelector(".c-weight").value=String(c.weight);
+    row.innerHTML=`<input class="c-text" value="${esc(c.text)}"><input class="c-sec" type="number" min="1" max="3600" value="${c.seconds}"><select class="c-diff"><option value="leicht">Leicht</option><option value="mittel">Mittel</option><option value="schwer">Schwer</option></select><input class="c-chance" type="number" min="0" max="100" step="0.1" value="${c.chance}"><button class="remove" type="button">×</button>`;
+    row.querySelector(".c-diff").value=c.difficulty;
+    row.querySelector(".c-chance").addEventListener("input",()=>{captureEditors();updateChanceTotals()});
     row.querySelector(".remove").onclick=()=>{captureEditors();currentSettings.challenges.splice(i,1);renderChallenges()};
     root.appendChild(row)
   });
+  updateChanceTotals();
 }
 function renderPenalties(){
   const root=$("penaltyEditor");root.innerHTML="";
   (currentSettings.penalties||[]).forEach((p,i)=>{
     const row=document.createElement("div");row.className="penalty-row";
-    row.innerHTML=`<input class="r-text" value="${esc(p.text)}"><input class="r-sec" type="number" min="1" max="3600" value="${p.seconds}"><button class="remove" type="button">×</button>`;
+    row.innerHTML=`<input class="r-text" value="${esc(p.text)}"><input class="r-sec" type="number" min="1" max="3600" value="${p.seconds}"><input class="r-chance" type="number" min="0" max="100" step="0.1" value="${p.chance}"><button class="remove" type="button">×</button>`;
+    row.querySelector(".r-chance").addEventListener("input",()=>{captureEditors();updateChanceTotals()});
     row.querySelector(".remove").onclick=()=>{captureEditors();currentSettings.penalties.splice(i,1);renderPenalties()};
     root.appendChild(row)
   });
+  updateChanceTotals();
 }
 function captureEditors(){
   currentSettings.players=[...document.querySelectorAll(".player-row")].map(r=>({name:r.querySelector(".p-name").value.trim(),active:r.querySelector(".p-active").checked,birthday:r.querySelector(".p-bday").checked})).filter(p=>p.name);
-  currentSettings.challenges=[...document.querySelectorAll(".challenge-row")].map(r=>({text:r.querySelector(".c-text").value.trim(),seconds:clamp(r.querySelector(".c-sec").value,1,3600),difficulty:r.querySelector(".c-diff").value,weight:clamp(r.querySelector(".c-weight").value,1,5)})).filter(c=>c.text);
-  currentSettings.penalties=[...document.querySelectorAll(".penalty-row")].map(r=>({text:r.querySelector(".r-text").value.trim(),seconds:clamp(r.querySelector(".r-sec").value,1,3600)})).filter(p=>p.text);
+  currentSettings.challenges=[...document.querySelectorAll(".challenge-row")].map(r=>({text:r.querySelector(".c-text").value.trim(),seconds:clamp(r.querySelector(".c-sec").value,1,3600),difficulty:r.querySelector(".c-diff").value,chance:Math.round(pct(r.querySelector(".c-chance").value)*10)/10})).filter(c=>c.text);
+  currentSettings.penalties=[...document.querySelectorAll(".penalty-row")].map(r=>({text:r.querySelector(".r-text").value.trim(),seconds:clamp(r.querySelector(".r-sec").value,1,3600),chance:Math.round(pct(r.querySelector(".r-chance").value)*10)/10})).filter(p=>p.text);
 }
 function fillSettings(){
   if(!currentSettings)return;
   const m=document.querySelector(`input[name="mode"][value="${currentSettings.mode}"]`);if(m)m.checked=true;
   $("hoursInput").value=currentSettings.hours||0;$("minutesInput").value=currentSettings.minutes||0;$("secondsInput").value=currentSettings.seconds||0;$("roundsInput").value=currentSettings.rounds||0;
   $("soundPack").value=currentSettings.soundPack||"creepy";
-  const mystery=String(currentSettings.mysteryChance??5);$("mysteryChance").value=[...$("mysteryChance").options].some(o=>o.value===mystery)?mystery:"5";
+  $("mysteryChance").value=String(currentSettings.mysteryChance??5);
   $("noRepeatPlayer").checked=!!currentSettings.noRepeatPlayer;$("noRepeatChallenge").checked=!!currentSettings.noRepeatChallenge;$("doubleEnabled").checked=!!currentSettings.doubleEnabled;
-  $("jumpscareEnabled").checked=!!currentSettings.jumpscareEnabled;$("fakeCountdownEnabled").checked=!!currentSettings.fakeCountdownEnabled;$("tvModeEnabled").checked=!!currentSettings.tvMode;
-  $("hostModeEnabled").checked=!!currentSettings.hostMode;$("nightModeEnabled").checked=!!currentSettings.nightMode;
+  $("tvModeEnabled").checked=!!currentSettings.tvMode;$("hostModeEnabled").checked=!!currentSettings.hostMode;
+
+  ["halloweenLaughChance","halloweenJumpscareChance","halloweenFakeCountdownChance","halloweenDarkChance","halloweenSecretChance",
+   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayFakeCountdownChance","birthdaySecretChance",
+   "musicVolume","tickVolume","heartbeatVolume","wheelVolume","resultVolume","penaltyVolume","jumpscareVolume","evilLaughVolume","confettiVolume","partyVolume","giftVolume"
+  ].forEach(k=>{if($(k))$(k).value=currentSettings[k]??0});
+
   renderPlayers();renderChallenges();renderPenalties();
 }
 function collectSettings(){
   captureEditors();
-  const mode=document.querySelector('input[name="mode"]:checked');
-  if(mode)currentSettings.mode=mode.value;
+  const mode=document.querySelector('input[name="mode"]:checked');if(mode)currentSettings.mode=mode.value;
   currentSettings.hours=clamp($("hoursInput").value,0,99);currentSettings.minutes=clamp($("minutesInput").value,0,59);currentSettings.seconds=clamp($("secondsInput").value,0,59);currentSettings.rounds=clamp($("roundsInput").value,0,99);
-  currentSettings.soundPack=$("soundPack").value;currentSettings.mysteryChance=clamp($("mysteryChance").value,0,100);
+  currentSettings.soundPack=$("soundPack").value;currentSettings.mysteryChance=pct($("mysteryChance").value);
   currentSettings.noRepeatPlayer=$("noRepeatPlayer").checked;currentSettings.noRepeatChallenge=$("noRepeatChallenge").checked;currentSettings.doubleEnabled=$("doubleEnabled").checked;
-  currentSettings.jumpscareEnabled=$("jumpscareEnabled").checked;currentSettings.fakeCountdownEnabled=$("fakeCountdownEnabled").checked;currentSettings.tvMode=$("tvModeEnabled").checked;
-  currentSettings.hostMode=$("hostModeEnabled").checked;currentSettings.nightMode=$("nightModeEnabled").checked;
+  currentSettings.tvMode=$("tvModeEnabled").checked;currentSettings.hostMode=$("hostModeEnabled").checked;
+
+  ["halloweenLaughChance","halloweenJumpscareChance","halloweenFakeCountdownChance","halloweenDarkChance","halloweenSecretChance",
+   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayFakeCountdownChance","birthdaySecretChance",
+   "musicVolume","tickVolume","heartbeatVolume","wheelVolume","resultVolume","penaltyVolume","jumpscareVolume","evilLaughVolume","confettiVolume","partyVolume","giftVolume"
+  ].forEach(k=>currentSettings[k]=pct($(k).value));
 }
 function openSettings(){
   if(!conn||!conn.open)return;
@@ -311,6 +373,9 @@ function saveSettings(){
   collectSettings();
   if(!currentSettings.players.some(p=>p.active)){alert("Mindestens ein Spieler muss aktiv sein.");return}
   if(!currentSettings.challenges.length){alert("Mindestens eine Challenge eintragen.");return}
+  if(Math.abs(totalChance(currentSettings.challenges)-100)>.01){alert("Die Challenge-Chancen müssen zusammen genau 100% ergeben.");return}
+  if(!currentSettings.penalties.length){alert("Mindestens eine Strafe eintragen.");return}
+  if(Math.abs(totalChance(currentSettings.penalties)-100)>.01){alert("Die Straf-Chancen müssen zusammen genau 100% ergeben.");return}
   $("saveState").textContent="Wird auf PC gespeichert …";
   conn.send({type:"save_settings",settings:currentSettings});
 }
@@ -321,8 +386,8 @@ $("restartBtn").onclick=()=>{if(confirm("Spiel wirklich neu starten?"))sendComma
 $("endBtn").onclick=()=>{if(confirm("Spiel beenden und Statistik anzeigen?"))sendCommand("end")};
 $("settingsBtn").onclick=openSettings;$("settingsClose").onclick=()=>$("settingsModal").classList.remove("open");$("saveSettingsBtn").onclick=saveSettings;
 $("addPlayerBtn").onclick=()=>{captureEditors();currentSettings.players.push({name:"Neuer Spieler",active:true,birthday:false});renderPlayers()};
-$("addChallengeBtn").onclick=()=>{captureEditors();currentSettings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",weight:2});renderChallenges()};
-$("addPenaltyBtn").onclick=()=>{captureEditors();currentSettings.penalties.push({text:"Neue Strafe",seconds:30});renderPenalties()};
+$("addChallengeBtn").onclick=()=>{captureEditors();currentSettings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",chance:0});renderChallenges()};
+$("addPenaltyBtn").onclick=()=>{captureEditors();currentSettings.penalties.push({text:"Neue Strafe",seconds:30,chance:0});renderPenalties()};
 
 connect();
 })();

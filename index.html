@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V14 Online Host</title>
+<title>Challenge Roulette V15 Online Host</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -124,10 +124,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 .editor-head,.player-row,.challenge-row,.penalty-row{display:grid;align-items:center;gap:7px;margin-bottom:7px}
 .player-row{grid-template-columns:minmax(0,1fr) 58px 58px 40px}
 .challenge-row{grid-template-columns:minmax(0,1fr) 72px 92px 78px 40px}
-.penalty-row{grid-template-columns:minmax(0,1fr) 82px 40px}
+.penalty-row{grid-template-columns:minmax(0,1fr) 82px 82px 40px}
 .editor-head.player{grid-template-columns:minmax(0,1fr) 58px 58px 40px}
 .editor-head.challenge{grid-template-columns:minmax(0,1fr) 72px 92px 78px 40px}
-.editor-head.penalty{grid-template-columns:minmax(0,1fr) 82px 40px}
+.editor-head.penalty{grid-template-columns:minmax(0,1fr) 82px 82px 40px}
 .editor-head{font-size:11px;color:var(--muted);font-weight:900;padding:0 4px}
 .editor-head span:not(:first-child){text-align:center}
 .row-check{display:grid;place-items:center}
@@ -154,7 +154,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 .tv-mode .big-text{font-size:clamp(30px,6vw,54px)}
 @media(max-width:700px){
   .challenge-row{grid-template-columns:minmax(0,1fr) 62px 76px 68px 36px}
-  .penalty-row{grid-template-columns:minmax(0,1fr) 70px 36px}
+  .penalty-row{grid-template-columns:minmax(0,1fr) 64px 64px 36px}
   .player-row{grid-template-columns:minmax(0,1fr) 52px 52px 36px}
   .challenge-row input,.challenge-row select,.penalty-row input,.player-row input{padding:8px 7px;font-size:13px}
   .switch-grid{grid-template-columns:1fr}
@@ -202,6 +202,38 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
   backdrop-filter:blur(12px);font-size:11px;font-weight:900;color:#cfd6e2
 }
 .remote-pill.show{display:flex}.remote-pill .dot{width:8px;height:8px;border-radius:50%;background:#38df82}
+
+
+.chance-grid,.volume-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.percent-field{display:grid;grid-template-columns:minmax(0,1fr) 92px;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:10px 11px;background:rgba(255,255,255,.035)}
+.percent-field span{font-size:13px;font-weight:850;line-height:1.2}
+.percent-field input{min-width:0;text-align:center}
+.mode-extra-title{margin:18px 0 8px;font-weight:1000;font-size:15px}
+.chance-total{display:flex;justify-content:flex-end;margin-top:7px;color:var(--muted);font-size:12px;font-weight:900}
+.chance-total.bad{color:#ff6f85}
+.fx-overlay{position:fixed;inset:0;z-index:360;pointer-events:none;display:none;overflow:hidden}
+.fx-overlay.show{display:block}
+.cannon{position:absolute;bottom:3%;font-size:clamp(60px,13vw,115px);filter:drop-shadow(0 10px 18px rgba(0,0,0,.4))}
+.cannon.left{left:2%;transform:rotate(27deg)}
+.cannon.right{right:2%;transform:scaleX(-1) rotate(27deg)}
+.fx-overlay.show .cannon.left{animation:cannonKickL .7s ease both}
+.fx-overlay.show .cannon.right{animation:cannonKickR .7s ease both}
+@keyframes cannonKickL{0%{transform:rotate(27deg) translateY(30px)}35%{transform:rotate(12deg) translateY(-7px)}100%{transform:rotate(27deg)}}
+@keyframes cannonKickR{0%{transform:scaleX(-1) rotate(27deg) translateY(30px)}35%{transform:scaleX(-1) rotate(12deg) translateY(-7px)}100%{transform:scaleX(-1) rotate(27deg)}}
+.fx-title{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);font-size:clamp(36px,10vw,92px);font-weight:1000;text-align:center;text-shadow:0 8px 30px rgba(0,0,0,.55);opacity:0}
+.fx-overlay.show .fx-title{animation:fxTitle 1.25s ease both}
+@keyframes fxTitle{0%{opacity:0;transform:translate(-50%,-50%) scale(.65)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-56%) scale(1)}}
+.pumpkin-laugh{position:fixed;inset:0;z-index:370;pointer-events:none;display:none;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(255,91,0,.18),rgba(0,0,0,.78))}
+.pumpkin-laugh.show{display:flex}
+.laugh-pumpkin{font-size:min(52vw,330px);filter:drop-shadow(0 0 55px rgba(255,91,0,.55))}
+.pumpkin-laugh.show .laugh-pumpkin{animation:pumpkinLaugh .95s ease-in-out 2}
+@keyframes pumpkinLaugh{0%,100%{transform:scale(.9) rotate(-5deg)}25%{transform:scale(1.12) rotate(6deg)}50%{transform:scale(.96) rotate(-7deg)}75%{transform:scale(1.1) rotate(5deg)}}
+.laugh-text{position:absolute;top:13%;font-size:clamp(35px,9vw,86px);font-weight:1000;letter-spacing:.08em;color:#ff7b16;text-shadow:0 0 26px rgba(255,94,0,.75)}
+.party-surprise{position:fixed;inset:0;z-index:365;pointer-events:none;display:none;align-items:center;justify-content:center;background:rgba(40,8,72,.38)}
+.party-surprise.show{display:flex}
+.party-surprise .party-word{font-size:clamp(42px,12vw,105px);font-weight:1000;text-align:center;text-shadow:0 10px 32px rgba(0,0,0,.6);animation:partyPop 1.2s ease both}
+@keyframes partyPop{0%{opacity:0;transform:scale(.45) rotate(-8deg)}25%{opacity:1;transform:scale(1.15) rotate(4deg)}70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.9) translateY(-30px)}}
+@media(max-width:700px){.chance-grid,.volume-grid{grid-template-columns:1fr}}
 
 </style>
 </head>
@@ -350,6 +382,16 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 <div id="flash" class="flash"></div>
 <div id="jumpscare" class="jumpscare">👹</div>
 
+<div id="birthdayNameFx" class="fx-overlay">
+  <div class="cannon left">🎊</div><div class="cannon right">🎊</div>
+  <div class="fx-title">🎉 <span id="birthdayFxName"></span> 🎉</div>
+</div>
+<div id="pumpkinLaughFx" class="pumpkin-laugh">
+  <div class="laugh-text">HA HA HA!</div><div class="laugh-pumpkin">🎃</div>
+</div>
+<div id="partySurpriseFx" class="party-surprise"><div class="party-word">🎉 PARTY SURPRISE! 🎉</div></div>
+
+
 <div id="settingsModal" class="modal">
   <div id="settingsCard" class="modal-card">
     <div class="modal-head"><h2>⚙️ Einstellungen</h2><button id="settingsClose" class="close" type="button">×</button></div>
@@ -383,27 +425,55 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
           <option value="funny">Funny</option>
           <option value="dramatic">Dramatic</option>
         </select>
-        <select id="mysteryChance">
-          <option value="0">Mystery aus</option>
-          <option value="5">Mystery 5%</option>
-          <option value="10">Mystery 10%</option>
-          <option value="20">Mystery 20%</option>
-        </select>
+        <input id="mysteryChance" type="number" min="0" max="100" step="1" placeholder="Mystery %">
       </div>
       <span class="help">0 Runden = endlos. Boss-Challenge kommt standardmäßig jede 5. Runde.</span>
     </div>
 
     <div class="field">
-      <label>Extras</label>
+      <label>Allgemeine Extras</label>
       <div class="switch-grid">
         <label class="switch"><input id="noRepeatPlayer" type="checkbox"><span>Kein Spieler zweimal</span></label>
         <label class="switch"><input id="noRepeatChallenge" type="checkbox"><span>Keine Challenge zweimal</span></label>
         <label class="switch"><input id="doubleEnabled" type="checkbox"><span>Double or Nothing</span></label>
-        <label class="switch"><input id="jumpscareEnabled" type="checkbox"><span>Halloween Jumpscare</span></label>
-        <label class="switch"><input id="fakeCountdownEnabled" type="checkbox"><span>Fake Countdown</span></label>
         <label class="switch"><input id="tvModeEnabled" type="checkbox"><span>TV-Modus</span></label>
         <label class="switch"><input id="hostModeEnabled" type="checkbox"><span>Host-Steuerung</span></label>
-        <label class="switch"><input id="nightModeEnabled" type="checkbox"><span>Halloween wird dunkler</span></label>
+      </div>
+
+      <div class="mode-extra-title">🎃 Halloween – Seltenheit pro Extra</div>
+      <div class="chance-grid">
+        <label class="percent-field"><span>🎃 Böses Lachen beim Namen</span><input id="halloweenLaughChance" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>👹 Jumpscare bei Niederlage</span><input id="halloweenJumpscareChance" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>⏱️ Fake Countdown</span><input id="halloweenFakeCountdownChance" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>🌑 Runde wird dunkler</span><input id="halloweenDarkChance" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>🌑 Secret Event</span><input id="halloweenSecretChance" type="number" min="0" max="100" step="1"></label>
+      </div>
+
+      <div class="mode-extra-title">🎂 Geburtstag – Seltenheit pro Extra</div>
+      <div class="chance-grid">
+        <label class="percent-field"><span>🎊 Konfettikanonen beim Namen</span><input id="birthdayConfettiChance" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>🎉 Party-Überraschung</span><input id="birthdayPartyChance" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>🎁 Überraschungsgeschenk</span><input id="birthdayGiftChance" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>⏱️ Fake Countdown</span><input id="birthdayFakeCountdownChance" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>✨ Secret Event</span><input id="birthdaySecretChance" type="number" min="0" max="100" step="1"></label>
+      </div>
+      <span class="help">0% = aus, 100% = jedes Mal. Alle Werte sind frei eintippbar.</span>
+    </div>
+
+    <div class="field">
+      <label>🔊 Sound-Lautstärken (%)</label>
+      <div class="volume-grid">
+        <label class="percent-field"><span>🎵 Creepy Hintergrund</span><input id="musicVolume" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>⏱️ Countdown-Ticken</span><input id="tickVolume" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>❤️ Herzschlag</span><input id="heartbeatVolume" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>🎡 Rad-Drehen</span><input id="wheelVolume" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>✅ Ergebnis-Sound</span><input id="resultVolume" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>😈 Straf-Sound</span><input id="penaltyVolume" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>👹 Jumpscare-Sound</span><input id="jumpscareVolume" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>🎃 Böses Lachen</span><input id="evilLaughVolume" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>🎊 Konfettischuss</span><input id="confettiVolume" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>🎉 Party-Überraschung</span><input id="partyVolume" type="number" min="0" max="100" step="1"></label>
+        <label class="percent-field"><span>🎁 Geschenk-Sound</span><input id="giftVolume" type="number" min="0" max="100" step="1"></label>
       </div>
     </div>
 
@@ -417,16 +487,20 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 
     <div class="field">
       <label>Challenges</label>
-      <div class="editor-head challenge"><span>Challenge</span><span>Zeit</span><span>Schwere</span><span>Chance</span><span></span></div>
+      <div class="editor-head challenge"><span>Challenge</span><span>Zeit</span><span>Schwere</span><span>Chance %</span><span></span></div>
       <div id="challengeEditor"></div>
+      <div id="challengeChanceTotal" class="chance-total">Gesamt: 100%</div>
       <button id="addChallengeBtn" class="add" type="button">+ Challenge hinzufügen</button>
+      <span class="help">Die Challenge-Chancen müssen zusammen 100% ergeben.</span>
     </div>
 
-    <div class="field event-only">
-      <label>Strafen</label>
-      <div class="editor-head penalty"><span>Strafe</span><span>Zeit</span><span></span></div>
+    <div class="field">
+      <label>Strafen – in allen Modi</label>
+      <div class="editor-head penalty"><span>Strafe</span><span>Zeit</span><span>Chance %</span><span></span></div>
       <div id="penaltyEditor"></div>
+      <div id="penaltyChanceTotal" class="chance-total">Gesamt: 100%</div>
       <button id="addPenaltyBtn" class="add" type="button">+ Strafe hinzufügen</button>
+      <span class="help">Die Straf-Chancen müssen zusammen 100% ergeben.</span>
     </div>
 
     <button id="saveBtn" class="save" type="button">SPEICHERN</button>
@@ -461,8 +535,14 @@ const screens={
 let settings={
   mode:"standard",hours:0,minutes:0,seconds:30,rounds:10,
   soundPack:"creepy",mysteryChance:5,
-  noRepeatPlayer:true,noRepeatChallenge:true,doubleEnabled:true,jumpscareEnabled:true,
-  fakeCountdownEnabled:false,tvMode:false,hostMode:false,nightMode:true,
+  noRepeatPlayer:true,noRepeatChallenge:true,doubleEnabled:true,tvMode:false,hostMode:false,
+
+  halloweenLaughChance:100,halloweenJumpscareChance:18,halloweenFakeCountdownChance:12,halloweenDarkChance:100,halloweenSecretChance:1,
+  birthdayConfettiChance:100,birthdayPartyChance:12,birthdayGiftChance:8,birthdayFakeCountdownChance:8,birthdaySecretChance:1,
+
+  musicVolume:55,tickVolume:70,heartbeatVolume:70,wheelVolume:70,resultVolume:70,penaltyVolume:75,
+  jumpscareVolume:85,evilLaughVolume:75,confettiVolume:80,partyVolume:75,giftVolume:70,
+
   players:[
     {name:"Kevin",active:true,birthday:false},
     {name:"Elias",active:true,birthday:false},
@@ -470,20 +550,20 @@ let settings={
     {name:"Florian",active:true,birthday:false}
   ],
   challenges:[
-    {text:"20 Liegestütze",seconds:45,difficulty:"mittel",weight:2},
-    {text:"1 Minute Plank",seconds:60,difficulty:"schwer",weight:1},
-    {text:"30 Kniebeugen",seconds:60,difficulty:"mittel",weight:2},
-    {text:"10 Burpees",seconds:45,difficulty:"schwer",weight:1},
-    {text:"5-mal Fußball jonglieren",seconds:30,difficulty:"leicht",weight:3},
-    {text:"30 Sekunden Zombie-Walk",seconds:30,difficulty:"leicht",weight:3}
+    {text:"20 Liegestütze",seconds:45,difficulty:"mittel",chance:18},
+    {text:"1 Minute Plank",seconds:60,difficulty:"schwer",chance:12},
+    {text:"30 Kniebeugen",seconds:60,difficulty:"mittel",chance:18},
+    {text:"10 Burpees",seconds:45,difficulty:"schwer",chance:12},
+    {text:"5-mal Fußball jonglieren",seconds:30,difficulty:"leicht",chance:20},
+    {text:"30 Sekunden Zombie-Walk",seconds:30,difficulty:"leicht",chance:20}
   ],
   penalties:[
-    {text:"10 Hampelmänner",seconds:30},
-    {text:"20 Sekunden Plank",seconds:20},
-    {text:"10 Kniebeugen extra",seconds:30},
-    {text:"30 Sekunden Zombie-Tanz",seconds:30},
-    {text:"Wie ein Werwolf heulen",seconds:20},
-    {text:"Ein Kinderlied in Horror-Stimme singen",seconds:45}
+    {text:"10 Hampelmänner",seconds:30,chance:18},
+    {text:"20 Sekunden Plank",seconds:20,chance:16},
+    {text:"10 Kniebeugen extra",seconds:30,chance:18},
+    {text:"30 Sekunden Zombie-Tanz",seconds:30,chance:16},
+    {text:"Wie ein Werwolf heulen",seconds:20,chance:16},
+    {text:"Ein Kinderlied in Horror-Stimme singen",seconds:45,chance:16}
   ]
 };
 
@@ -501,25 +581,70 @@ function chance(p){return Math.random()*100<p}
 function formatTime(sec){sec=Math.max(0,Math.ceil(sec));const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;return h?`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`}
 function activePlayers(){return settings.players.filter(p=>p.active&&p.name.trim())}
 function playerState(name){return game?.players[name]||null}
+function pct(v){return clamp(v,0,100)}
+function vol(key){return pct(settings[key]??100)/100}
+function weightedIndex(list,key="chance"){
+  const weights=list.map(x=>Math.max(0,Number(x[key])||0)),sum=weights.reduce((a,b)=>a+b,0);
+  if(sum<=0)return rand(list.length);
+  let r=Math.random()*sum;
+  for(let i=0;i<weights.length;i++){r-=weights[i];if(r<=0)return i}
+  return Math.max(0,list.length-1);
+}
+function normalizedLegacy(items,kind){
+  if(!items.length)return items;
+  if(items.some(x=>Number.isFinite(Number(x.chance)))){
+    return items.map(x=>({...x,chance:pct(x.chance)}));
+  }
+  const weights=items.map(x=>kind==="challenge"?Math.max(1,Number(x.weight)||1):1);
+  const total=weights.reduce((a,b)=>a+b,0)||1;
+  let used=0;
+  return items.map((x,i)=>{
+    let c=i===items.length-1?100-used:Math.round((weights[i]/total)*1000)/10;
+    used+=c;
+    return {...x,chance:Math.max(0,c)};
+  });
+}
+function totalChance(list){return Math.round(list.reduce((s,x)=>s+(Number(x.chance)||0),0)*100)/100}
+
 
 function load(){
   try{
-    const raw=localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
+    const raw=localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
     if(!raw)return;
     const s=JSON.parse(raw);
     if(!s)return;
     settings={...settings,...s};
+
+    // migrate old boolean Halloween settings into percentages
+    if(typeof s.jumpscareEnabled==="boolean" && s.halloweenJumpscareChance==null)settings.halloweenJumpscareChance=s.jumpscareEnabled?18:0;
+    if(typeof s.fakeCountdownEnabled==="boolean"){
+      if(s.halloweenFakeCountdownChance==null)settings.halloweenFakeCountdownChance=s.fakeCountdownEnabled?12:0;
+      if(s.birthdayFakeCountdownChance==null)settings.birthdayFakeCountdownChance=s.fakeCountdownEnabled?8:0;
+    }
+    if(typeof s.nightMode==="boolean" && s.halloweenDarkChance==null)settings.halloweenDarkChance=s.nightMode?100:0;
+
     if(Array.isArray(s.players))settings.players=s.players;
     else if(Array.isArray(s.names))settings.players=s.names.map(n=>({name:String(n),active:true,birthday:false}));
-    if(Array.isArray(s.challenges))settings.challenges=s.challenges.map(c=>typeof c==="string"?{text:c,seconds:60,difficulty:"mittel",weight:2}:{text:String(c.text||"Challenge"),seconds:clamp(c.seconds||60,1,3600),difficulty:c.difficulty||"mittel",weight:clamp(c.weight||2,1,5)});
-    if(Array.isArray(s.penalties))settings.penalties=s.penalties.map(p=>typeof p==="string"?{text:p,seconds:30}:{text:String(p.text||"Strafe"),seconds:clamp(p.seconds||30,1,3600)});
+
+    if(Array.isArray(s.challenges)){
+      let arr=s.challenges.map(c=>typeof c==="string"
+        ?{text:c,seconds:60,difficulty:"mittel",chance:0}
+        :{text:String(c.text||"Challenge"),seconds:clamp(c.seconds||60,1,3600),difficulty:c.difficulty||"mittel",weight:c.weight,chance:c.chance});
+      settings.challenges=normalizedLegacy(arr,"challenge");
+    }
+    if(Array.isArray(s.penalties)){
+      let arr=s.penalties.map(p=>typeof p==="string"
+        ?{text:p,seconds:30,chance:0}
+        :{text:String(p.text||"Strafe"),seconds:clamp(p.seconds||30,1,3600),chance:p.chance});
+      settings.penalties=normalizedLegacy(arr,"penalty");
+    }
   }catch(e){}
 }
-function save(){try{localStorage.setItem("challengeRouletteSettingsV11",JSON.stringify(settings))}catch(e){}}
+function save(){try{localStorage.setItem("challengeRouletteSettingsV15",JSON.stringify(settings))}catch(e){}}
 
 function initGame(reset=true){
   if(!reset&&game)return;
-  game={round:1,lastPlayer:null,lastChallenge:null,currentPlayer:null,currentChallenge:null,currentPenalty:null,boss:false,doubleChallenge:false,allPlayers:false,secretEvent:false,
+  game={round:1,lastPlayer:null,lastChallenge:null,currentPlayer:null,currentChallenge:null,currentPenalty:null,boss:false,doubleChallenge:false,allPlayers:false,secretEvent:false,darkLevel:0,
     players:{}
   };
   activePlayers().forEach(p=>game.players[p.name]={points:0,success:0,fails:0,penalties:0,streak:0,maxStreak:0,picks:0,joker:1});
@@ -528,7 +653,7 @@ function initGame(reset=true){
 function updateRoundUI(){
   const total=settings.rounds>0?` / ${settings.rounds}`:"";
   ["roundPill1","roundPill2","roundPill3"].forEach(id=>$(id).textContent=`RUNDE ${game?.round||1}${total}`);
-  const factor=(settings.mode==="halloween"&&settings.nightMode)?Math.min(.38,((game?.round||1)-1)*.035):0;
+  const factor=settings.mode==="halloween"?Math.min(.42,game?.darkLevel||0):0;
   document.documentElement.style.setProperty("--night",factor);
 }
 function show(name){
@@ -558,26 +683,36 @@ function colorFor(i,total,kind="normal"){
   const hue=(250+i*(330/Math.max(1,total)))%360;return`hsl(${hue} 82% ${i%2?49:56}%)`;
 }
 function drawWheel(canvas,items,kind="normal"){
-  const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=w*.47,count=Math.max(1,items.length),slice=Math.PI*2/count;
+  return drawWeightedWheel(canvas,items,items.map(()=>1),kind);
+}
+function drawWeightedWheel(canvas,items,weights,kind="normal"){
+  const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=w*.47,count=Math.max(1,items.length);
+  let safe=weights.map(x=>Math.max(0,Number(x)||0)),sum=safe.reduce((a,b)=>a+b,0);
+  if(sum<=0){safe=items.map(()=>1);sum=safe.length||1}
   ctx.clearRect(0,0,w,h);
+  let acc=0;
   items.forEach((txt,i)=>{
-    const start=-Math.PI/2+i*slice,end=start+slice;
+    const slice=Math.PI*2*(safe[i]/sum),start=-Math.PI/2+acc,end=start+slice;acc+=slice;
+    if(slice<=0)return;
     ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();ctx.fillStyle=colorFor(i,count,kind);ctx.fill();
     ctx.save();ctx.translate(cx,cy);ctx.rotate(start+slice/2);ctx.textAlign="right";ctx.textBaseline="middle";ctx.fillStyle="#fff";
-    ctx.font=`800 ${Math.max(22,Math.min(40,310/count+18))}px system-ui`;ctx.shadowColor="rgba(0,0,0,.42)";ctx.shadowBlur=8;
-    let label=String(txt);const max=count>8?15:22;if(label.length>max)label=label.slice(0,max-1)+"…";
+    ctx.font=`800 ${Math.max(20,Math.min(38,300/count+17))}px system-ui`;ctx.shadowColor="rgba(0,0,0,.42)";ctx.shadowBlur=8;
+    let label=String(txt);const max=count>8?14:21;if(label.length>max)label=label.slice(0,max-1)+"…";
     ctx.fillText(label,r-42,0);ctx.restore();
   });
   ctx.beginPath();ctx.arc(cx,cy,r*.19,0,Math.PI*2);ctx.fillStyle=settings.mode==="halloween"?"#180905":settings.mode==="birthday"?"#21103e":"#0f1320";ctx.fill();
   ctx.lineWidth=9;ctx.strokeStyle="rgba(255,255,255,.92)";ctx.stroke();
   ctx.beginPath();ctx.arc(cx,cy,r*.055,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();
 }
-function weightedChallengeIndex(list){
-  const weights=list.map(c=>Math.max(1,Number(c.weight)||1)),sum=weights.reduce((a,b)=>a+b,0);
-  let r=Math.random()*sum;for(let i=0;i<list.length;i++){r-=weights[i];if(r<=0)return i}return list.length-1;
-}
 function spin(canvas,count,rotation,idx,cb){
-  const slice=360/count,turns=7+rand(3),cur=((rotation%360)+360)%360,targetBase=-((idx+.5)*slice);
+  return spinWeighted(canvas,new Array(count).fill(1),rotation,idx,cb);
+}
+function spinWeighted(canvas,weights,rotation,idx,cb){
+  let safe=weights.map(x=>Math.max(0,Number(x)||0)),sum=safe.reduce((a,b)=>a+b,0);
+  if(sum<=0){safe=weights.map(()=>1);sum=safe.length||1}
+  let before=0;for(let i=0;i<idx;i++)before+=safe[i];
+  const midpoint=(before+safe[idx]/2)/sum*360;
+  const turns=7+rand(3),cur=((rotation%360)+360)%360,targetBase=-midpoint;
   const target=rotation+turns*360+((targetBase-cur+360)%360);
   startWheelClicks(5300);
   canvas.style.transition="transform 5.3s cubic-bezier(.08,.74,.08,1)";
@@ -593,7 +728,7 @@ function pickPlayer(){
   return arr[rand(arr.length)];
 }
 function eligibleChallenges(){
-  let arr=settings.challenges.filter(c=>c.text.trim());
+  let arr=settings.challenges.filter(c=>c.text.trim()&&(Number(c.chance)||0)>0);
   if(game.boss){
     const hard=arr.filter(c=>c.difficulty==="schwer");
     if(hard.length)arr=hard;
@@ -623,14 +758,41 @@ function spinNameTo(idx){
   $("spinNameBtn").disabled=true;$("namePicked").textContent="Das Rad entscheidet …";
   nameRotation=spin($("nameWheel"),activePlayers().length,nameRotation,idx,(rot)=>{
     nameRotation=rot;$("namePicked").textContent=`${game.currentPlayer} ist dran!`;
-    setTimeout(afterName,900);
+    runNameSelectedEffect(()=>setTimeout(afterName,250));
   });
 }
 function afterName(){
-  if(settings.mode!=="standard"&&chance(1)){game.secretEvent=true;game.allPlayers=true;return showMystery("🌑","SECRET EVENT","ALLE müssen die nächste Challenge machen!",()=>openChallengeWheel())}
+  if(settings.mode==="birthday"){
+    const queue=[];
+    if(chance(settings.birthdayPartyChance))queue.push(next=>showPartySurprise(next));
+    if(chance(settings.birthdayGiftChance))queue.push(next=>runBirthdayGift(next));
+    return runEventQueue(queue,afterNameCore);
+  }
+  afterNameCore();
+}
+function runEventQueue(queue,done){
+  if(!queue.length)return done();
+  const fn=queue.shift();fn(()=>runEventQueue(queue,done));
+}
+function afterNameCore(){
+  const secretChance=settings.mode==="halloween"?settings.halloweenSecretChance:settings.mode==="birthday"?settings.birthdaySecretChance:0;
+  if(secretChance>0&&chance(secretChance)){game.secretEvent=true;game.allPlayers=true;return showMystery("🌑","SECRET EVENT","ALLE müssen die nächste Challenge machen!",()=>openChallengeWheel())}
   if(settings.mysteryChance>0&&chance(settings.mysteryChance))return randomMystery();
   if(game.boss)return showMystery("👹","BOSS CHALLENGE","Boss-Runde! Eine schwere Challenge wartet. Sie zählt doppelt.",()=>openChallengeWheel());
   openChallengeWheel();
+}
+function runBirthdayGift(next){
+  const reward=rand(3),p=playerState(game.currentPlayer);
+  giftSound();
+  if(reward===0){
+    if(p)p.points+=1;
+    return showMystery("🎁","ÜBERRASCHUNGSGESCHENK","+1 Punkt für "+game.currentPlayer+"!",next);
+  }
+  if(reward===1){
+    if(p)p.joker+=1;
+    return showMystery("🎁","ÜBERRASCHUNGSGESCHENK","+1 Joker für "+game.currentPlayer+"!",next);
+  }
+  return showMystery("🎁","ÜBERRASCHUNGSGESCHENK","Freifahrt! Diese Runde gibt es keine Challenge.",()=>completeRound());
 }
 function randomMystery(){
   const events=["free","jackpot","all","choose","penalty","double"];
@@ -654,18 +816,18 @@ function showMystery(icon,title,text,next){
 function openChallengeWheel(){
   const list=eligibleChallenges();if(!list.length){alert("Bitte mindestens eine Challenge eintragen.");show("start");return}
   game._challengeList=list;
-  drawWheel($("challengeWheel"),list.map(c=>`${diffIcon(c.difficulty)} ${c.text}`));
+  drawWeightedWheel($("challengeWheel"),list.map(c=>`${diffIcon(c.difficulty)} ${c.text}`),list.map(c=>c.chance));
   $("challengeTitle").textContent=game.allPlayers?"ALLE – eure Challenge":`${game.currentPlayer} – deine Challenge`;
   $("challengePicked").textContent="";
   show("challenge");
-  const idx=weightedChallengeIndex(list);
+  const idx=weightedIndex(list,"chance");
   if(settings.mode==="standard"){$("spinChallengeBtn").style.display="inline-block";$("spinChallengeBtn").disabled=false;$("spinChallengeBtn").onclick=()=>spinChallengeTo(idx)}
   else{$("spinChallengeBtn").style.display="none";setTimeout(()=>spinChallengeTo(idx),650)}
 }
 function spinChallengeTo(idx){
   $("spinChallengeBtn").disabled=true;$("challengePicked").textContent="Das Rad entscheidet …";
   const list=game._challengeList;
-  challengeRotation=spin($("challengeWheel"),list.length,challengeRotation,idx,(rot)=>{
+  challengeRotation=spinWeighted($("challengeWheel"),list.map(c=>c.chance),challengeRotation,idx,(rot)=>{
     challengeRotation=rot;game.currentChallenge=clone(list[idx]);game.lastChallenge=game.currentChallenge.text;
     $("challengePicked").textContent=game.currentChallenge.text;
     setTimeout(showChallengeResult,900);
@@ -723,11 +885,11 @@ function triggerPenalty(){
     const p=playerState(game.currentPlayer);if(p){p.fails++;p.penalties++;p.streak=0;p.points=Math.max(0,p.points-1)}
   }
   penaltyStinger();
-  const list=settings.penalties.filter(p=>p.text.trim());if(!list.length){completeRound();return}
-  game.currentPenalty=clone(list[rand(list.length)]);
-  drawWheel($("penaltyWheel"),list.map(p=>p.text));show("penalty");$("penaltyPicked").textContent="Deine Strafe wird ausgelost …";
-  const idx=list.findIndex(p=>p.text===game.currentPenalty.text);
-  setTimeout(()=>{penaltyRotation=spin($("penaltyWheel"),list.length,penaltyRotation,idx,(rot)=>{penaltyRotation=rot;$("penaltyPicked").textContent=game.currentPenalty.text;setTimeout(showPenaltyResult,900)})},450);
+  const list=settings.penalties.filter(p=>p.text.trim()&&(Number(p.chance)||0)>0);if(!list.length){completeRound();return}
+  const idx=weightedIndex(list,"chance");
+  game.currentPenalty=clone(list[idx]);
+  drawWeightedWheel($("penaltyWheel"),list.map(p=>p.text),list.map(p=>p.chance));show("penalty");$("penaltyPicked").textContent="Deine Strafe wird ausgelost …";
+  setTimeout(()=>{penaltyRotation=spinWeighted($("penaltyWheel"),list.map(p=>p.chance),penaltyRotation,idx,(rot)=>{penaltyRotation=rot;$("penaltyPicked").textContent=game.currentPenalty.text;setTimeout(showPenaltyResult,900)})},450);
 }
 function showPenaltyResult(){
   $("penaltyName").textContent=game.allPlayers?"ALLE":game.currentPlayer;$("penaltyText").textContent=`deine Strafe ist: ${game.currentPenalty.text}`;show("penaltyResult");penaltyStinger();startPenaltyTimer(game.currentPenalty.seconds);
@@ -746,6 +908,7 @@ function doubleRisk(){
 function completeRound(){
   stopChallengeTimer();stopPenaltyTimer();
   if(settings.rounds>0&&game.round>=settings.rounds)return showStats();
+  if(settings.mode==="halloween"&&chance(settings.halloweenDarkChance))game.darkLevel=Math.min(.42,(game.darkLevel||0)+.045);
   game.round++;updateRoundUI();show("start");restartCountdown();
 }
 function showStats(){
@@ -762,7 +925,7 @@ function showFlash(text,type,next){
   setTimeout(()=>{f.className="flash";if(next)next()},1050);
 }
 function maybeJumpscare(){
-  if(settings.mode!=="halloween"||!settings.jumpscareEnabled||!chance(18))return;
+  if(settings.mode!=="halloween"||!chance(settings.halloweenJumpscareChance))return;
   const j=$("jumpscare");j.textContent=["👹","💀","👻","🎃"][rand(4)];j.classList.add("show");scareSound();setTimeout(()=>j.classList.remove("show"),620);
 }
 
@@ -778,7 +941,8 @@ function restartCountdown(){
 }
 function updateAuto(){
   let remain=Math.max(0,Math.ceil((autoEndsAt-Date.now())/1000));
-  if(settings.fakeCountdownEnabled&&!fakeUsed&&remain<=3&&remain>0){fakeUsed=true;autoEndsAt+=3*1000;remain+=3}
+  const fakeChance=settings.mode==="halloween"?settings.halloweenFakeCountdownChance:settings.mode==="birthday"?settings.birthdayFakeCountdownChance:0;
+  if(fakeChance>0&&!fakeUsed&&remain<=3&&remain>0&&chance(fakeChance)){fakeUsed=true;autoEndsAt+=3*1000;remain+=3}
   $("eventCountdown").textContent=formatTime(remain);
   if(settings.mode==="halloween"&&remain<=30&&remain>0&&game._lastTick!==remain){game._lastTick=remain;tickSound()}
   if(remain<=0&&autoRunning){clearAuto();stopAmbience();setReady(true)}
@@ -796,33 +960,95 @@ function tone(freq,dur,vol=.06,type="sine",delay=0){
 }
 function noise(d=.04,v=.03){if(!ensureAudio())return;const sr=audioCtx.sampleRate,b=audioCtx.createBuffer(1,Math.floor(sr*d),sr),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=(Math.random()*2-1)*(1-i/a.length);const s=audioCtx.createBufferSource(),g=audioCtx.createGain();s.buffer=b;g.gain.value=v;s.connect(g);g.connect(masterGain);s.start()}
 function tickSound(){
-  if(settings.soundPack==="funny")return tone(900,.04,.10,"square");
-  if(settings.soundPack==="gameshow")return tone(1200,.035,.10,"square");
-  tone(1120,.055,.13,"square");tone(690,.045,.06,"square",.02)
+  const v=vol("tickVolume");
+  if(v<=0)return;
+  if(settings.soundPack==="funny")return tone(900,.04,.10*v,"square");
+  if(settings.soundPack==="gameshow")return tone(1200,.035,.10*v,"square");
+  tone(1120,.055,.13*v,"square");tone(690,.045,.06*v,"square",.02)
 }
-function heartbeat(level=1){if(settings.mode!=="halloween")return;const v=.07+Math.min(.08,level*.006);tone(82,.12,v,"sine");tone(72,.15,v*.8,"sine",.16)}
+function heartbeat(level=1){
+  if(settings.mode!=="halloween")return;
+  const f=vol("heartbeatVolume");if(f<=0)return;
+  const v=(.07+Math.min(.08,level*.006))*f;tone(82,.12,v,"sine");tone(72,.15,v*.8,"sine",.16)
+}
 function startWheelClicks(ms){
-  if(!ensureAudio())return;stopWheelClicks();const st=Date.now();
-  const loop=()=>{const p=Math.min(1,(Date.now()-st)/ms);tone(settings.soundPack==="funny"?560:760,.025,.055*(1-p*.45),"square");noise(.022,.018);if(p<1)wheelClickTimer=setTimeout(loop,55+Math.pow(p,2.2)*265)};
+  if(!ensureAudio())return;stopWheelClicks();const st=Date.now(),vf=vol("wheelVolume");if(vf<=0)return;
+  const loop=()=>{const p=Math.min(1,(Date.now()-st)/ms);tone(settings.soundPack==="funny"?560:760,.025,.055*(1-p*.45)*vf,"square");noise(.022,.018*vf);if(p<1)wheelClickTimer=setTimeout(loop,55+Math.pow(p,2.2)*265)};
   loop();
 }
 function stopWheelClicks(){if(wheelClickTimer){clearTimeout(wheelClickTimer);wheelClickTimer=null}}
 function resultStinger(){
-  if(settings.soundPack==="funny"){tone(440,.18,.10,"square");tone(660,.18,.10,"square",.15);return}
-  if(settings.soundPack==="gameshow"){tone(523,.2,.10,"triangle");tone(659,.2,.10,"triangle",.16);tone(784,.3,.11,"triangle",.32);return}
-  tone(220,.38,.10,"sawtooth");tone(165,.52,.08,"sine",.08);tone(110,.62,.08,"sine",.16)
+  const v=vol("resultVolume");if(v<=0)return;
+  if(settings.soundPack==="funny"){tone(440,.18,.10*v,"square");tone(660,.18,.10*v,"square",.15);return}
+  if(settings.soundPack==="gameshow"){tone(523,.2,.10*v,"triangle");tone(659,.2,.10*v,"triangle",.16);tone(784,.3,.11*v,"triangle",.32);return}
+  tone(220,.38,.10*v,"sawtooth");tone(165,.52,.08*v,"sine",.08);tone(110,.62,.08*v,"sine",.16)
 }
-function penaltyStinger(){tone(180,.26,.12,"sawtooth");tone(130,.35,.12,"sawtooth",.14);tone(82,.68,.13,"sine",.28);noise(.35,.035)}
-function scareSound(){tone(80,.55,.18,"sawtooth");noise(.35,.10)}
+function penaltyStinger(){
+  const v=vol("penaltyVolume");if(v<=0)return;
+  tone(180,.26,.12*v,"sawtooth");tone(130,.35,.12*v,"sawtooth",.14);tone(82,.68,.13*v,"sine",.28);noise(.35,.035*v)
+}
+function scareSound(){const v=vol("jumpscareVolume");if(v<=0)return;tone(80,.55,.18*v,"sawtooth");noise(.35,.10*v)}
+function evilLaughSound(){
+  const v=vol("evilLaughVolume");if(v<=0)return;
+  [[205,0],[165,.13],[210,.28],[150,.43],[190,.60],[125,.78]].forEach(([f,d],i)=>tone(f,.18,.09*v,"sawtooth",d));
+  noise(.95,.018*v);
+}
+function confettiCannonSound(){
+  const v=vol("confettiVolume");if(v<=0)return;
+  noise(.18,.13*v);tone(170,.10,.13*v,"square");tone(650,.18,.07*v,"triangle",.08);tone(920,.20,.06*v,"triangle",.16)
+}
+function partySurpriseSound(){
+  const v=vol("partyVolume");if(v<=0)return;
+  [392,523,659,784].forEach((f,i)=>tone(f,.20,.09*v,"triangle",i*.09));noise(.15,.05*v);
+}
+function giftSound(){
+  const v=vol("giftVolume");if(v<=0)return;
+  [659,784,988].forEach((f,i)=>tone(f,.28,.075*v,"sine",i*.12));
+}
 function startAmbience(){
   if(settings.mode!=="halloween"||!ensureAudio()||ambienceNodes.length)return;
-  const g=audioCtx.createGain();g.gain.value=.03;g.connect(masterGain);
+  const mv=vol("musicVolume");if(mv<=0)return;
+  const g=audioCtx.createGain();g.gain.value=.03*mv;g.connect(masterGain);
   const o1=audioCtx.createOscillator(),o2=audioCtx.createOscillator(),lfo=audioCtx.createOscillator(),lg=audioCtx.createGain();
   o1.type="sine";o1.frequency.value=55;o2.type="triangle";o2.frequency.value=82.4;lfo.frequency.value=.12;lg.gain.value=7;lfo.connect(lg);lg.connect(o2.frequency);o1.connect(g);o2.connect(g);o1.start();o2.start();lfo.start();ambienceNodes=[o1,o2,lfo,g];
-  ambienceTimer=setInterval(()=>{if(settings.mode==="halloween"&&screens.start.classList.contains("active")&&autoRunning)tone([146,155,174,196][rand(4)],1.7,.016,"sine")},4300)
+  ambienceTimer=setInterval(()=>{if(settings.mode==="halloween"&&screens.start.classList.contains("active")&&autoRunning)tone([146,155,174,196][rand(4)],1.7,.016*mv,"sine")},4300)
 }
 function stopAmbience(){if(ambienceTimer){clearInterval(ambienceTimer);ambienceTimer=null}ambienceNodes.forEach(n=>{try{n.stop()}catch(e){}try{n.disconnect()}catch(e){}});ambienceNodes=[]}
 function syncAudio(){if(settings.mode==="halloween"&&screens.start.classList.contains("active")&&autoRunning)startAmbience();else stopAmbience()}
+
+function spawnConfetti(count=100,overlay=$("birthdayNameFx")){
+  overlay.querySelectorAll(".confetti-piece").forEach(x=>x.remove());
+  const colors=["#ff4f9a","#59ddff","#ffd54d","#7dff85","#b778ff","#ff7b31"];
+  for(let i=0;i<count;i++){
+    const p=document.createElement("i");p.className="confetti-piece";
+    p.style.position="absolute";p.style.width=(5+rand(7))+"px";p.style.height=(10+rand(12))+"px";
+    p.style.background=colors[rand(colors.length)];p.style.borderRadius="2px";
+    const leftSide=i%2===0,startX=leftSide?5:95,startY=84+rand(9);
+    p.style.left=startX+"%";p.style.top=startY+"%";overlay.appendChild(p);
+    const dx=(leftSide?1:-1)*(80+rand(420)),dy=-(180+rand(520)),rot=(rand(900)-450);
+    p.animate([
+      {transform:"translate(0,0) rotate(0deg)",opacity:1},
+      {transform:`translate(${dx}px,${dy}px) rotate(${rot}deg)`,opacity:1,offset:.72},
+      {transform:`translate(${dx*1.1}px,${dy+190}px) rotate(${rot*1.4}deg)`,opacity:0}
+    ],{duration:1050+rand(700),easing:"cubic-bezier(.12,.78,.18,1)",fill:"forwards"});
+  }
+}
+function showBirthdayNameCelebration(next){
+  const fx=$("birthdayNameFx");$("birthdayFxName").textContent=game.currentPlayer;fx.classList.add("show");spawnConfetti(125);confettiCannonSound();
+  setTimeout(()=>{fx.classList.remove("show");fx.querySelectorAll(".confetti-piece").forEach(x=>x.remove());next()},1500);
+}
+function showPumpkinLaugh(next){
+  const fx=$("pumpkinLaughFx");fx.classList.add("show");evilLaughSound();setTimeout(()=>{fx.classList.remove("show");next()},1750);
+}
+function runNameSelectedEffect(next){
+  if(settings.mode==="birthday"&&chance(settings.birthdayConfettiChance))return showBirthdayNameCelebration(next);
+  if(settings.mode==="halloween"&&chance(settings.halloweenLaughChance))return showPumpkinLaugh(next);
+  next();
+}
+function showPartySurprise(next){
+  const fx=$("partySurpriseFx");fx.classList.add("show");spawnConfetti(150,fx);partySurpriseSound();
+  setTimeout(()=>{fx.classList.remove("show");fx.querySelectorAll(".confetti-piece").forEach(x=>x.remove());next()},1350);
+}
 
 /* ---------- settings editors ---------- */
 function renderPlayers(){
@@ -834,46 +1060,73 @@ function renderPlayers(){
     root.appendChild(row)
   })
 }
+function updateChanceTotals(){
+  const ct=$("challengeChanceTotal"),pt=$("penaltyChanceTotal");
+  if(ct){const t=totalChance(settings.challenges);ct.textContent=`Gesamt: ${t}%`;ct.classList.toggle("bad",Math.abs(t-100)>.01)}
+  if(pt){const t=totalChance(settings.penalties);pt.textContent=`Gesamt: ${t}%`;pt.classList.toggle("bad",Math.abs(t-100)>.01)}
+}
 function renderChallenges(){
   const root=$("challengeEditor");root.innerHTML="";
   settings.challenges.forEach((c,i)=>{
     const row=document.createElement("div");row.className="challenge-row";
-    row.innerHTML=`<input class="c-text" value="${escapeHtml(c.text)}"><input class="c-sec" type="number" min="1" max="3600" value="${c.seconds}"><select class="c-diff"><option value="leicht">Leicht</option><option value="mittel">Mittel</option><option value="schwer">Schwer</option></select><select class="c-weight"><option value="1">Selten</option><option value="2">Normal</option><option value="3">Häufig</option><option value="5">Sehr oft</option></select><button class="remove" type="button">×</button>`;
-    row.querySelector(".c-diff").value=c.difficulty;row.querySelector(".c-weight").value=String(c.weight);
-    row.querySelector(".remove").onclick=()=>{captureEditors();settings.challenges.splice(i,1);if(!settings.challenges.length)settings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",weight:2});renderChallenges()};
+    row.innerHTML=`<input class="c-text" value="${escapeHtml(c.text)}"><input class="c-sec" type="number" min="1" max="3600" value="${c.seconds}"><select class="c-diff"><option value="leicht">Leicht</option><option value="mittel">Mittel</option><option value="schwer">Schwer</option></select><input class="c-chance" type="number" min="0" max="100" step="0.1" value="${c.chance}"><button class="remove" type="button">×</button>`;
+    row.querySelector(".c-diff").value=c.difficulty;
+    row.querySelector(".c-chance").addEventListener("input",()=>{captureEditors(false);updateChanceTotals()});
+    row.querySelector(".remove").onclick=()=>{captureEditors();settings.challenges.splice(i,1);if(!settings.challenges.length)settings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",chance:100});renderChallenges();updateChanceTotals()};
     root.appendChild(row)
-  })
+  });
+  updateChanceTotals();
 }
 function renderPenalties(){
   const root=$("penaltyEditor");root.innerHTML="";
   settings.penalties.forEach((p,i)=>{
     const row=document.createElement("div");row.className="penalty-row";
-    row.innerHTML=`<input class="r-text" value="${escapeHtml(p.text)}"><input class="r-sec" type="number" min="1" max="3600" value="${p.seconds}"><button class="remove" type="button">×</button>`;
-    row.querySelector(".remove").onclick=()=>{captureEditors();settings.penalties.splice(i,1);if(!settings.penalties.length)settings.penalties.push({text:"Neue Strafe",seconds:30});renderPenalties()};
+    row.innerHTML=`<input class="r-text" value="${escapeHtml(p.text)}"><input class="r-sec" type="number" min="1" max="3600" value="${p.seconds}"><input class="r-chance" type="number" min="0" max="100" step="0.1" value="${p.chance}"><button class="remove" type="button">×</button>`;
+    row.querySelector(".r-chance").addEventListener("input",()=>{captureEditors(false);updateChanceTotals()});
+    row.querySelector(".remove").onclick=()=>{captureEditors();settings.penalties.splice(i,1);if(!settings.penalties.length)settings.penalties.push({text:"Neue Strafe",seconds:30,chance:100});renderPenalties();updateChanceTotals()};
     root.appendChild(row)
-  })
+  });
+  updateChanceTotals();
 }
-function captureEditors(){
+function captureEditors(readText=true){
   const pr=[...document.querySelectorAll(".player-row")];
-  settings.players=pr.map((r,i)=>({name:r.querySelector(".p-name").value.trim(),active:r.querySelector(".p-active").checked,birthday:r.querySelector(".p-bday").checked})).filter(p=>p.name);
-  settings.challenges=[...document.querySelectorAll(".challenge-row")].map(r=>({text:r.querySelector(".c-text").value.trim(),seconds:clamp(r.querySelector(".c-sec").value,1,3600),difficulty:r.querySelector(".c-diff").value,weight:clamp(r.querySelector(".c-weight").value,1,5)})).filter(c=>c.text);
-  settings.penalties=[...document.querySelectorAll(".penalty-row")].map(r=>({text:r.querySelector(".r-text").value.trim(),seconds:clamp(r.querySelector(".r-sec").value,1,3600)})).filter(p=>p.text);
+  if(pr.length)settings.players=pr.map(r=>({name:r.querySelector(".p-name").value.trim(),active:r.querySelector(".p-active").checked,birthday:r.querySelector(".p-bday").checked})).filter(p=>p.name);
+  const cr=[...document.querySelectorAll(".challenge-row")];
+  if(cr.length)settings.challenges=cr.map(r=>({text:r.querySelector(".c-text").value.trim(),seconds:clamp(r.querySelector(".c-sec").value,1,3600),difficulty:r.querySelector(".c-diff").value,chance:Math.round(pct(r.querySelector(".c-chance").value)*10)/10})).filter(c=>c.text);
+  const rr=[...document.querySelectorAll(".penalty-row")];
+  if(rr.length)settings.penalties=rr.map(r=>({text:r.querySelector(".r-text").value.trim(),seconds:clamp(r.querySelector(".r-sec").value,1,3600),chance:Math.round(pct(r.querySelector(".r-chance").value)*10)/10})).filter(p=>p.text);
 }
 function syncSettingsUI(){
   document.querySelector(`input[name="mode"][value="${settings.mode}"]`).checked=true;
   $("hoursInput").value=settings.hours;$("minutesInput").value=settings.minutes;$("secondsInput").value=settings.seconds;$("roundsInput").value=settings.rounds;
   $("soundPack").value=settings.soundPack;$("mysteryChance").value=String(settings.mysteryChance);
-  $("noRepeatPlayer").checked=settings.noRepeatPlayer;$("noRepeatChallenge").checked=settings.noRepeatChallenge;$("doubleEnabled").checked=settings.doubleEnabled;$("jumpscareEnabled").checked=settings.jumpscareEnabled;$("fakeCountdownEnabled").checked=settings.fakeCountdownEnabled;$("tvModeEnabled").checked=settings.tvMode;$("hostModeEnabled").checked=settings.hostMode;$("nightModeEnabled").checked=settings.nightMode;
-  renderPlayers();renderChallenges();renderPenalties();$("settingsCard").classList.toggle("event-settings",settings.mode!=="standard")
+  $("noRepeatPlayer").checked=settings.noRepeatPlayer;$("noRepeatChallenge").checked=settings.noRepeatChallenge;$("doubleEnabled").checked=settings.doubleEnabled;$("tvModeEnabled").checked=settings.tvMode;$("hostModeEnabled").checked=settings.hostMode;
+
+  ["halloweenLaughChance","halloweenJumpscareChance","halloweenFakeCountdownChance","halloweenDarkChance","halloweenSecretChance",
+   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayFakeCountdownChance","birthdaySecretChance",
+   "musicVolume","tickVolume","heartbeatVolume","wheelVolume","resultVolume","penaltyVolume","jumpscareVolume","evilLaughVolume","confettiVolume","partyVolume","giftVolume"
+  ].forEach(k=>{if($(k))$(k).value=settings[k]});
+
+  renderPlayers();renderChallenges();renderPenalties();$("settingsCard").classList.toggle("event-settings",settings.mode!=="standard");
 }
 function saveSettings(){
   captureEditors();
   const mode=document.querySelector('input[name="mode"]:checked').value;
   if(!settings.players.some(p=>p.active)){alert("Mindestens ein Spieler muss aktiv sein.");return}
   if(!settings.challenges.length){alert("Mindestens eine Challenge eintragen.");return}
+  if(Math.abs(totalChance(settings.challenges)-100)>.01){alert("Die Challenge-Chancen müssen zusammen genau 100% ergeben.");return}
+  if(!settings.penalties.length){alert("Mindestens eine Strafe eintragen.");return}
+  if(Math.abs(totalChance(settings.penalties)-100)>.01){alert("Die Straf-Chancen müssen zusammen genau 100% ergeben.");return}
+
   settings.mode=mode;settings.hours=clamp($("hoursInput").value,0,99);settings.minutes=clamp($("minutesInput").value,0,59);settings.seconds=clamp($("secondsInput").value,0,59);settings.rounds=clamp($("roundsInput").value,0,99);
-  settings.soundPack=$("soundPack").value;settings.mysteryChance=clamp($("mysteryChance").value,0,100);
-  settings.noRepeatPlayer=$("noRepeatPlayer").checked;settings.noRepeatChallenge=$("noRepeatChallenge").checked;settings.doubleEnabled=$("doubleEnabled").checked;settings.jumpscareEnabled=$("jumpscareEnabled").checked;settings.fakeCountdownEnabled=$("fakeCountdownEnabled").checked;settings.tvMode=$("tvModeEnabled").checked;settings.hostMode=$("hostModeEnabled").checked;settings.nightMode=$("nightModeEnabled").checked;
+  settings.soundPack=$("soundPack").value;settings.mysteryChance=pct($("mysteryChance").value);
+  settings.noRepeatPlayer=$("noRepeatPlayer").checked;settings.noRepeatChallenge=$("noRepeatChallenge").checked;settings.doubleEnabled=$("doubleEnabled").checked;settings.tvMode=$("tvModeEnabled").checked;settings.hostMode=$("hostModeEnabled").checked;
+
+  ["halloweenLaughChance","halloweenJumpscareChance","halloweenFakeCountdownChance","halloweenDarkChance","halloweenSecretChance",
+   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayFakeCountdownChance","birthdaySecretChance",
+   "musicVolume","tickVolume","heartbeatVolume","wheelVolume","resultVolume","penaltyVolume","jumpscareVolume","evilLaughVolume","confettiVolume","partyVolume","giftVolume"
+  ].forEach(k=>settings[k]=pct($(k).value));
+
   save();applyTheme();$("settingsModal").classList.remove("open");initGame(true);show("start");restartCountdown();ensureAudio()
 }
 
@@ -977,49 +1230,29 @@ function sanitizeRemoteSettings(s){
   const out=JSON.parse(JSON.stringify(settings));
 
   if(["standard","halloween","birthday"].includes(s.mode))out.mode=s.mode;
-  out.hours=clamp(s.hours,0,99);
-  out.minutes=clamp(s.minutes,0,59);
-  out.seconds=clamp(s.seconds,0,59);
-  out.rounds=clamp(s.rounds,0,99);
+  out.hours=clamp(s.hours,0,99);out.minutes=clamp(s.minutes,0,59);out.seconds=clamp(s.seconds,0,59);out.rounds=clamp(s.rounds,0,99);
   if(["creepy","gameshow","funny","dramatic"].includes(s.soundPack))out.soundPack=s.soundPack;
-  out.mysteryChance=clamp(s.mysteryChance,0,100);
+  out.mysteryChance=pct(s.mysteryChance);
+  ["noRepeatPlayer","noRepeatChallenge","doubleEnabled","tvMode","hostMode"].forEach(k=>{if(typeof s[k]==="boolean")out[k]=s[k]});
 
-  ["noRepeatPlayer","noRepeatChallenge","doubleEnabled","jumpscareEnabled","fakeCountdownEnabled","tvMode","hostMode","nightMode"].forEach(k=>{
-    if(typeof s[k]==="boolean")out[k]=s[k];
-  });
+  ["halloweenLaughChance","halloweenJumpscareChance","halloweenFakeCountdownChance","halloweenDarkChance","halloweenSecretChance",
+   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayFakeCountdownChance","birthdaySecretChance",
+   "musicVolume","tickVolume","heartbeatVolume","wheelVolume","resultVolume","penaltyVolume","jumpscareVolume","evilLaughVolume","confettiVolume","partyVolume","giftVolume"
+  ].forEach(k=>{if(s[k]!=null)out[k]=pct(s[k])});
 
   if(Array.isArray(s.players)){
-    const players=s.players.slice(0,40).map(p=>({
-      name:String(p?.name||"").trim().slice(0,60),
-      active:!!p?.active,
-      birthday:!!p?.birthday
-    })).filter(p=>p.name);
-    if(players.length && players.some(p=>p.active)){
-      let birthdayFound=false;
-      players.forEach(p=>{
-        if(p.birthday && !birthdayFound)birthdayFound=true;
-        else if(p.birthday) p.birthday=false;
-      });
-      out.players=players;
+    const players=s.players.slice(0,40).map(p=>({name:String(p?.name||"").trim().slice(0,60),active:!!p?.active,birthday:!!p?.birthday})).filter(p=>p.name);
+    if(players.length&&players.some(p=>p.active)){
+      let birthdayFound=false;players.forEach(p=>{if(p.birthday&&!birthdayFound)birthdayFound=true;else if(p.birthday)p.birthday=false});out.players=players;
     }
   }
-
   if(Array.isArray(s.challenges)){
-    const arr=s.challenges.slice(0,100).map(c=>({
-      text:String(c?.text||"").trim().slice(0,180),
-      seconds:clamp(c?.seconds,1,3600),
-      difficulty:["leicht","mittel","schwer"].includes(c?.difficulty)?c.difficulty:"mittel",
-      weight:clamp(c?.weight,1,5)
-    })).filter(c=>c.text);
-    if(arr.length)out.challenges=arr;
+    const arr=s.challenges.slice(0,100).map(c=>({text:String(c?.text||"").trim().slice(0,180),seconds:clamp(c?.seconds,1,3600),difficulty:["leicht","mittel","schwer"].includes(c?.difficulty)?c.difficulty:"mittel",chance:Math.round(pct(c?.chance)*10)/10})).filter(c=>c.text);
+    if(arr.length&&Math.abs(totalChance(arr)-100)<=.11)out.challenges=arr;
   }
-
   if(Array.isArray(s.penalties)){
-    const arr=s.penalties.slice(0,100).map(p=>({
-      text:String(p?.text||"").trim().slice(0,180),
-      seconds:clamp(p?.seconds,1,3600)
-    })).filter(p=>p.text);
-    if(arr.length)out.penalties=arr;
+    const arr=s.penalties.slice(0,100).map(p=>({text:String(p?.text||"").trim().slice(0,180),seconds:clamp(p?.seconds,1,3600),chance:Math.round(pct(p?.chance)*10)/10})).filter(p=>p.text);
+    if(arr.length&&Math.abs(totalChance(arr)-100)<=.11)out.penalties=arr;
   }
   return out;
 }
@@ -1120,8 +1353,8 @@ $("hostBtn").onclick=()=>$("hostModal").classList.add("open");
 $("hostClose").onclick=()=>$("hostModal").classList.remove("open");
 $("soundBtn").onclick=()=>{ensureAudio();if(settings.mode==="halloween"&&screens.start.classList.contains("active")&&autoRunning)startAmbience()};
 $("addPlayerBtn").onclick=()=>{captureEditors();settings.players.push({name:"Neuer Spieler",active:true,birthday:false});renderPlayers()};
-$("addChallengeBtn").onclick=()=>{captureEditors();settings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",weight:2});renderChallenges()};
-$("addPenaltyBtn").onclick=()=>{captureEditors();settings.penalties.push({text:"Neue Strafe",seconds:30});renderPenalties()};
+$("addChallengeBtn").onclick=()=>{captureEditors();settings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",chance:0});renderChallenges()};
+$("addPenaltyBtn").onclick=()=>{captureEditors();settings.penalties.push({text:"Neue Strafe",seconds:30,chance:0});renderPenalties()};
 $("saveBtn").onclick=saveSettings;
 document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener("change",()=>{$("settingsCard").classList.toggle("event-settings",r.checked&&r.value!=="standard")}));
 

@@ -1,47 +1,64 @@
-CHALLENGE ROULETTE V14 – ONLINE BROWSER HOST
+CHALLENGE ROULETTE V15 – ONLINE HOST MEGA SOUND / CHANCE UPDATE
 
-NEU IN V14:
-Die komplette Spieleinstellung ist jetzt auch am Handy verfügbar.
+NEU:
+- Geburtstagsmodus:
+  • Konfettikanonen links + rechts wenn ein Name ausgewählt wird
+  • Konfettischuss-Sound
+  • Party-Überraschung
+  • Überraschungsgeschenk mit zufälligem Bonus:
+    +1 Punkt, +1 Joker oder Freifahrt
+- Halloweenmodus:
+  • Beim ausgewählten Namen kann ein großer lachender Kürbis erscheinen
+  • eigener böser-Lachen-Sound
 
-Am Handy unter "EINSTELLUNGEN":
-- Modus: Standard / Halloween / Geburtstag
-- Start-Countdown: Stunden / Minuten / Sekunden
-- Rundenzahl
-- Soundpack
-- Mystery-Chance
-- Kein Spieler zweimal
-- Keine Challenge zweimal
-- Double or Nothing
-- Halloween Jumpscare
+SEL TENHEIT / CHANCEN:
+Jedes Mode-Extra hat jetzt seine eigene frei eintippbare Wahrscheinlichkeit in %.
+
+Halloween:
+- Böses Lachen beim Namen
+- Jumpscare
 - Fake Countdown
-- TV-Modus
-- Host-Taste am PC
-- Halloween Night Mode
-- Spieler hinzufügen/löschen/aktivieren
-- Geburtstagskind markieren
-- Challenges hinzufügen/löschen
-- Challenge-Zeit
-- Schwierigkeitsgrad
-- Gewichtung/Wahrscheinlichkeit
-- Strafen hinzufügen/löschen
-- Strafzeit
+- Runde wird dunkler
+- Secret Event
 
-Wenn du am Handy "AUF PC SPEICHERN" drückst:
-- werden die Einstellungen sofort an das PC-Game übertragen,
-- im PC-Browser gespeichert,
-- das Spiel wird sauber auf die Startseite zurückgesetzt,
-- der neue Countdown startet mit den neuen Einstellungen.
+Geburtstag:
+- Konfettikanonen beim Namen
+- Party-Überraschung
+- Überraschungsgeschenk
+- Fake Countdown
+- Secret Event
 
-GITHUB PAGES UPDATE:
-Wenn V13 schon online ist, musst du im Repository nur:
-1. index.html durch die neue V14 index.html ersetzen
-2. host.html durch die neue V14 host.html ersetzen
-3. Änderungen committen
-GitHub Pages aktualisiert die Website danach automatisch.
+CHALLENGE-RAD:
+- Jede Challenge bekommt eine exakte Chance in %.
+- Alle Challenge-Chancen müssen zusammen 100% ergeben.
+- Das Rad zeichnet die Felder passend zur Chance unterschiedlich groß.
 
-TECHNIK:
-- Browser-only
-- PeerJS/WebRTC
-- Kein Python
-- Keine BAT-Datei
-- Kein eigener Server nötig
+STRAFRAD:
+- Jede Strafe bekommt ebenfalls eine Chance in %.
+- Gilt in ALLEN Modi.
+- Alle Straf-Chancen müssen zusammen 100% ergeben.
+- Auch das Strafrad zeigt die Feldgrößen passend zur Chance.
+
+SOUND-LAUTSTÄRKEN:
+Alle Werte frei von 0–100%:
+- Creepy Hintergrundmusik
+- Countdown-Ticken
+- Herzschlag
+- Rad-Drehen
+- Ergebnis
+- Strafe
+- Jumpscare
+- Böses Lachen
+- Konfettischuss
+- Party-Überraschung
+- Geschenk
+
+HANDY:
+Alle neuen Einstellungen sind auch auf der Host-Seite verfügbar und werden direkt an den PC übertragen.
+
+GITHUB PAGES:
+Wenn V14 schon online ist:
+1. index.html durch die V15 index.html ersetzen
+2. host.html durch die V15 host.html ersetzen
+3. Commit changes
+GitHub Pages aktualisiert die Seite automatisch.
