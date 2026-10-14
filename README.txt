@@ -1,19 +1,27 @@
-CHALLENGE ROULETTE V16 – AUFGERÄUMTE EINSTELLUNGEN
+CHALLENGE ROULETTE V16.1 – QR HOTFIX
 
-NEU:
-- Halloween-Einstellungen werden nur angezeigt, wenn oben der Modus 🎃 Halloween gewählt ist.
-- Geburtstags-Einstellungen werden nur angezeigt, wenn oben der Modus 🎂 Geburtstag gewählt ist.
-- Im Standard-Modus werden beide Spezialbereiche ausgeblendet.
-- Die Lautstärke-Einstellungen sind jetzt ein eigener auf-/zuklappbarer Dropdown-Bereich "🔊 Lautstärken".
-- Das gilt sowohl am PC als auch in der Handy-Hoststeuerung.
+Behoben:
+- In V16 war ein JavaScript-Syntaxfehler in index.html.
+- Dadurch wurde der JavaScript-Code gar nicht gestartet.
+- Deshalb erschien auch kein QR-Code.
+- Der Fehler ist in V16.1 behoben.
+- PC- und Handy-JavaScript wurden mit einem Syntaxcheck geprüft.
 
-Alle Funktionen aus V15 bleiben erhalten:
-- Prozent-Chancen pro Challenge / Strafe
-- Halloween- und Geburtstag-Extras mit eigener Seltenheit
-- Konfettikanonen + Sounds
-- lachender Kürbis + böses Lachen
-- individuelle Lautstärken
-- Online-Handy-Host per QR-Code
+Alle V16-Funktionen bleiben erhalten:
+- Modusabhängige Einstellungen:
+  Halloween-Extras nur bei Halloween,
+  Geburtstag-Extras nur bei Geburtstag.
+- Lautstärken in einem eigenen Dropdown.
+- Prozent-Chancen für Challenges und Strafen.
+- Konfettikanonen / Geburtstags-Sounds.
+- lachender Kürbis / Halloween-Sounds.
+- vollständige Handy-Hoststeuerung per QR-Code.
 
-GITHUB:
-index.html und host.html durch die V16-Dateien ersetzen und Commit changes drücken.
+GITHUB UPDATE:
+Für den QR-Hotfix reicht technisch die neue index.html.
+Empfohlen:
+1. index.html durch V16.1 ersetzen.
+2. host.html ebenfalls durch V16.1 ersetzen.
+3. Commit changes.
+4. GitHub Pages kurz aktualisieren lassen.
+5. Website neu laden.

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V16 Online Host</title>
+<title>Challenge Roulette V16.1 Online Host</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -628,7 +628,7 @@ function totalChance(list){return Math.round(list.reduce((s,x)=>s+(Number(x.chan
 
 function load(){
   try{
-    const raw=localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
+    const raw=localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
     if(!raw)return;
     const s=JSON.parse(raw);
     if(!s)return;
@@ -659,7 +659,7 @@ function load(){
     }
   }catch(e){}
 }
-function save(){try{localStorage.setItem("challengeRouletteSettingsV15",JSON.stringify(settings))}catch(e){}}catch(e){}}
+function save(){try{localStorage.setItem("challengeRouletteSettingsV16",JSON.stringify(settings))}catch(e){}}
 
 function initGame(reset=true){
   if(!reset&&game)return;
