@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080a0f">
-<title>Challenge Roulette Host V15</title>
+<title>Challenge Roulette Host V16</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -81,6 +81,16 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
 .mode-extra-title{font-size:14px;font-weight:1000;margin:16px 0 8px}
 .chance-total{text-align:right;color:#8f99aa;font-size:12px;font-weight:900;margin:6px 2px}.chance-total.bad{color:#ff6f85}
 @media(max-width:520px){.chance-grid,.volume-grid{grid-template-columns:1fr}}
+
+
+.mode-extra-panel{display:none;margin-top:14px}
+.mode-extra-panel.active{display:block}
+.dropdown-section{border:1px solid rgba(255,255,255,.11);border-radius:15px;background:#111722;overflow:hidden;margin:15px 0}
+.dropdown-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;background:transparent;color:#fff;padding:14px;font-weight:1000;text-align:left}
+.dropdown-toggle .arrow{transition:transform .2s ease}
+.dropdown-section.open .dropdown-toggle .arrow{transform:rotate(180deg)}
+.dropdown-content{display:none;padding:0 12px 12px}
+.dropdown-section.open .dropdown-content{display:block}
 
 </style>
 <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
@@ -172,39 +182,47 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
         <label class="switch"><input id="hostModeEnabled" type="checkbox"><span>Host-Taste am PC</span></label>
       </div>
 
-      <div class="mode-extra-title">🎃 Halloween – Seltenheit (%)</div>
-      <div class="chance-grid">
-        <label class="percent-field"><span>🎃 Böses Lachen</span><input id="halloweenLaughChance" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>👹 Jumpscare</span><input id="halloweenJumpscareChance" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>⏱️ Fake Countdown</span><input id="halloweenFakeCountdownChance" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>🌑 Dunkler</span><input id="halloweenDarkChance" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>🌑 Secret Event</span><input id="halloweenSecretChance" type="number" min="0" max="100"></label>
+      <div id="halloweenExtrasPanel" class="mode-extra-panel">
+        <div class="mode-extra-title">🎃 Halloween – Seltenheit (%)</div>
+        <div class="chance-grid">
+          <label class="percent-field"><span>🎃 Böses Lachen</span><input id="halloweenLaughChance" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>👹 Jumpscare</span><input id="halloweenJumpscareChance" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>⏱️ Fake Countdown</span><input id="halloweenFakeCountdownChance" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>🌑 Dunkler</span><input id="halloweenDarkChance" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>🌑 Secret Event</span><input id="halloweenSecretChance" type="number" min="0" max="100"></label>
+        </div>
       </div>
 
-      <div class="mode-extra-title">🎂 Geburtstag – Seltenheit (%)</div>
-      <div class="chance-grid">
-        <label class="percent-field"><span>🎊 Konfettikanonen</span><input id="birthdayConfettiChance" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>🎉 Party-Überraschung</span><input id="birthdayPartyChance" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>🎁 Überraschungsgeschenk</span><input id="birthdayGiftChance" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>⏱️ Fake Countdown</span><input id="birthdayFakeCountdownChance" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>✨ Secret Event</span><input id="birthdaySecretChance" type="number" min="0" max="100"></label>
+      <div id="birthdayExtrasPanel" class="mode-extra-panel">
+        <div class="mode-extra-title">🎂 Geburtstag – Seltenheit (%)</div>
+        <div class="chance-grid">
+          <label class="percent-field"><span>🎊 Konfettikanonen</span><input id="birthdayConfettiChance" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>🎉 Party-Überraschung</span><input id="birthdayPartyChance" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>🎁 Überraschungsgeschenk</span><input id="birthdayGiftChance" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>⏱️ Fake Countdown</span><input id="birthdayFakeCountdownChance" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>✨ Secret Event</span><input id="birthdaySecretChance" type="number" min="0" max="100"></label>
+        </div>
       </div>
     </div>
 
-    <div class="field">
-      <label>🔊 Sound-Lautstärken (%)</label>
-      <div class="volume-grid">
-        <label class="percent-field"><span>🎵 Creepy Hintergrund</span><input id="musicVolume" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>⏱️ Countdown-Ticken</span><input id="tickVolume" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>❤️ Herzschlag</span><input id="heartbeatVolume" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>🎡 Rad-Drehen</span><input id="wheelVolume" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>✅ Ergebnis</span><input id="resultVolume" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>😈 Strafe</span><input id="penaltyVolume" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>👹 Jumpscare</span><input id="jumpscareVolume" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>🎃 Böses Lachen</span><input id="evilLaughVolume" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>🎊 Konfettischuss</span><input id="confettiVolume" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>🎉 Party</span><input id="partyVolume" type="number" min="0" max="100"></label>
-        <label class="percent-field"><span>🎁 Geschenk</span><input id="giftVolume" type="number" min="0" max="100"></label>
+    <div id="volumeDropdown" class="dropdown-section">
+      <button id="volumeDropdownToggle" class="dropdown-toggle" type="button">
+        <span>🔊 Lautstärken</span><span class="arrow">⌄</span>
+      </button>
+      <div class="dropdown-content">
+        <div class="volume-grid">
+          <label class="percent-field"><span>🎵 Creepy Hintergrund</span><input id="musicVolume" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>⏱️ Countdown-Ticken</span><input id="tickVolume" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>❤️ Herzschlag</span><input id="heartbeatVolume" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>🎡 Rad-Drehen</span><input id="wheelVolume" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>✅ Ergebnis</span><input id="resultVolume" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>😈 Strafe</span><input id="penaltyVolume" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>👹 Jumpscare</span><input id="jumpscareVolume" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>🎃 Böses Lachen</span><input id="evilLaughVolume" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>🎊 Konfettischuss</span><input id="confettiVolume" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>🎉 Party</span><input id="partyVolume" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>🎁 Geschenk</span><input id="giftVolume" type="number" min="0" max="100"></label>
+        </div>
       </div>
     </div>
 
@@ -333,6 +351,11 @@ function captureEditors(){
   currentSettings.challenges=[...document.querySelectorAll(".challenge-row")].map(r=>({text:r.querySelector(".c-text").value.trim(),seconds:clamp(r.querySelector(".c-sec").value,1,3600),difficulty:r.querySelector(".c-diff").value,chance:Math.round(pct(r.querySelector(".c-chance").value)*10)/10})).filter(c=>c.text);
   currentSettings.penalties=[...document.querySelectorAll(".penalty-row")].map(r=>({text:r.querySelector(".r-text").value.trim(),seconds:clamp(r.querySelector(".r-sec").value,1,3600),chance:Math.round(pct(r.querySelector(".r-chance").value)*10)/10})).filter(p=>p.text);
 }
+function updateModeSpecificSettings(){
+  const selected=document.querySelector('input[name="mode"]:checked')?.value||currentSettings?.mode||"standard";
+  $("halloweenExtrasPanel")?.classList.toggle("active",selected==="halloween");
+  $("birthdayExtrasPanel")?.classList.toggle("active",selected==="birthday");
+}
 function fillSettings(){
   if(!currentSettings)return;
   const m=document.querySelector(`input[name="mode"][value="${currentSettings.mode}"]`);if(m)m.checked=true;
@@ -347,7 +370,7 @@ function fillSettings(){
    "musicVolume","tickVolume","heartbeatVolume","wheelVolume","resultVolume","penaltyVolume","jumpscareVolume","evilLaughVolume","confettiVolume","partyVolume","giftVolume"
   ].forEach(k=>{if($(k))$(k).value=currentSettings[k]??0});
 
-  renderPlayers();renderChallenges();renderPenalties();
+  renderPlayers();renderChallenges();renderPenalties();updateModeSpecificSettings();
 }
 function collectSettings(){
   captureEditors();
@@ -388,6 +411,10 @@ $("settingsBtn").onclick=openSettings;$("settingsClose").onclick=()=>$("settings
 $("addPlayerBtn").onclick=()=>{captureEditors();currentSettings.players.push({name:"Neuer Spieler",active:true,birthday:false});renderPlayers()};
 $("addChallengeBtn").onclick=()=>{captureEditors();currentSettings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",chance:0});renderChallenges()};
 $("addPenaltyBtn").onclick=()=>{captureEditors();currentSettings.penalties.push({text:"Neue Strafe",seconds:30,chance:0});renderPenalties()};
+
+
+document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener("change",()=>{if(r.checked)updateModeSpecificSettings()}));
+$("volumeDropdownToggle").onclick=()=>$("volumeDropdown").classList.toggle("open");
 
 connect();
 })();
