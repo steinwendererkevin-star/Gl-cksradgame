@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080a0f">
-<title>Challenge Roulette Host V18.1</title>
+<title>Challenge Roulette Host V18.2</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -96,6 +96,16 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
 .dropdown-content{display:none;padding:0 12px 12px}
 .dropdown-section.open .dropdown-content{display:block}
 
+
+.joker-transfer-card{display:none;border:1px solid rgba(245,199,68,.36);border-radius:20px;background:#17150d;padding:14px;margin:14px 0}
+.joker-transfer-card.show{display:block}
+.joker-transfer-card h3{margin:0 0 5px;font-size:18px}
+.joker-transfer-card p{margin:0 0 11px;color:#b9b09a;font-size:13px;line-height:1.4}
+.joker-targets{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.joker-targets button{min-height:50px;border:1px solid rgba(245,199,68,.32);border-radius:15px;background:#2b230b;color:#ffe993;font-size:15px;font-weight:950}
+.joker-cancel{width:100%;min-height:45px;margin-top:9px;border-radius:14px;border:1px solid rgba(255,255,255,.11);background:#151b27;color:#fff;font-weight:900}
+@media(max-width:420px){.joker-targets{grid-template-columns:1fr}}
+
 </style>
 <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
 </head>
@@ -119,6 +129,13 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
     </div>
 
     <button id="startBtn" class="main-start" type="button">JETZT STARTEN</button>
+
+    <div id="jokerTransferCard" class="joker-transfer-card">
+      <h3>🃏 Challenge weitergeben</h3>
+      <p id="jokerTransferText">Wähle den neuen Spieler.</p>
+      <div id="jokerTargets" class="joker-targets"></div>
+      <button id="jokerCancelBtn" class="joker-cancel" type="button">ABBRECHEN</button>
+    </div>
 
     <div class="grid">
       <button id="finishBtn" class="action finish" type="button">✅ FERTIG</button>
@@ -311,7 +328,7 @@ function status(ok,text){
   const s=$("status");s.classList.toggle("ok",!!ok);s.classList.toggle("bad",ok===false);
   s.querySelector("span:last-child").textContent=text;
 }
-function sendCommand(action){if(conn&&conn.open)conn.send({type:"command",action})}
+function sendCommand(action,payload){if(conn&&conn.open)conn.send({type:"command",action,payload})}
 function screenName(s){return ({start:"STARTBILDSCHIRM",name:"NAMENSRAD",challenge:"CHALLENGE-RAD",result:"CHALLENGE",penalty:"STRAFRAD",penaltyResult:"STRAFE",mystery:"MYSTERY EVENT",luckyEvent:"GLÜCKS-EREIGNIS",giftWheel:"GLÜCKSRAD",musicWheel:"MUSIK-RAD",musicResult:"MUSIK-CHALLENGE",double:"DOUBLE OR NOTHING",doubleWheel:"DOUBLE-RAD",stats:"ERGEBNIS"})[s]||String(s||"GAME").toUpperCase()}
 function render(s){
   $("screenLabel").textContent=screenName(s.screen);$("player").textContent=s.player||"—";
@@ -326,6 +343,25 @@ function render(s){
   primary.textContent=s.primaryLabel||"✅ FERTIG";
   primary.disabled=!s.primaryAvailable;
   primary.classList.toggle("continue",(s.primaryLabel||"").includes("WEITER"));
+
+  const jokerBtn=$("jokerBtn");
+  jokerBtn.disabled=!(s.screen==="result"&&(s.joker||0)>0&&!s.jokerTransferActive);
+  jokerBtn.textContent=`🃏 WEITERGEBEN (${s.joker||0})`;
+
+  const transferCard=$("jokerTransferCard");
+  transferCard.classList.toggle("show",!!s.jokerTransferActive);
+  if(s.jokerTransferActive){
+    $("jokerTransferText").textContent=`${s.jokerTransferFrom||"Spieler"} gibt die aktuelle Challenge weiter an:`;
+    const area=$("jokerTargets");area.innerHTML="";
+    (s.jokerCandidates||[]).forEach(name=>{
+      const b=document.createElement("button");
+      b.type="button";b.textContent=`➡️ ${name}`;
+      b.addEventListener("click",()=>sendCommand("joker_to",name));
+      area.appendChild(b);
+    });
+  }else{
+    $("jokerTargets").innerHTML="";
+  }
 }
 function connect(){
   if(!gamePeer||!token){$("connectText").textContent="Ungültiger QR-Link. QR-Code am PC erneut scannen.";return}
@@ -489,7 +525,7 @@ function saveSettings(){
   conn.send({type:"save_settings",settings:currentSettings});
 }
 
-$("startBtn").onclick=()=>sendCommand("start");$("finishBtn").onclick=()=>sendCommand("primary");$("jokerBtn").onclick=()=>sendCommand("joker");
+$("startBtn").onclick=()=>sendCommand("start");$("finishBtn").onclick=()=>sendCommand("primary");$("jokerBtn").onclick=()=>sendCommand("joker");$("jokerCancelBtn").onclick=()=>sendCommand("joker_cancel");
 $("penaltyBtn").onclick=()=>sendCommand("penalty");$("skipBtn").onclick=()=>sendCommand("skip_countdown");$("nextBtn").onclick=()=>sendCommand("next");
 $("restartBtn").onclick=()=>{if(confirm("Spiel wirklich neu starten?"))sendCommand("restart")};
 $("endBtn").onclick=()=>{if(confirm("Spiel beenden und Statistik anzeigen?"))sendCommand("end")};

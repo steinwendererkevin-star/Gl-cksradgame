@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V18.1 Online Host</title>
+<title>Challenge Roulette V18.2 Online Host</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -265,6 +265,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 .lucky-event-pop{font-size:clamp(55px,13vw,125px);line-height:1;margin-bottom:10px}
 .lucky-event-text{font-size:clamp(34px,8vw,76px);font-weight:1000;line-height:1.02;text-align:center}
 .lucky-event-sub{font-size:clamp(16px,3vw,24px);font-weight:800;color:var(--muted);margin-top:12px;text-align:center}
+
+
+.joker-transfer-text{font-size:16px;line-height:1.5;color:var(--muted);font-weight:800;margin:0 0 14px}
+.joker-transfer-current{padding:12px 14px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.05);font-weight:950;margin-bottom:14px}
+.joker-target-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:10px 0 15px}
+.joker-target-grid button{min-height:52px}
+@media(max-width:560px){.joker-target-grid{grid-template-columns:1fr}}
 
 </style>
 </head>
@@ -630,6 +637,16 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
   </div>
 </div>
 
+<div id="jokerTransferModal" class="modal">
+  <div class="modal-card" style="max-width:560px">
+    <div class="modal-head"><h2>🃏 Joker weitergeben</h2><button id="jokerTransferClose" class="close" type="button">×</button></div>
+    <p class="joker-transfer-text">Wähle einen anderen aktiven Mitspieler. Die aktuelle Challenge bleibt genau gleich.</p>
+    <div id="jokerTransferCurrent" class="joker-transfer-current">Elias → Challenge</div>
+    <div id="jokerTransferTargets" class="joker-target-grid"></div>
+    <button id="jokerTransferCancel" class="secondary" type="button">ABBRECHEN</button>
+  </div>
+</div>
+
 <div id="hostModal" class="modal">
   <div class="modal-card" style="max-width:520px">
     <div class="modal-head"><h2>🎛️ Host</h2><button id="hostClose" class="close" type="button">×</button></div>
@@ -702,6 +719,7 @@ let settings={
 let game=null;
 let nameRotation=0,challengeRotation=0,penaltyRotation=0,doubleRotation=0,musicRotation=0,giftRotation=0;
 let giftNext=null,giftContinueAction=null;
+let jokerTransferActive=false,jokerTransferFrom="",jokerTransferRemaining=0;
 let musicFinishLocked=false;
 let autoTimer=null,challengeTimerHandle=null,penaltyTimerHandle=null,wheelClickTimer=null;
 let autoEndsAt=0,challengeEndsAt=0,penaltyEndsAt=0;
@@ -752,7 +770,7 @@ function validSongs(){return (settings.songs||[]).filter(x=>x.title&&isYouTubeUr
 
 function load(){
   try{
-    const raw=localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
+    const raw=localStorage.getItem("challengeRouletteSettingsV18_2")||localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
     if(!raw)return;
     const s=JSON.parse(raw);
     if(!s)return;
@@ -793,11 +811,11 @@ function load(){
     }
   }catch(e){}
 }
-function save(){try{localStorage.setItem("challengeRouletteSettingsV18_1",JSON.stringify(settings))}catch(e){}}
+function save(){try{localStorage.setItem("challengeRouletteSettingsV18_2",JSON.stringify(settings))}catch(e){}}
 
 function initGame(reset=true){
   if(!reset&&game)return;
-  game={round:1,lastPlayer:null,lastChallenge:null,currentPlayer:null,currentChallenge:null,currentPenalty:null,boss:false,doubleChallenge:false,allPlayers:false,secretEvent:false,darkLevel:0,musicMode:false,musicPlayers:[],currentSong:null,currentGift:null,
+  game={round:1,lastPlayer:null,lastChallenge:null,currentPlayer:null,currentChallenge:null,currentPenalty:null,boss:false,doubleChallenge:false,allPlayers:false,secretEvent:false,darkLevel:0,musicMode:false,musicPlayers:[],currentSong:null,currentGift:null,eventUsed:false,eventType:null,
     players:{}
   };
   activePlayers().forEach(p=>game.players[p.name]={points:0,success:0,fails:0,penalties:0,streak:0,maxStreak:0,picks:0,joker:1});
@@ -895,18 +913,20 @@ function diffIcon(d){return d==="leicht"?"🟢":d==="schwer"?"🔴":"🟡"}
 
 function beginRound(){
   musicFinishLocked=false;
-  challengeExpired=false;game.boss=(game.round%5===0);game.doubleChallenge=false;game.allPlayers=false;game.secretEvent=false;
+  closeJokerTransfer(false);
+  challengeExpired=false;game.boss=(game.round%5===0);game.doubleChallenge=false;game.allPlayers=false;game.secretEvent=false;game.eventUsed=false;game.eventType=null;
   game.currentChallenge=null;game.currentPenalty=null;game.currentGift=null;giftContinueAction=null;giftNext=null;game.musicMode=false;game.musicPlayers=[];game.currentSong=null;
 
-  // Glücks-Ereignis is a complete standalone birthday round.
+  // Maximal ein Sonderereignis pro Runde.
   const canLucky=settings.mode==="birthday"&&settings.birthdayGiftChance>0&&activePlayers().length>0&&(settings.luckyRewards||[]).length>0;
   if(canLucky&&chance(settings.birthdayGiftChance)){
+    game.eventUsed=true;game.eventType="lucky";
     return startLuckyEvent();
   }
 
-  // Music Challenge is checked only if no lucky event happened.
   const canMusic=settings.mode==="birthday"&&settings.birthdayMusicChallengeChance>0&&activePlayers().length>=3&&validSongs().length>0;
   if(canMusic&&chance(settings.birthdayMusicChallengeChance)){
+    game.eventUsed=true;game.eventType="music";
     game.musicMode=true;
     updateRoundUI();
     return showMystery("🎵","MUSIK-CHALLENGE","Heute seid ihr zu dritt! Das Namensrad dreht jetzt 3-mal.",()=>startMusicNameDraw());
@@ -1019,10 +1039,9 @@ function finishMusicChallenge(){
 }
 
 function afterName(){
-  if(settings.mode==="birthday"){
-    const queue=[];
-    if(chance(settings.birthdayPartyChance))queue.push(next=>showPartySurprise(next));
-    return runEventQueue(queue,afterNameCore);
+  if(settings.mode==="birthday"&&!game.eventUsed&&chance(settings.birthdayPartyChance)){
+    game.eventUsed=true;game.eventType="party";
+    return showPartySurprise(afterNameCore);
   }
   afterNameCore();
 }
@@ -1031,10 +1050,29 @@ function runEventQueue(queue,done){
   const fn=queue.shift();fn(()=>runEventQueue(queue,done));
 }
 function afterNameCore(){
+  if(game.eventUsed){
+    // Ein vorheriges Ereignis (z.B. Party Surprise) sperrt alle weiteren Events dieser Runde.
+    game.boss=false;
+    return openChallengeWheel();
+  }
+
   const secretChance=settings.mode==="halloween"?settings.halloweenSecretChance:settings.mode==="birthday"?settings.birthdaySecretChance:0;
-  if(secretChance>0&&chance(secretChance)){game.secretEvent=true;game.allPlayers=true;return showMystery("🌑","SECRET EVENT","ALLE müssen die nächste Challenge machen!",()=>openChallengeWheel())}
-  if(settings.mysteryChance>0&&chance(settings.mysteryChance))return randomMystery();
-  if(game.boss)return showMystery("👹","BOSS CHALLENGE","Boss-Runde! Eine schwere Challenge wartet. Sie zählt doppelt.",()=>openChallengeWheel());
+  if(secretChance>0&&chance(secretChance)){
+    game.eventUsed=true;game.eventType="secret";game.boss=false;
+    game.secretEvent=true;game.allPlayers=true;
+    return showMystery("🌑","SECRET EVENT","ALLE müssen die nächste Challenge machen!",()=>openChallengeWheel());
+  }
+
+  if(settings.mysteryChance>0&&chance(settings.mysteryChance)){
+    game.eventUsed=true;game.eventType="mystery";game.boss=false;
+    return randomMystery();
+  }
+
+  if(game.boss){
+    game.eventUsed=true;game.eventType="boss";
+    return showMystery("👹","BOSS CHALLENGE","Boss-Runde! Eine schwere Challenge wartet. Sie zählt doppelt.",()=>openChallengeWheel());
+  }
+
   openChallengeWheel();
 }
 function startLuckyEvent(){
@@ -1170,21 +1208,110 @@ function spinChallengeTo(idx){
     setTimeout(showChallengeResult,900);
   });
 }
-function showChallengeResult(){
+function updateChallengeResultDisplay(){
   const p=playerState(game.currentPlayer),mult=game.doubleChallenge?2:1;
   $("resultName").textContent=game.allPlayers?"ALLE":game.currentPlayer;
-  $("resultText").textContent=`${game.allPlayers?"eure":"deine"} Challenge ist: ${game.currentChallenge.text}${mult===2?" ×2":""}`;
+  $("resultText").textContent=game.allPlayers
+    ?`ALLE müssen ${game.currentChallenge.text}${mult===2?" ×2":""}`
+    :`${game.currentPlayer} muss ${game.currentChallenge.text}${mult===2?" ×2":""}`;
+
   const badges=[`${diffIcon(game.currentChallenge.difficulty)} ${game.currentChallenge.difficulty.toUpperCase()}`];
-  if(game.boss)badges.push("👹 BOSS ×2 PUNKTE");if(game.doubleChallenge)badges.push("✌️ DOPPELT");if(settings.mode==="birthday"&&settings.players.find(x=>x.name===game.currentPlayer)?.birthday)badges.push("🎂 BIRTHDAY BONUS");
+  if(game.boss)badges.push("👹 BOSS ×2 PUNKTE");
+  if(game.doubleChallenge)badges.push("✌️ DOPPELT");
+  if(settings.mode==="birthday"&&settings.players.find(x=>x.name===game.currentPlayer)?.birthday)badges.push("🎂 BIRTHDAY BONUS");
+
   $("resultBadges").innerHTML=badges.map(x=>`<span class="badge">${x}</span>`).join("");
-  $("resultScorePill").textContent=`${p?p.points:0} PUNKTE`;$("resultStreakPill").textContent=`🔥 ${p?p.streak:0}`;
-  const joker=p&&p.joker>0&&!game.allPlayers;$("jokerBtn").classList.toggle("available",!!joker);$("jokerBtn").textContent=`🃏 JOKER (${p?p.joker:0})`;
+  $("resultScorePill").textContent=`${p?p.points:0} PUNKTE`;
+  $("resultStreakPill").textContent=`🔥 ${p?p.streak:0}`;
+
+  const otherPlayers=activePlayers().filter(x=>x.name!==game.currentPlayer);
+  const joker=p&&p.joker>0&&!game.allPlayers&&otherPlayers.length>0&&!challengeExpired;
+  $("jokerBtn").classList.toggle("available",!!joker);
+  $("jokerBtn").disabled=!joker;
+  $("jokerBtn").textContent=`🃏 WEITERGEBEN (${p?p.joker:0})`;
+}
+
+function showChallengeResult(){
+  updateChallengeResultDisplay();
   $("finishBtn").disabled=false;challengeExpired=false;show("result");resultStinger();
   if(settings.mode!=="standard")startChallengeTimer(game.currentChallenge.seconds*(game.doubleChallenge?2:1));
 }
+
+function currentChallengeRemaining(){
+  if(settings.mode==="standard"||!challengeEndsAt)return 0;
+  return Math.max(1,Math.ceil((challengeEndsAt-Date.now())/1000));
+}
+
 function useJoker(){
-  const p=playerState(game.currentPlayer);if(!p||p.joker<=0||challengeExpired)return;
-  p.joker--;stopChallengeTimer();$("jokerBtn").classList.remove("available");openChallengeWheel();
+  const p=playerState(game.currentPlayer);
+  const targets=activePlayers().filter(x=>x.name!==game.currentPlayer);
+  if(!p||p.joker<=0||challengeExpired||game.allPlayers||!targets.length||game?._screen!=="result")return;
+
+  jokerTransferActive=true;
+  jokerTransferFrom=game.currentPlayer;
+  jokerTransferRemaining=currentChallengeRemaining();
+  stopChallengeTimer();
+
+  $("jokerTransferCurrent").textContent=`${jokerTransferFrom} gibt weiter: ${game.currentChallenge.text}`;
+  const area=$("jokerTransferTargets");
+  area.innerHTML="";
+  targets.forEach(target=>{
+    const btn=document.createElement("button");
+    btn.className="primary";
+    btn.type="button";
+    btn.textContent=`➡️ ${target.name}`;
+    btn.addEventListener("click",()=>transferJokerTo(target.name));
+    area.appendChild(btn);
+  });
+
+  $("jokerTransferModal").classList.add("open");
+  sendRemoteStatus();
+}
+
+function transferJokerTo(targetName){
+  if(!jokerTransferActive||!game||game._screen!=="result")return;
+
+  const from=jokerTransferFrom;
+  const owner=playerState(from);
+  const target=settings.players.find(x=>x.active&&x.name===targetName);
+  if(!owner||owner.joker<=0||!target||target.name===from){
+    closeJokerTransfer(true);
+    return;
+  }
+
+  owner.joker--;
+  game.currentPlayer=target.name;
+  game.lastPlayer=target.name;
+
+  jokerTransferActive=false;
+  jokerTransferFrom="";
+  $("jokerTransferModal").classList.remove("open");
+
+  updateChallengeResultDisplay();
+
+  if(settings.mode!=="standard"&&jokerTransferRemaining>0){
+    startChallengeTimer(jokerTransferRemaining);
+  }
+  jokerTransferRemaining=0;
+  sendRemoteStatus();
+}
+
+function closeJokerTransfer(resume=true){
+  if(!jokerTransferActive){
+    $("jokerTransferModal")?.classList.remove("open");
+    return;
+  }
+
+  jokerTransferActive=false;
+  jokerTransferFrom="";
+  $("jokerTransferModal").classList.remove("open");
+
+  const remaining=jokerTransferRemaining;
+  jokerTransferRemaining=0;
+  if(resume&&settings.mode!=="standard"&&remaining>0&&game?._screen==="result"&&!challengeExpired){
+    startChallengeTimer(remaining);
+  }
+  sendRemoteStatus();
 }
 function startChallengeTimer(seconds){
   stopChallengeTimer();challengeExpired=false;challengeEndsAt=Date.now()+Math.max(1,seconds)*1000;
@@ -1199,10 +1326,15 @@ function startChallengeTimer(seconds){
 function stopChallengeTimer(){if(challengeTimerHandle){clearInterval(challengeTimerHandle);challengeTimerHandle=null}}
 
 function successfulFinish(){
-  if(challengeExpired)return;stopChallengeTimer();awardSuccess(game.boss?2:1);
+  if(challengeExpired)return;
+  closeJokerTransfer(false);
+  stopChallengeTimer();
+  awardSuccess(game.boss?2:1);
   showFlash("GESCHAFFT!","success",()=>{
-    if(settings.doubleEnabled&&chance(18))show("double");
-    else completeRound();
+    if(!game.eventUsed&&settings.doubleEnabled&&chance(18)){
+      game.eventUsed=true;game.eventType="double-or-nothing";
+      show("double");
+    }else completeRound();
   });
 }
 function awardSuccess(points){
@@ -1215,6 +1347,7 @@ function awardSuccess(points){
   }
 }
 function triggerPenalty(){
+  closeJokerTransfer(false);
   stopChallengeTimer();challengeExpired=true;
   if(game.allPlayers){
     activePlayers().forEach(pl=>{const p=playerState(pl.name);if(p){p.fails++;p.penalties++;p.streak=0;p.points=Math.max(0,p.points-1)}})
@@ -1243,6 +1376,7 @@ function doubleRisk(){
   const idx=rand(2);setTimeout(()=>{doubleRotation=spin($("doubleWheel"),2,doubleRotation,idx,(rot)=>{doubleRotation=rot;const win=idx===0;$("doublePicked").textContent=win?"DOUBLE WIN!":"STRAFE!";setTimeout(()=>{if(win){const p=playerState(game.currentPlayer);if(p)p.points+=1;showFlash("+1 BONUS","success",completeRound)}else triggerPenalty()},900)})},450);
 }
 function completeRound(){
+  closeJokerTransfer(false);
   stopChallengeTimer();stopPenaltyTimer();
   if(settings.rounds>0&&game.round>=settings.rounds)return showStats();
   if(settings.mode==="halloween"&&chance(settings.halloweenDarkChance))game.darkLevel=Math.min(.42,(game.darkLevel||0)+.045);
@@ -1640,6 +1774,9 @@ function remoteStatus(){
     ready:$("eventStartBtn")?.style.display==="inline-block",
     challengeExpired:!!challengeExpired,
     countdownLabel:$("eventCountdownLabel")?.textContent||"",
+    jokerTransferActive:!!jokerTransferActive,
+    jokerTransferFrom:jokerTransferFrom||"",
+    jokerCandidates:jokerTransferActive?activePlayers().filter(x=>x.name!==jokerTransferFrom).map(x=>x.name):[],
     primaryAvailable:primary.available,
     primaryLabel:primary.label
   };
@@ -1707,7 +1844,7 @@ function acceptRemote(conn){
   });
   conn.on("data",msg=>{
     if(!msg)return;
-    if(msg.type==="command")runRemoteCommand(msg.action);
+    if(msg.type==="command")runRemoteCommand(msg.action,msg.payload);
     else if(msg.type==="request_settings")sendRemoteSettings();
     else if(msg.type==="save_settings")applyRemoteSettings(msg.settings);
   });
@@ -1784,7 +1921,7 @@ function applyRemoteSettings(incoming){
   setTimeout(sendRemoteStatus,80);
 }
 
-function runRemoteCommand(action){
+function runRemoteCommand(action,payload){
   ensureAudio();
   if(action==="start"){
     clearAuto();stopAmbience();setReady(false);
@@ -1794,6 +1931,10 @@ function runRemoteCommand(action){
     runPrimaryProgressAction();
   }else if(action==="joker"){
     if(game?._screen==="result")useJoker();
+  }else if(action==="joker_to"){
+    if(typeof payload==="string")transferJokerTo(payload);
+  }else if(action==="joker_cancel"){
+    closeJokerTransfer(true);
   }else if(action==="penalty"){
     if(game?.currentPlayer)triggerPenalty();
   }else if(action==="skip_countdown"){
@@ -1855,6 +1996,8 @@ $("withoutPhoneBtn").onclick=hideConnectOverlay;
 $("eventStartBtn").onclick=()=>{ensureAudio();setReady(false);initGame(game?false:true);beginRound()};
 $("finishBtn").onclick=successfulFinish;
 $("jokerBtn").onclick=useJoker;
+$("jokerTransferClose").onclick=()=>closeJokerTransfer(true);
+$("jokerTransferCancel").onclick=()=>closeJokerTransfer(true);
 $("penaltyFinishBtn").onclick=()=>{stopPenaltyTimer();completeRound()};
 $("doubleNoBtn").onclick=completeRound;
 $("doubleYesBtn").onclick=doubleRisk;
