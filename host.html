@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080a0f">
-<title>Challenge Roulette Host V17</title>
+<title>Challenge Roulette Host V17.1</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -27,6 +27,8 @@ button{-webkit-tap-highlight-color:transparent}
 button.action{min-height:62px;border-radius:18px;border:1px solid rgba(255,255,255,.11);background:#151b27;color:#fff;font-size:16px;font-weight:900;padding:10px}
 button.action:active,.main-start:active{transform:scale(.98)}
 button.finish{background:linear-gradient(135deg,#19a866,#0b6f46)}
+button.finish.continue{background:linear-gradient(135deg,#4789ff,#3153c8)}
+button:disabled{opacity:.38;filter:saturate(.35);cursor:not-allowed}
 button.joker{background:linear-gradient(135deg,#f5c744,#c68000);color:#241700}
 button.penalty{background:linear-gradient(135deg,#dc3656,#8e1730)}
 button.settings{background:linear-gradient(135deg,#4169e1,#6849d9)}
@@ -127,7 +129,7 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
     <div class="section-title">SPIELSTEUERUNG</div>
     <div class="grid">
       <button id="settingsBtn" class="action settings" type="button">⚙️ EINSTELLUNGEN</button>
-      <button id="nextBtn" class="action" type="button">⏭️ NÄCHSTE RUNDE</button>
+      <button id="nextBtn" class="action" type="button">⏭️ RUNDE ÜBERSPRINGEN</button>
       <button id="restartBtn" class="action" type="button">↻ NEUSTART</button>
       <button id="endBtn" class="action end" type="button">■ SPIEL BEENDEN</button>
     </div>
@@ -299,6 +301,11 @@ function render(s){
   $("round").textContent=s.rounds?`Runde ${s.round} / ${s.rounds}`:`Runde ${s.round}`;
   $("points").textContent=`${s.points||0} Punkte`;$("streak").textContent=`🔥 ${s.streak||0}`;$("jokerState").textContent=`🃏 ${s.joker||0}`;
   $("startBtn").textContent=s.screen==="start"&&s.ready?"JETZT STARTEN":"START / SOFORT STARTEN";
+
+  const primary=$("finishBtn");
+  primary.textContent=s.primaryLabel||"✅ FERTIG";
+  primary.disabled=!s.primaryAvailable;
+  primary.classList.toggle("continue",(s.primaryLabel||"").includes("WEITER"));
 }
 function connect(){
   if(!gamePeer||!token){$("connectText").textContent="Ungültiger QR-Link. QR-Code am PC erneut scannen.";return}
@@ -438,7 +445,7 @@ function saveSettings(){
   conn.send({type:"save_settings",settings:currentSettings});
 }
 
-$("startBtn").onclick=()=>sendCommand("start");$("finishBtn").onclick=()=>sendCommand("finish");$("jokerBtn").onclick=()=>sendCommand("joker");
+$("startBtn").onclick=()=>sendCommand("start");$("finishBtn").onclick=()=>sendCommand("primary");$("jokerBtn").onclick=()=>sendCommand("joker");
 $("penaltyBtn").onclick=()=>sendCommand("penalty");$("skipBtn").onclick=()=>sendCommand("skip_countdown");$("nextBtn").onclick=()=>sendCommand("next");
 $("restartBtn").onclick=()=>{if(confirm("Spiel wirklich neu starten?"))sendCommand("restart")};
 $("endBtn").onclick=()=>{if(confirm("Spiel beenden und Statistik anzeigen?"))sendCommand("end")};

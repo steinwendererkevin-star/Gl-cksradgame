@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V17 Online Host</title>
+<title>Challenge Roulette V17.1 Online Host</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -637,6 +637,7 @@ let settings={
 
 let game=null;
 let nameRotation=0,challengeRotation=0,penaltyRotation=0,doubleRotation=0,musicRotation=0;
+let musicFinishLocked=false;
 let autoTimer=null,challengeTimerHandle=null,penaltyTimerHandle=null,wheelClickTimer=null;
 let autoEndsAt=0,challengeEndsAt=0,penaltyEndsAt=0;
 let autoRunning=false,challengeExpired=false,fakeUsed=false;
@@ -686,7 +687,7 @@ function validSongs(){return (settings.songs||[]).filter(x=>x.title&&isYouTubeUr
 
 function load(){
   try{
-    const raw=localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
+    const raw=localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
     if(!raw)return;
     const s=JSON.parse(raw);
     if(!s)return;
@@ -720,7 +721,7 @@ function load(){
     }
   }catch(e){}
 }
-function save(){try{localStorage.setItem("challengeRouletteSettingsV17",JSON.stringify(settings))}catch(e){}}
+function save(){try{localStorage.setItem("challengeRouletteSettingsV17_1",JSON.stringify(settings))}catch(e){}}
 
 function initGame(reset=true){
   if(!reset&&game)return;
@@ -821,6 +822,7 @@ function eligibleChallenges(){
 function diffIcon(d){return d==="leicht"?"🟢":d==="schwer"?"🔴":"🟡"}
 
 function beginRound(){
+  musicFinishLocked=false;
   challengeExpired=false;game.boss=(game.round%5===0);game.doubleChallenge=false;game.allPlayers=false;game.secretEvent=false;
   game.currentChallenge=null;game.currentPenalty=null;game.musicMode=false;game.musicPlayers=[];game.currentSong=null;
 
@@ -903,6 +905,8 @@ function openMusicWheel(){
 }
 function showMusicResult(){
   if(!game.currentSong)return completeRound();
+  musicFinishLocked=false;
+  $("musicFinishBtn").disabled=false;
   game.currentPlayer=game.musicPlayers[0]||null;
   $("musicTrio").textContent=game.musicPlayers.join(" + ");
   $("musicSongTitle").textContent=game.currentSong.title;
@@ -916,14 +920,22 @@ function showMusicResult(){
   show("musicResult");
 }
 function finishMusicChallenge(){
+  if(!game||game._screen!=="musicResult"||musicFinishLocked)return;
+  musicFinishLocked=true;
+  $("musicFinishBtn").disabled=true;
+
   const birthdayNames=new Set(settings.players.filter(p=>p.birthday).map(p=>p.name));
   game.musicPlayers.forEach(name=>{
     const p=playerState(name);if(!p)return;
     p.points+=1;p.success++;p.streak++;p.maxStreak=Math.max(p.maxStreak,p.streak);
     if(settings.mode==="birthday"&&birthdayNames.has(name))p.points+=1;
   });
-  flash("success","🎵 MUSIK-CHALLENGE GESCHAFFT!");
-  setTimeout(()=>completeRound(),850);
+
+  showFlash("🎵 MUSIK-CHALLENGE GESCHAFFT!","success",()=>{
+    musicFinishLocked=false;
+    $("musicFinishBtn").disabled=false;
+    completeRound();
+  });
 }
 
 function afterName(){
@@ -1333,8 +1345,52 @@ function randomToken(){
   else for(let i=0;i<a.length;i++)a[i]=Math.floor(Math.random()*256);
   return Array.from(a,b=>b.toString(16).padStart(2,"0")).join("");
 }
+function remotePrimaryState(){
+  const screen=game?._screen||"start";
+
+  if(screen==="result"&&!challengeExpired&&!$("finishBtn").disabled){
+    return {available:true,label:"✅ FERTIG"};
+  }
+  if(screen==="penaltyResult"){
+    return {available:true,label:"✅ FERTIG"};
+  }
+  if(screen==="musicResult"&&!musicFinishLocked&&!$("musicFinishBtn").disabled){
+    return {available:true,label:"✅ FERTIG"};
+  }
+  if(screen==="mystery"){
+    const btn=$("mysteryContinueBtn");
+    const visible=btn&&btn.style.display!=="none"&&getComputedStyle(btn).display!=="none"&&!btn.disabled;
+    if(visible)return {available:true,label:"➡️ WEITER"};
+  }
+
+  return {available:false,label:"✅ FERTIG"};
+}
+function runPrimaryProgressAction(){
+  if(!game)return;
+  const screen=game._screen;
+
+  if(screen==="result"&&!challengeExpired&&!$("finishBtn").disabled){
+    successfulFinish();
+    return;
+  }
+  if(screen==="penaltyResult"){
+    stopPenaltyTimer();
+    completeRound();
+    return;
+  }
+  if(screen==="musicResult"){
+    finishMusicChallenge();
+    return;
+  }
+  if(screen==="mystery"){
+    const btn=$("mysteryContinueBtn");
+    const visible=btn&&btn.style.display!=="none"&&getComputedStyle(btn).display!=="none"&&!btn.disabled;
+    if(visible)btn.click();
+  }
+}
 function remoteStatus(){
   const p=game?.currentPlayer?playerState(game.currentPlayer):null;
+  const primary=remotePrimaryState();
   let timer="";
   if(game?._screen==="start")timer=$("eventCountdown")?.textContent||"";
   if(game?._screen==="result")timer=$("challengeTimer")?.textContent||"";
@@ -1353,7 +1409,9 @@ function remoteStatus(){
     streak:p?.streak||0,
     joker:p?.joker||0,
     ready:$("eventStartBtn")?.style.display==="inline-block",
-    challengeExpired:!!challengeExpired
+    challengeExpired:!!challengeExpired,
+    primaryAvailable:primary.available,
+    primaryLabel:primary.label
   };
 }
 function sendRemoteStatus(){
@@ -1471,10 +1529,8 @@ function runRemoteCommand(action){
     clearAuto();stopAmbience();setReady(false);
     if(!game)initGame(true);
     beginRound();
-  }else if(action==="finish"){
-    if(game?._screen==="result"&&!challengeExpired&&!$("finishBtn").disabled)successfulFinish();
-    else if(game?._screen==="penaltyResult"){stopPenaltyTimer();completeRound()}
-    else if(game?._screen==="musicResult")finishMusicChallenge()
+  }else if(action==="finish"||action==="primary"){
+    runPrimaryProgressAction();
   }else if(action==="joker"){
     if(game?._screen==="result")useJoker();
   }else if(action==="penalty"){
