@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V16.1 Online Host</title>
+<title>Challenge Roulette V17 Online Host</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -121,10 +121,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 .switch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .switch{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:rgba(255,255,255,.035)}
 .switch input{width:20px;min-height:auto;height:20px;accent-color:var(--accent)}
-.editor-head,.player-row,.challenge-row,.penalty-row{display:grid;align-items:center;gap:7px;margin-bottom:7px}
+.editor-head,.player-row,.challenge-row,.penalty-row,.song-row{display:grid;align-items:center;gap:7px;margin-bottom:7px}
 .player-row{grid-template-columns:minmax(0,1fr) 58px 58px 40px}
 .challenge-row{grid-template-columns:minmax(0,1fr) 72px 92px 78px 40px}
 .penalty-row{grid-template-columns:minmax(0,1fr) 82px 82px 40px}
+.song-row,.editor-head.song{grid-template-columns:minmax(0,.85fr) minmax(0,1.35fr) 40px}
 .editor-head.player{grid-template-columns:minmax(0,1fr) 58px 58px 40px}
 .editor-head.challenge{grid-template-columns:minmax(0,1fr) 72px 92px 78px 40px}
 .editor-head.penalty{grid-template-columns:minmax(0,1fr) 82px 82px 40px}
@@ -155,8 +156,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 @media(max-width:700px){
   .challenge-row{grid-template-columns:minmax(0,1fr) 62px 76px 68px 36px}
   .penalty-row{grid-template-columns:minmax(0,1fr) 64px 64px 36px}
+  .song-row,.editor-head.song{grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr) 36px}
   .player-row{grid-template-columns:minmax(0,1fr) 52px 52px 36px}
-  .challenge-row input,.challenge-row select,.penalty-row input,.player-row input{padding:8px 7px;font-size:13px}
+  .challenge-row input,.challenge-row select,.penalty-row input,.player-row input,.song-row input{padding:8px 7px;font-size:13px}
   .switch-grid{grid-template-columns:1fr}
 }
 @media(max-height:700px){
@@ -245,6 +247,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 .dropdown-content{display:none;padding:0 14px 14px}
 .dropdown-section.open .dropdown-content{display:block}
 
+
+.music-trio{font-size:clamp(18px,4vw,28px);font-weight:900;line-height:1.35;margin:10px 0 6px}
+.music-song{font-size:clamp(34px,8vw,68px);font-weight:1000;line-height:1.05;margin:14px 0 20px;overflow-wrap:anywhere}
+.youtube-btn{background:#ff2a2a!important;color:#fff!important}
+.music-note{font-size:clamp(52px,13vw,110px);margin-bottom:8px;filter:drop-shadow(0 8px 22px rgba(0,0,0,.35))}
+.music-help{font-size:13px;color:var(--muted);font-weight:800;margin-top:10px}
+
 </style>
 </head>
 <body>
@@ -301,6 +310,32 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
     <div class="wheel-wrap"><div class="pointer"></div><canvas id="challengeWheel" class="wheel" width="900" height="900"></canvas><div class="wheel-ring"></div></div>
     <div id="challengePicked" class="picked"></div>
     <button id="spinChallengeBtn" class="primary" type="button">DREHEN</button>
+  </div>
+</section>
+
+<section id="musicWheelScreen" class="screen">
+  <div class="noise"></div>
+  <div class="topbar"><div class="pill">🎵 MUSIK-CHALLENGE</div><div id="musicRoundPill" class="pill">RUNDE 1</div></div>
+  <div class="game-shell">
+    <div class="heading"><h1>Welcher Song?</h1><p id="musicWheelHint">Das Musik-Rad entscheidet.</p></div>
+    <div class="wheel-wrap"><div class="pointer"></div><canvas id="musicWheel" class="wheel" width="900" height="900"></canvas><div class="wheel-ring"></div></div>
+    <div id="musicPicked" class="picked"></div>
+  </div>
+</section>
+
+<section id="musicResultScreen" class="screen">
+  <div class="noise"></div>
+  <div class="result-card">
+    <div class="music-note">🎵</div>
+    <div class="kicker">MUSIK-CHALLENGE</div>
+    <div id="musicTrio" class="music-trio">Spieler 1 + Spieler 2 + Spieler 3</div>
+    <h1 id="musicSongTitle" class="music-song">Song</h1>
+    <p class="big-text" style="font-size:clamp(18px,4vw,27px)">Ihr drei macht die Musik-Challenge gemeinsam.</p>
+    <div class="action-row">
+      <button id="openYoutubeBtn" class="primary youtube-btn" type="button">▶ YOUTUBE ÖFFNEN</button>
+      <button id="musicFinishBtn" class="primary" type="button">FERTIG</button>
+    </div>
+    <div class="music-help">YouTube öffnet sich in einem neuen Tab – dieses Spiel bleibt im Hintergrund offen.</div>
   </div>
 </section>
 
@@ -468,10 +503,23 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
           <label class="percent-field"><span>🎊 Konfettikanonen beim Namen</span><input id="birthdayConfettiChance" type="number" min="0" max="100" step="1"></label>
           <label class="percent-field"><span>🎉 Party-Überraschung</span><input id="birthdayPartyChance" type="number" min="0" max="100" step="1"></label>
           <label class="percent-field"><span>🎁 Überraschungsgeschenk</span><input id="birthdayGiftChance" type="number" min="0" max="100" step="1"></label>
+          <label class="percent-field"><span>🎵 Musik-Challenge</span><input id="birthdayMusicChallengeChance" type="number" min="0" max="100" step="1"></label>
           <label class="percent-field"><span>⏱️ Fake Countdown</span><input id="birthdayFakeCountdownChance" type="number" min="0" max="100" step="1"></label>
           <label class="percent-field"><span>✨ Secret Event</span><input id="birthdaySecretChance" type="number" min="0" max="100" step="1"></label>
         </div>
-        <span class="help">0% = aus, 100% = jedes Mal.</span>
+        <span class="help">0% = aus, 100% = jedes Mal. Die Musik-Challenge braucht mindestens 3 aktive Spieler.</span>
+
+        <div id="songsDropdown" class="dropdown-section">
+          <button id="songsDropdownToggle" class="dropdown-toggle" type="button">
+            <span>🎵 Songs & YouTube-Links</span><span class="arrow">⌄</span>
+          </button>
+          <div class="dropdown-content">
+            <div class="editor-head song"><span>Song</span><span>YouTube-Link</span><span></span></div>
+            <div id="songEditor"></div>
+            <button id="addSongBtn" class="add" type="button">+ Song hinzufügen</button>
+            <span class="help">Beim ausgewählten Song öffnet „YouTube öffnen“ den Link in einem neuen Tab. Das Spiel bleibt offen.</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -547,7 +595,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 const $=id=>document.getElementById(id);
 const screens={
   start:$("startScreen"),name:$("nameScreen"),challenge:$("challengeScreen"),result:$("resultScreen"),
-  penalty:$("penaltyScreen"),penaltyResult:$("penaltyResultScreen"),mystery:$("mysteryScreen"),
+  penalty:$("penaltyScreen"),penaltyResult:$("penaltyResultScreen"),mystery:$("mysteryScreen"),musicWheel:$("musicWheelScreen"),musicResult:$("musicResultScreen"),
   double:$("doubleScreen"),doubleWheel:$("doubleWheelScreen"),stats:$("statsScreen")
 };
 
@@ -557,7 +605,7 @@ let settings={
   noRepeatPlayer:true,noRepeatChallenge:true,doubleEnabled:true,tvMode:false,hostMode:false,
 
   halloweenLaughChance:100,halloweenJumpscareChance:18,halloweenFakeCountdownChance:12,halloweenDarkChance:100,halloweenSecretChance:1,
-  birthdayConfettiChance:100,birthdayPartyChance:12,birthdayGiftChance:8,birthdayFakeCountdownChance:8,birthdaySecretChance:1,
+  birthdayConfettiChance:100,birthdayPartyChance:12,birthdayGiftChance:8,birthdayMusicChallengeChance:10,birthdayFakeCountdownChance:8,birthdaySecretChance:1,
 
   musicVolume:55,tickVolume:70,heartbeatVolume:70,wheelVolume:70,resultVolume:70,penaltyVolume:75,
   jumpscareVolume:85,evilLaughVolume:75,confettiVolume:80,partyVolume:75,giftVolume:70,
@@ -576,6 +624,7 @@ let settings={
     {text:"5-mal Fußball jonglieren",seconds:30,difficulty:"leicht",chance:20},
     {text:"30 Sekunden Zombie-Walk",seconds:30,difficulty:"leicht",chance:20}
   ],
+  songs:[],
   penalties:[
     {text:"10 Hampelmänner",seconds:30,chance:18},
     {text:"20 Sekunden Plank",seconds:20,chance:16},
@@ -587,7 +636,7 @@ let settings={
 };
 
 let game=null;
-let nameRotation=0,challengeRotation=0,penaltyRotation=0,doubleRotation=0;
+let nameRotation=0,challengeRotation=0,penaltyRotation=0,doubleRotation=0,musicRotation=0;
 let autoTimer=null,challengeTimerHandle=null,penaltyTimerHandle=null,wheelClickTimer=null;
 let autoEndsAt=0,challengeEndsAt=0,penaltyEndsAt=0;
 let autoRunning=false,challengeExpired=false,fakeUsed=false;
@@ -624,11 +673,20 @@ function normalizedLegacy(items,kind){
   });
 }
 function totalChance(list){return Math.round(list.reduce((s,x)=>s+(Number(x.chance)||0),0)*100)/100}
+function isYouTubeUrl(value){
+  try{
+    const u=new URL(String(value||"").trim());
+    if(!["http:","https:"].includes(u.protocol))return false;
+    const h=u.hostname.toLowerCase().replace(/^www\./,"");
+    return h==="youtu.be"||h==="youtube.com"||h==="m.youtube.com"||h==="music.youtube.com"||h.endsWith(".youtube.com");
+  }catch(e){return false}
+}
+function validSongs(){return (settings.songs||[]).filter(x=>x.title&&isYouTubeUrl(x.url))}
 
 
 function load(){
   try{
-    const raw=localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
+    const raw=localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
     if(!raw)return;
     const s=JSON.parse(raw);
     if(!s)return;
@@ -651,6 +709,9 @@ function load(){
         :{text:String(c.text||"Challenge"),seconds:clamp(c.seconds||60,1,3600),difficulty:c.difficulty||"mittel",weight:c.weight,chance:c.chance});
       settings.challenges=normalizedLegacy(arr,"challenge");
     }
+    if(Array.isArray(s.songs)){
+      settings.songs=s.songs.slice(0,100).map(x=>({title:String(x?.title||"").trim().slice(0,120),url:String(x?.url||"").trim().slice(0,500)})).filter(x=>x.title);
+    }
     if(Array.isArray(s.penalties)){
       let arr=s.penalties.map(p=>typeof p==="string"
         ?{text:p,seconds:30,chance:0}
@@ -659,11 +720,11 @@ function load(){
     }
   }catch(e){}
 }
-function save(){try{localStorage.setItem("challengeRouletteSettingsV16",JSON.stringify(settings))}catch(e){}}
+function save(){try{localStorage.setItem("challengeRouletteSettingsV17",JSON.stringify(settings))}catch(e){}}
 
 function initGame(reset=true){
   if(!reset&&game)return;
-  game={round:1,lastPlayer:null,lastChallenge:null,currentPlayer:null,currentChallenge:null,currentPenalty:null,boss:false,doubleChallenge:false,allPlayers:false,secretEvent:false,darkLevel:0,
+  game={round:1,lastPlayer:null,lastChallenge:null,currentPlayer:null,currentChallenge:null,currentPenalty:null,boss:false,doubleChallenge:false,allPlayers:false,secretEvent:false,darkLevel:0,musicMode:false,musicPlayers:[],currentSong:null,
     players:{}
   };
   activePlayers().forEach(p=>game.players[p.name]={points:0,success:0,fails:0,penalties:0,streak:0,maxStreak:0,picks:0,joker:1});
@@ -761,11 +822,20 @@ function diffIcon(d){return d==="leicht"?"🟢":d==="schwer"?"🔴":"🟡"}
 
 function beginRound(){
   challengeExpired=false;game.boss=(game.round%5===0);game.doubleChallenge=false;game.allPlayers=false;game.secretEvent=false;
-  game.currentChallenge=null;game.currentPenalty=null;
+  game.currentChallenge=null;game.currentPenalty=null;game.musicMode=false;game.musicPlayers=[];game.currentSong=null;
+
+  const canMusic=settings.mode==="birthday"&&settings.birthdayMusicChallengeChance>0&&activePlayers().length>=3&&validSongs().length>0;
+  if(canMusic&&chance(settings.birthdayMusicChallengeChance)){
+    game.musicMode=true;
+    updateRoundUI();
+    return showMystery("🎵","MUSIK-CHALLENGE","Heute seid ihr zu dritt! Das Namensrad dreht jetzt 3-mal.",()=>startMusicNameDraw());
+  }
+
   const p=pickPlayer();if(!p){alert("Aktiviere mindestens einen Spieler.");show("start");return}
   game.currentPlayer=p.name;game.lastPlayer=p.name;
   if(game.players[p.name])game.players[p.name].picks++;
   updateRoundUI();
+  $("nameHint").textContent="Dreh das Rad.";
   drawWheel($("nameWheel"),activePlayers().map(x=>x.name));
   show("name");
   const displayList=activePlayers();
@@ -780,6 +850,82 @@ function spinNameTo(idx){
     runNameSelectedEffect(()=>setTimeout(afterName,250));
   });
 }
+function startMusicNameDraw(){
+  game.musicPlayers=[];
+  musicNameStep();
+}
+function musicNameStep(){
+  if(game.musicPlayers.length>=3)return setTimeout(openMusicWheel,550);
+  const remaining=activePlayers().filter(p=>!game.musicPlayers.includes(p.name));
+  if(!remaining.length)return openMusicWheel();
+
+  const chosen=remaining[rand(remaining.length)];
+  game.currentPlayer=chosen.name;
+  const all=activePlayers();
+  const idx=all.findIndex(p=>p.name===chosen.name);
+  drawWheel($("nameWheel"),all.map(x=>x.name));
+  $("nameHint").textContent=`🎵 Musik-Challenge – Spieler ${game.musicPlayers.length+1} von 3`;
+  $("namePicked").textContent="Das Rad entscheidet …";
+  $("spinNameBtn").style.display="none";
+  show("name");
+
+  setTimeout(()=>{
+    nameRotation=spin($("nameWheel"),all.length,nameRotation,idx,(rot)=>{
+      nameRotation=rot;
+      game.musicPlayers.push(chosen.name);
+      game.lastPlayer=chosen.name;
+      if(game.players[chosen.name])game.players[chosen.name].picks++;
+      $("namePicked").textContent=`${game.musicPlayers.length}/3: ${chosen.name}`;
+      runNameSelectedEffect(()=>setTimeout(musicNameStep,500));
+    });
+  },500);
+}
+function openMusicWheel(){
+  const songs=validSongs();
+  if(game.musicPlayers.length<3||!songs.length){
+    game.musicMode=false;
+    return beginRound();
+  }
+  game._musicSongList=songs;
+  $("musicRoundPill").textContent=`RUNDE ${game.round}`;
+  $("musicPicked").textContent="Das Musik-Rad entscheidet …";
+  drawWheel($("musicWheel"),songs.map(x=>x.title),"birthday");
+  show("musicWheel");
+  const idx=rand(songs.length);
+  setTimeout(()=>{
+    musicRotation=spin($("musicWheel"),songs.length,musicRotation,idx,(rot)=>{
+      musicRotation=rot;
+      game.currentSong=clone(songs[idx]);
+      $("musicPicked").textContent=game.currentSong.title;
+      setTimeout(showMusicResult,950);
+    });
+  },650);
+}
+function showMusicResult(){
+  if(!game.currentSong)return completeRound();
+  game.currentPlayer=game.musicPlayers[0]||null;
+  $("musicTrio").textContent=game.musicPlayers.join(" + ");
+  $("musicSongTitle").textContent=game.currentSong.title;
+  $("openYoutubeBtn").onclick=()=>{
+    if(!isYouTubeUrl(game.currentSong?.url))return alert("Für diesen Song ist kein gültiger YouTube-Link gespeichert.");
+    const w=window.open(game.currentSong.url,"_blank","noopener,noreferrer");
+    if(w)try{w.opener=null}catch(e){}
+  };
+  $("musicFinishBtn").onclick=finishMusicChallenge;
+  resultStinger();
+  show("musicResult");
+}
+function finishMusicChallenge(){
+  const birthdayNames=new Set(settings.players.filter(p=>p.birthday).map(p=>p.name));
+  game.musicPlayers.forEach(name=>{
+    const p=playerState(name);if(!p)return;
+    p.points+=1;p.success++;p.streak++;p.maxStreak=Math.max(p.maxStreak,p.streak);
+    if(settings.mode==="birthday"&&birthdayNames.has(name))p.points+=1;
+  });
+  flash("success","🎵 MUSIK-CHALLENGE GESCHAFFT!");
+  setTimeout(()=>completeRound(),850);
+}
+
 function afterName(){
   if(settings.mode==="birthday"){
     const queue=[];
@@ -928,7 +1074,7 @@ function completeRound(){
   stopChallengeTimer();stopPenaltyTimer();
   if(settings.rounds>0&&game.round>=settings.rounds)return showStats();
   if(settings.mode==="halloween"&&chance(settings.halloweenDarkChance))game.darkLevel=Math.min(.42,(game.darkLevel||0)+.045);
-  game.round++;updateRoundUI();show("start");restartCountdown();
+  game.round++;$("nameHint").textContent="Dreh das Rad.";updateRoundUI();show("start");restartCountdown();
 }
 function showStats(){
   const rows=Object.entries(game.players).map(([name,s])=>({name,...s})).sort((a,b)=>b.points-a.points||b.success-a.success||a.fails-b.fails);
@@ -1108,6 +1254,16 @@ function renderPenalties(){
   });
   updateChanceTotals();
 }
+function renderSongs(){
+  const root=$("songEditor");if(!root)return;
+  root.innerHTML="";
+  (settings.songs||[]).forEach((song,i)=>{
+    const row=document.createElement("div");row.className="song-row";
+    row.innerHTML=`<input class="s-title" placeholder="Song / Künstler" value="${escapeHtml(song.title||"")}"><input class="s-url" type="url" placeholder="https://youtu.be/..." value="${escapeHtml(song.url||"")}"><button class="remove" type="button">×</button>`;
+    row.querySelector(".remove").onclick=()=>{captureEditors();settings.songs.splice(i,1);renderSongs()};
+    root.appendChild(row);
+  });
+}
 function captureEditors(readText=true){
   const pr=[...document.querySelectorAll(".player-row")];
   if(pr.length)settings.players=pr.map(r=>({name:r.querySelector(".p-name").value.trim(),active:r.querySelector(".p-active").checked,birthday:r.querySelector(".p-bday").checked})).filter(p=>p.name);
@@ -1115,6 +1271,8 @@ function captureEditors(readText=true){
   if(cr.length)settings.challenges=cr.map(r=>({text:r.querySelector(".c-text").value.trim(),seconds:clamp(r.querySelector(".c-sec").value,1,3600),difficulty:r.querySelector(".c-diff").value,chance:Math.round(pct(r.querySelector(".c-chance").value)*10)/10})).filter(c=>c.text);
   const rr=[...document.querySelectorAll(".penalty-row")];
   if(rr.length)settings.penalties=rr.map(r=>({text:r.querySelector(".r-text").value.trim(),seconds:clamp(r.querySelector(".r-sec").value,1,3600),chance:Math.round(pct(r.querySelector(".r-chance").value)*10)/10})).filter(p=>p.text);
+  const sr=[...document.querySelectorAll(".song-row")];
+  settings.songs=sr.map(r=>({title:r.querySelector(".s-title").value.trim(),url:r.querySelector(".s-url").value.trim()})).filter(x=>x.title||x.url);
 }
 function updateModeSpecificSettings(){
   const selected=document.querySelector('input[name="mode"]:checked')?.value||settings.mode;
@@ -1129,11 +1287,11 @@ function syncSettingsUI(){
   $("noRepeatPlayer").checked=settings.noRepeatPlayer;$("noRepeatChallenge").checked=settings.noRepeatChallenge;$("doubleEnabled").checked=settings.doubleEnabled;$("tvModeEnabled").checked=settings.tvMode;$("hostModeEnabled").checked=settings.hostMode;
 
   ["halloweenLaughChance","halloweenJumpscareChance","halloweenFakeCountdownChance","halloweenDarkChance","halloweenSecretChance",
-   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayFakeCountdownChance","birthdaySecretChance",
+   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayMusicChallengeChance","birthdayFakeCountdownChance","birthdaySecretChance",
    "musicVolume","tickVolume","heartbeatVolume","wheelVolume","resultVolume","penaltyVolume","jumpscareVolume","evilLaughVolume","confettiVolume","partyVolume","giftVolume"
   ].forEach(k=>{if($(k))$(k).value=settings[k]});
 
-  renderPlayers();renderChallenges();renderPenalties();$("settingsCard").classList.toggle("event-settings",settings.mode!=="standard");updateModeSpecificSettings();
+  renderPlayers();renderChallenges();renderPenalties();renderSongs();$("settingsCard").classList.toggle("event-settings",settings.mode!=="standard");updateModeSpecificSettings();
 }
 function saveSettings(){
   captureEditors();
@@ -1144,12 +1302,20 @@ function saveSettings(){
   if(!settings.penalties.length){alert("Mindestens eine Strafe eintragen.");return}
   if(Math.abs(totalChance(settings.penalties)-100)>.01){alert("Die Straf-Chancen müssen zusammen genau 100% ergeben.");return}
 
+  const musicChance=pct($("birthdayMusicChallengeChance").value);
+  if(mode==="birthday"&&musicChance>0){
+    if(settings.players.filter(p=>p.active).length<3){alert("Für die Musik-Challenge brauchst du mindestens 3 aktive Spieler.");return}
+    if(!settings.songs.length){alert("Für die Musik-Challenge musst du mindestens einen Song eintragen.");return}
+    const bad=settings.songs.find(x=>!x.title||!isYouTubeUrl(x.url));
+    if(bad){alert("Bitte bei jedem Musik-Song einen Namen und einen gültigen YouTube-Link eintragen.");return}
+  }
+
   settings.mode=mode;settings.hours=clamp($("hoursInput").value,0,99);settings.minutes=clamp($("minutesInput").value,0,59);settings.seconds=clamp($("secondsInput").value,0,59);settings.rounds=clamp($("roundsInput").value,0,99);
   settings.soundPack=$("soundPack").value;settings.mysteryChance=pct($("mysteryChance").value);
   settings.noRepeatPlayer=$("noRepeatPlayer").checked;settings.noRepeatChallenge=$("noRepeatChallenge").checked;settings.doubleEnabled=$("doubleEnabled").checked;settings.tvMode=$("tvModeEnabled").checked;settings.hostMode=$("hostModeEnabled").checked;
 
   ["halloweenLaughChance","halloweenJumpscareChance","halloweenFakeCountdownChance","halloweenDarkChance","halloweenSecretChance",
-   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayFakeCountdownChance","birthdaySecretChance",
+   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayMusicChallengeChance","birthdayFakeCountdownChance","birthdaySecretChance",
    "musicVolume","tickVolume","heartbeatVolume","wheelVolume","resultVolume","penaltyVolume","jumpscareVolume","evilLaughVolume","confettiVolume","partyVolume","giftVolume"
   ].forEach(k=>settings[k]=pct($(k).value));
 
@@ -1179,8 +1345,8 @@ function remoteStatus(){
     mode:settings.mode,
     round:game?.round||1,
     rounds:settings.rounds||0,
-    player:game?.allPlayers?"ALLE":(game?.currentPlayer||""),
-    challenge:game?.currentChallenge?.text||"",
+    player:game?.musicMode&&game?.musicPlayers?.length?game.musicPlayers.join(" + "):(game?.allPlayers?"ALLE":(game?.currentPlayer||"")),
+    challenge:game?.musicMode&&game?.currentSong?.title?`🎵 ${game.currentSong.title}`:(game?.currentChallenge?.text||""),
     penalty:game?.currentPenalty?.text||"",
     timer,
     points:p?.points||0,
@@ -1262,7 +1428,7 @@ function sanitizeRemoteSettings(s){
   ["noRepeatPlayer","noRepeatChallenge","doubleEnabled","tvMode","hostMode"].forEach(k=>{if(typeof s[k]==="boolean")out[k]=s[k]});
 
   ["halloweenLaughChance","halloweenJumpscareChance","halloweenFakeCountdownChance","halloweenDarkChance","halloweenSecretChance",
-   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayFakeCountdownChance","birthdaySecretChance",
+   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayMusicChallengeChance","birthdayFakeCountdownChance","birthdaySecretChance",
    "musicVolume","tickVolume","heartbeatVolume","wheelVolume","resultVolume","penaltyVolume","jumpscareVolume","evilLaughVolume","confettiVolume","partyVolume","giftVolume"
   ].forEach(k=>{if(s[k]!=null)out[k]=pct(s[k])});
 
@@ -1279,6 +1445,9 @@ function sanitizeRemoteSettings(s){
   if(Array.isArray(s.penalties)){
     const arr=s.penalties.slice(0,100).map(p=>({text:String(p?.text||"").trim().slice(0,180),seconds:clamp(p?.seconds,1,3600),chance:Math.round(pct(p?.chance)*10)/10})).filter(p=>p.text);
     if(arr.length&&Math.abs(totalChance(arr)-100)<=.11)out.penalties=arr;
+  }
+  if(Array.isArray(s.songs)){
+    out.songs=s.songs.slice(0,100).map(x=>({title:String(x?.title||"").trim().slice(0,120),url:String(x?.url||"").trim().slice(0,500)})).filter(x=>x.title&&isYouTubeUrl(x.url));
   }
   return out;
 }
@@ -1305,6 +1474,7 @@ function runRemoteCommand(action){
   }else if(action==="finish"){
     if(game?._screen==="result"&&!challengeExpired&&!$("finishBtn").disabled)successfulFinish();
     else if(game?._screen==="penaltyResult"){stopPenaltyTimer();completeRound()}
+    else if(game?._screen==="musicResult")finishMusicChallenge()
   }else if(action==="joker"){
     if(game?._screen==="result")useJoker();
   }else if(action==="penalty"){
@@ -1381,6 +1551,8 @@ $("soundBtn").onclick=()=>{ensureAudio();if(settings.mode==="halloween"&&screens
 $("addPlayerBtn").onclick=()=>{captureEditors();settings.players.push({name:"Neuer Spieler",active:true,birthday:false});renderPlayers()};
 $("addChallengeBtn").onclick=()=>{captureEditors();settings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",chance:0});renderChallenges()};
 $("addPenaltyBtn").onclick=()=>{captureEditors();settings.penalties.push({text:"Neue Strafe",seconds:30,chance:0});renderPenalties()};
+$("addSongBtn").onclick=()=>{captureEditors();settings.songs.push({title:"",url:""});renderSongs();setTimeout(()=>document.querySelector(".song-row:last-child .s-title")?.focus(),0)};
+$("songsDropdownToggle").onclick=()=>$("songsDropdown").classList.toggle("open");
 $("saveBtn").onclick=saveSettings;
 document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener("change",()=>{if(r.checked){$("settingsCard").classList.toggle("event-settings",r.value!=="standard");updateModeSpecificSettings()}}));
 $("volumeDropdownToggle").onclick=()=>$("volumeDropdown").classList.toggle("open");

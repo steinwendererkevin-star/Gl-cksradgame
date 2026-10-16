@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080a0f">
-<title>Challenge Roulette Host V16.1</title>
+<title>Challenge Roulette Host V17</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -56,10 +56,11 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
 .switch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .switch{display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.11);border-radius:13px;padding:10px 11px;background:#131925}
 .switch input{width:20px;height:20px;min-height:auto;accent-color:#7659ff}
-.editor-head,.player-row,.challenge-row,.penalty-row{display:grid;align-items:center;gap:6px;margin-bottom:7px}
+.editor-head,.player-row,.challenge-row,.penalty-row,.song-row{display:grid;align-items:center;gap:6px;margin-bottom:7px}
 .player-row,.editor-head.player{grid-template-columns:minmax(0,1fr) 52px 52px 38px}
 .challenge-row,.editor-head.challenge{grid-template-columns:minmax(0,1fr) 62px 78px 72px 38px}
 .penalty-row,.editor-head.penalty{grid-template-columns:minmax(0,1fr) 64px 64px 34px}
+.song-row,.editor-head.song{grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr) 34px}
 .editor-head{font-size:10px;color:#8f99aa;font-weight:900;padding:0 3px}
 .editor-head span:not(:first-child){text-align:center}
 .row-check{display:grid;place-items:center}.row-check input{width:20px;height:20px;min-height:auto;accent-color:#7659ff}
@@ -199,8 +200,19 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
           <label class="percent-field"><span>🎊 Konfettikanonen</span><input id="birthdayConfettiChance" type="number" min="0" max="100"></label>
           <label class="percent-field"><span>🎉 Party-Überraschung</span><input id="birthdayPartyChance" type="number" min="0" max="100"></label>
           <label class="percent-field"><span>🎁 Überraschungsgeschenk</span><input id="birthdayGiftChance" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>🎵 Musik-Challenge</span><input id="birthdayMusicChallengeChance" type="number" min="0" max="100"></label>
           <label class="percent-field"><span>⏱️ Fake Countdown</span><input id="birthdayFakeCountdownChance" type="number" min="0" max="100"></label>
           <label class="percent-field"><span>✨ Secret Event</span><input id="birthdaySecretChance" type="number" min="0" max="100"></label>
+        </div>
+
+        <div id="songsDropdown" class="dropdown-section">
+          <button id="songsDropdownToggle" class="dropdown-toggle" type="button"><span>🎵 Songs & YouTube-Links</span><span class="arrow">⌄</span></button>
+          <div class="dropdown-content">
+            <div class="editor-head song"><span>Song</span><span>YouTube-Link</span><span></span></div>
+            <div id="songEditor"></div>
+            <button id="addSongBtn" class="add" type="button">+ Song hinzufügen</button>
+            <span class="help">Der YouTube-Link öffnet später am PC in einem neuen Tab.</span>
+          </div>
         </div>
       </div>
     </div>
@@ -265,13 +277,20 @@ let peer=null,conn=null,currentSettings=null;
 function clamp(n,a,b){n=Number(n);return Number.isFinite(n)?Math.max(a,Math.min(b,n)):a}
 function pct(v){return clamp(v,0,100)}
 function totalChance(list){return Math.round((list||[]).reduce((s,x)=>s+(Number(x.chance)||0),0)*100)/100}
+function isYouTubeUrl(value){
+  try{
+    const u=new URL(String(value||"").trim());if(!["http:","https:"].includes(u.protocol))return false;
+    const host=u.hostname.toLowerCase().replace(/^www\./,"");
+    return host==="youtu.be"||host==="youtube.com"||host==="m.youtube.com"||host==="music.youtube.com"||host.endsWith(".youtube.com");
+  }catch(e){return false}
+}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function status(ok,text){
   const s=$("status");s.classList.toggle("ok",!!ok);s.classList.toggle("bad",ok===false);
   s.querySelector("span:last-child").textContent=text;
 }
 function sendCommand(action){if(conn&&conn.open)conn.send({type:"command",action})}
-function screenName(s){return ({start:"STARTBILDSCHIRM",name:"NAMENSRAD",challenge:"CHALLENGE-RAD",result:"CHALLENGE",penalty:"STRAFRAD",penaltyResult:"STRAFE",mystery:"MYSTERY EVENT",double:"DOUBLE OR NOTHING",doubleWheel:"DOUBLE-RAD",stats:"ERGEBNIS"})[s]||String(s||"GAME").toUpperCase()}
+function screenName(s){return ({start:"STARTBILDSCHIRM",name:"NAMENSRAD",challenge:"CHALLENGE-RAD",result:"CHALLENGE",penalty:"STRAFRAD",penaltyResult:"STRAFE",mystery:"MYSTERY EVENT",musicWheel:"MUSIK-RAD",musicResult:"MUSIK-CHALLENGE",double:"DOUBLE OR NOTHING",doubleWheel:"DOUBLE-RAD",stats:"ERGEBNIS"})[s]||String(s||"GAME").toUpperCase()}
 function render(s){
   $("screenLabel").textContent=screenName(s.screen);$("player").textContent=s.player||"—";
   let text=s.challenge||"";if(s.screen==="penalty"||s.screen==="penaltyResult")text=s.penalty||text;
@@ -346,10 +365,21 @@ function renderPenalties(){
   });
   updateChanceTotals();
 }
+function renderSongs(){
+  const root=$("songEditor");if(!root)return;
+  root.innerHTML="";
+  (currentSettings.songs||[]).forEach((song,i)=>{
+    const row=document.createElement("div");row.className="song-row";
+    row.innerHTML=`<input class="s-title" placeholder="Song / Künstler" value="${esc(song.title||"")}"><input class="s-url" type="url" placeholder="https://youtu.be/..." value="${esc(song.url||"")}"><button class="remove" type="button">×</button>`;
+    row.querySelector(".remove").onclick=()=>{captureEditors();currentSettings.songs.splice(i,1);renderSongs()};
+    root.appendChild(row);
+  });
+}
 function captureEditors(){
   currentSettings.players=[...document.querySelectorAll(".player-row")].map(r=>({name:r.querySelector(".p-name").value.trim(),active:r.querySelector(".p-active").checked,birthday:r.querySelector(".p-bday").checked})).filter(p=>p.name);
   currentSettings.challenges=[...document.querySelectorAll(".challenge-row")].map(r=>({text:r.querySelector(".c-text").value.trim(),seconds:clamp(r.querySelector(".c-sec").value,1,3600),difficulty:r.querySelector(".c-diff").value,chance:Math.round(pct(r.querySelector(".c-chance").value)*10)/10})).filter(c=>c.text);
   currentSettings.penalties=[...document.querySelectorAll(".penalty-row")].map(r=>({text:r.querySelector(".r-text").value.trim(),seconds:clamp(r.querySelector(".r-sec").value,1,3600),chance:Math.round(pct(r.querySelector(".r-chance").value)*10)/10})).filter(p=>p.text);
+  currentSettings.songs=[...document.querySelectorAll(".song-row")].map(r=>({title:r.querySelector(".s-title").value.trim(),url:r.querySelector(".s-url").value.trim()})).filter(x=>x.title||x.url);
 }
 function updateModeSpecificSettings(){
   const selected=document.querySelector('input[name="mode"]:checked')?.value||currentSettings?.mode||"standard";
@@ -366,11 +396,11 @@ function fillSettings(){
   $("tvModeEnabled").checked=!!currentSettings.tvMode;$("hostModeEnabled").checked=!!currentSettings.hostMode;
 
   ["halloweenLaughChance","halloweenJumpscareChance","halloweenFakeCountdownChance","halloweenDarkChance","halloweenSecretChance",
-   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayFakeCountdownChance","birthdaySecretChance",
+   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayMusicChallengeChance","birthdayFakeCountdownChance","birthdaySecretChance",
    "musicVolume","tickVolume","heartbeatVolume","wheelVolume","resultVolume","penaltyVolume","jumpscareVolume","evilLaughVolume","confettiVolume","partyVolume","giftVolume"
   ].forEach(k=>{if($(k))$(k).value=currentSettings[k]??0});
 
-  renderPlayers();renderChallenges();renderPenalties();updateModeSpecificSettings();
+  renderPlayers();renderChallenges();renderPenalties();renderSongs();updateModeSpecificSettings();
 }
 function collectSettings(){
   captureEditors();
@@ -381,7 +411,7 @@ function collectSettings(){
   currentSettings.tvMode=$("tvModeEnabled").checked;currentSettings.hostMode=$("hostModeEnabled").checked;
 
   ["halloweenLaughChance","halloweenJumpscareChance","halloweenFakeCountdownChance","halloweenDarkChance","halloweenSecretChance",
-   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayFakeCountdownChance","birthdaySecretChance",
+   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayMusicChallengeChance","birthdayFakeCountdownChance","birthdaySecretChance",
    "musicVolume","tickVolume","heartbeatVolume","wheelVolume","resultVolume","penaltyVolume","jumpscareVolume","evilLaughVolume","confettiVolume","partyVolume","giftVolume"
   ].forEach(k=>currentSettings[k]=pct($(k).value));
 }
@@ -399,6 +429,11 @@ function saveSettings(){
   if(Math.abs(totalChance(currentSettings.challenges)-100)>.01){alert("Die Challenge-Chancen müssen zusammen genau 100% ergeben.");return}
   if(!currentSettings.penalties.length){alert("Mindestens eine Strafe eintragen.");return}
   if(Math.abs(totalChance(currentSettings.penalties)-100)>.01){alert("Die Straf-Chancen müssen zusammen genau 100% ergeben.");return}
+  if(currentSettings.mode==="birthday"&&pct(currentSettings.birthdayMusicChallengeChance)>0){
+    if(currentSettings.players.filter(p=>p.active).length<3){alert("Für die Musik-Challenge brauchst du mindestens 3 aktive Spieler.");return}
+    if(!(currentSettings.songs||[]).length){alert("Für die Musik-Challenge musst du mindestens einen Song eintragen.");return}
+    if(currentSettings.songs.some(x=>!x.title||!isYouTubeUrl(x.url))){alert("Bitte bei jedem Song einen Namen und einen gültigen YouTube-Link eintragen.");return}
+  }
   $("saveState").textContent="Wird auf PC gespeichert …";
   conn.send({type:"save_settings",settings:currentSettings});
 }
@@ -411,6 +446,8 @@ $("settingsBtn").onclick=openSettings;$("settingsClose").onclick=()=>$("settings
 $("addPlayerBtn").onclick=()=>{captureEditors();currentSettings.players.push({name:"Neuer Spieler",active:true,birthday:false});renderPlayers()};
 $("addChallengeBtn").onclick=()=>{captureEditors();currentSettings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",chance:0});renderChallenges()};
 $("addPenaltyBtn").onclick=()=>{captureEditors();currentSettings.penalties.push({text:"Neue Strafe",seconds:30,chance:0});renderPenalties()};
+$("addSongBtn").onclick=()=>{captureEditors();currentSettings.songs=currentSettings.songs||[];currentSettings.songs.push({title:"",url:""});renderSongs()};
+$("songsDropdownToggle").onclick=()=>$("songsDropdown").classList.toggle("open");
 
 
 document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener("change",()=>{if(r.checked)updateModeSpecificSettings()}));

@@ -1,27 +1,30 @@
-CHALLENGE ROULETTE V16.1 – QR HOTFIX
+CHALLENGE ROULETTE V17 – MUSIK-CHALLENGE
 
-Behoben:
-- In V16 war ein JavaScript-Syntaxfehler in index.html.
-- Dadurch wurde der JavaScript-Code gar nicht gestartet.
-- Deshalb erschien auch kein QR-Code.
-- Der Fehler ist in V16.1 behoben.
-- PC- und Handy-JavaScript wurden mit einem Syntaxcheck geprüft.
+NEU IM GEBURTSTAGSMODUS:
+- Neue Einstellung "🎵 Musik-Challenge" mit frei einstellbarer Wahrscheinlichkeit von 0–100%.
+- Die Musik-Challenge ersetzt die normale Runde, wenn sie ausgelöst wird.
+- Voraussetzung: mindestens 3 aktive Spieler und mindestens 1 gültiger Song.
 
-Alle V16-Funktionen bleiben erhalten:
-- Modusabhängige Einstellungen:
-  Halloween-Extras nur bei Halloween,
-  Geburtstag-Extras nur bei Geburtstag.
-- Lautstärken in einem eigenen Dropdown.
-- Prozent-Chancen für Challenges und Strafen.
-- Konfettikanonen / Geburtstags-Sounds.
-- lachender Kürbis / Halloween-Sounds.
-- vollständige Handy-Hoststeuerung per QR-Code.
+ABLAUF:
+1. "MUSIK-CHALLENGE" erscheint.
+2. Das Namensrad dreht sich 3-mal.
+3. Es werden 3 VERSCHIEDENE aktive Spieler ausgewählt.
+4. Danach öffnet sich ein eigenes Musik-Rad.
+5. Das Musik-Rad wählt zufällig einen deiner gespeicherten Songs.
+6. Auf dem Ergebnisbildschirm stehen die 3 Spieler + der Song.
+7. "YOUTUBE ÖFFNEN" öffnet den gespeicherten YouTube-Link in einem NEUEN TAB.
+   Das Challenge-Roulette bleibt im ursprünglichen Tab geöffnet.
+8. Nach "FERTIG" bekommen die 3 Spieler jeweils +1 Punkt.
+   Das Geburtstagskind erhält weiterhin seinen Birthday-Bonus.
+
+SONG-EINSTELLUNGEN:
+- Im Reiter Geburtstag gibt es "🎵 Songs & YouTube-Links".
+- Pro Song:
+  • Songname / Künstler
+  • YouTube-Link
+- Songs können am PC UND am Handy-Host bearbeitet werden.
 
 GITHUB UPDATE:
-Für den QR-Hotfix reicht technisch die neue index.html.
-Empfohlen:
-1. index.html durch V16.1 ersetzen.
-2. host.html ebenfalls durch V16.1 ersetzen.
-3. Commit changes.
-4. GitHub Pages kurz aktualisieren lassen.
-5. Website neu laden.
+- index.html und host.html durch die V17-Dateien ersetzen.
+- Commit changes.
+- GitHub Pages aktualisiert automatisch.
