@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V17.1 Online Host</title>
+<title>Challenge Roulette V18 Online Host</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -254,6 +254,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 .music-note{font-size:clamp(52px,13vw,110px);margin-bottom:8px;filter:drop-shadow(0 8px 22px rgba(0,0,0,.35))}
 .music-help{font-size:13px;color:var(--muted);font-weight:800;margin-top:10px}
 
+
+.event-countdown-label{font-size:clamp(12px,2vw,18px);font-weight:1000;letter-spacing:.16em;color:var(--muted);margin-bottom:5px;text-align:center}
+.gift-result{font-size:clamp(23px,5vw,42px);font-weight:1000;line-height:1.12;margin:10px auto 14px;max-width:850px;text-align:center}
+.gift-sub{font-size:clamp(14px,2.8vw,20px);font-weight:800;color:var(--muted);min-height:1.5em;text-align:center}
+
 </style>
 </head>
 <body>
@@ -282,6 +287,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
     <div class="brand">CHALLENGE ROULETTE</div>
     <button id="standardStartBtn" class="start-main" type="button">START</button>
     <div class="event-start-wrap">
+      <div id="eventCountdownLabel" class="event-countdown-label">START IN</div>
       <div id="eventCountdown" class="event-countdown">00:30</div>
       <button id="eventStartBtn" class="event-go" type="button">Jetzt Starten</button>
     </div>
@@ -310,6 +316,18 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
     <div class="wheel-wrap"><div class="pointer"></div><canvas id="challengeWheel" class="wheel" width="900" height="900"></canvas><div class="wheel-ring"></div></div>
     <div id="challengePicked" class="picked"></div>
     <button id="spinChallengeBtn" class="primary" type="button">DREHEN</button>
+  </div>
+</section>
+
+<section id="giftWheelScreen" class="screen">
+  <div class="noise"></div>
+  <div class="topbar"><div class="pill">🎁 GESCHENK-RAD</div><div id="giftRoundPill" class="pill">RUNDE 1</div></div>
+  <div class="game-shell">
+    <div class="heading"><h1>Was steckt im Geschenk?</h1><p>Das Geschenk-Rad entscheidet.</p></div>
+    <div class="wheel-wrap"><div class="pointer"></div><canvas id="giftWheel" class="wheel" width="900" height="900"></canvas><div class="wheel-ring"></div></div>
+    <div id="giftPicked" class="gift-result">🎁</div>
+    <div id="giftSub" class="gift-sub"></div>
+    <button id="giftContinueBtn" class="primary" type="button" style="display:none">WEITER</button>
   </div>
 </section>
 
@@ -451,13 +469,23 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
     </div>
 
     <div class="field">
-      <label>Start-Countdown</label>
+      <label>⏱️ Start-Countdown – nur vor Runde 1</label>
       <div class="time-grid">
         <input id="hoursInput" type="number" min="0" max="99" inputmode="numeric" placeholder="Std.">
         <input id="minutesInput" type="number" min="0" max="59" inputmode="numeric" placeholder="Min.">
         <input id="secondsInput" type="number" min="0" max="59" inputmode="numeric" placeholder="Sek.">
       </div>
-      <span class="help event-only">Bei 00:00 erscheint nur „Jetzt Starten“.</span>
+      <span class="help event-only">Das ist dein langer Countdown ganz am Anfang.</span>
+    </div>
+
+    <div class="field">
+      <label>🔁 Runden-Countdown – ab Runde 2</label>
+      <div class="time-grid">
+        <input id="roundHoursInput" type="number" min="0" max="99" inputmode="numeric" placeholder="Std.">
+        <input id="roundMinutesInput" type="number" min="0" max="59" inputmode="numeric" placeholder="Min.">
+        <input id="roundSecondsInput" type="number" min="0" max="59" inputmode="numeric" placeholder="Sek.">
+      </div>
+      <span class="help event-only">Nach jeder fertigen Runde läuft nur noch dieser kürzere Countdown. Bei 00:00 erscheint direkt „Jetzt Starten“.</span>
     </div>
 
     <div class="field">
@@ -502,7 +530,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
         <div class="chance-grid">
           <label class="percent-field"><span>🎊 Konfettikanonen beim Namen</span><input id="birthdayConfettiChance" type="number" min="0" max="100" step="1"></label>
           <label class="percent-field"><span>🎉 Party-Überraschung</span><input id="birthdayPartyChance" type="number" min="0" max="100" step="1"></label>
-          <label class="percent-field"><span>🎁 Überraschungsgeschenk</span><input id="birthdayGiftChance" type="number" min="0" max="100" step="1"></label>
+          <label class="percent-field"><span>🎁 Geschenk-Rad</span><input id="birthdayGiftChance" type="number" min="0" max="100" step="1"></label>
           <label class="percent-field"><span>🎵 Musik-Challenge</span><input id="birthdayMusicChallengeChance" type="number" min="0" max="100" step="1"></label>
           <label class="percent-field"><span>⏱️ Fake Countdown</span><input id="birthdayFakeCountdownChance" type="number" min="0" max="100" step="1"></label>
           <label class="percent-field"><span>✨ Secret Event</span><input id="birthdaySecretChance" type="number" min="0" max="100" step="1"></label>
@@ -578,6 +606,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
   <div class="modal-card" style="max-width:520px">
     <div class="modal-head"><h2>🎛️ Host</h2><button id="hostClose" class="close" type="button">×</button></div>
     <div class="host-panel">
+      <button id="hostShowQr" class="secondary" type="button">📱 QR-Code einblenden</button>
       <button id="hostSkipCountdown" class="secondary" type="button">Countdown beenden</button>
       <button id="hostPenalty" class="secondary" type="button">Strafe erzwingen</button>
       <button id="hostNext" class="secondary" type="button">Nächste Runde</button>
@@ -595,12 +624,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 const $=id=>document.getElementById(id);
 const screens={
   start:$("startScreen"),name:$("nameScreen"),challenge:$("challengeScreen"),result:$("resultScreen"),
-  penalty:$("penaltyScreen"),penaltyResult:$("penaltyResultScreen"),mystery:$("mysteryScreen"),musicWheel:$("musicWheelScreen"),musicResult:$("musicResultScreen"),
+  penalty:$("penaltyScreen"),penaltyResult:$("penaltyResultScreen"),mystery:$("mysteryScreen"),giftWheel:$("giftWheelScreen"),musicWheel:$("musicWheelScreen"),musicResult:$("musicResultScreen"),
   double:$("doubleScreen"),doubleWheel:$("doubleWheelScreen"),stats:$("statsScreen")
 };
 
 let settings={
-  mode:"standard",hours:0,minutes:0,seconds:30,rounds:10,
+  mode:"standard",hours:0,minutes:0,seconds:30,roundHours:0,roundMinutes:5,roundSeconds:0,rounds:10,
   soundPack:"creepy",mysteryChance:5,
   noRepeatPlayer:true,noRepeatChallenge:true,doubleEnabled:true,tvMode:false,hostMode:false,
 
@@ -636,7 +665,8 @@ let settings={
 };
 
 let game=null;
-let nameRotation=0,challengeRotation=0,penaltyRotation=0,doubleRotation=0,musicRotation=0;
+let nameRotation=0,challengeRotation=0,penaltyRotation=0,doubleRotation=0,musicRotation=0,giftRotation=0;
+let giftNext=null,giftContinueAction=null;
 let musicFinishLocked=false;
 let autoTimer=null,challengeTimerHandle=null,penaltyTimerHandle=null,wheelClickTimer=null;
 let autoEndsAt=0,challengeEndsAt=0,penaltyEndsAt=0;
@@ -687,7 +717,7 @@ function validSongs(){return (settings.songs||[]).filter(x=>x.title&&isYouTubeUr
 
 function load(){
   try{
-    const raw=localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
+    const raw=localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
     if(!raw)return;
     const s=JSON.parse(raw);
     if(!s)return;
@@ -721,11 +751,11 @@ function load(){
     }
   }catch(e){}
 }
-function save(){try{localStorage.setItem("challengeRouletteSettingsV17_1",JSON.stringify(settings))}catch(e){}}
+function save(){try{localStorage.setItem("challengeRouletteSettingsV18",JSON.stringify(settings))}catch(e){}}
 
 function initGame(reset=true){
   if(!reset&&game)return;
-  game={round:1,lastPlayer:null,lastChallenge:null,currentPlayer:null,currentChallenge:null,currentPenalty:null,boss:false,doubleChallenge:false,allPlayers:false,secretEvent:false,darkLevel:0,musicMode:false,musicPlayers:[],currentSong:null,
+  game={round:1,lastPlayer:null,lastChallenge:null,currentPlayer:null,currentChallenge:null,currentPenalty:null,boss:false,doubleChallenge:false,allPlayers:false,secretEvent:false,darkLevel:0,musicMode:false,musicPlayers:[],currentSong:null,currentGift:null,
     players:{}
   };
   activePlayers().forEach(p=>game.players[p.name]={points:0,success:0,fails:0,penalties:0,streak:0,maxStreak:0,picks:0,joker:1});
@@ -733,7 +763,7 @@ function initGame(reset=true){
 }
 function updateRoundUI(){
   const total=settings.rounds>0?` / ${settings.rounds}`:"";
-  ["roundPill1","roundPill2","roundPill3"].forEach(id=>$(id).textContent=`RUNDE ${game?.round||1}${total}`);
+  ["roundPill1","roundPill2","roundPill3","giftRoundPill"].forEach(id=>{if($(id))$(id).textContent=`RUNDE ${game?.round||1}${total}`});
   const factor=settings.mode==="halloween"?Math.min(.42,game?.darkLevel||0):0;
   document.documentElement.style.setProperty("--night",factor);
 }
@@ -824,7 +854,7 @@ function diffIcon(d){return d==="leicht"?"🟢":d==="schwer"?"🔴":"🟡"}
 function beginRound(){
   musicFinishLocked=false;
   challengeExpired=false;game.boss=(game.round%5===0);game.doubleChallenge=false;game.allPlayers=false;game.secretEvent=false;
-  game.currentChallenge=null;game.currentPenalty=null;game.musicMode=false;game.musicPlayers=[];game.currentSong=null;
+  game.currentChallenge=null;game.currentPenalty=null;game.currentGift=null;giftContinueAction=null;giftNext=null;game.musicMode=false;game.musicPlayers=[];game.currentSong=null;
 
   const canMusic=settings.mode==="birthday"&&settings.birthdayMusicChallengeChance>0&&activePlayers().length>=3&&validSongs().length>0;
   if(canMusic&&chance(settings.birthdayMusicChallengeChance)){
@@ -916,6 +946,7 @@ function showMusicResult(){
     if(w)try{w.opener=null}catch(e){}
   };
   $("musicFinishBtn").onclick=finishMusicChallenge;
+$("giftContinueBtn").onclick=continueGiftWheel;
   resultStinger();
   show("musicResult");
 }
@@ -959,17 +990,90 @@ function afterNameCore(){
   openChallengeWheel();
 }
 function runBirthdayGift(next){
-  const reward=rand(3),p=playerState(game.currentPlayer);
+  giftNext=next;
+  giftContinueAction=null;
+  game.currentGift=null;
+
+  const rewards=[
+    {kind:"point1",label:"+1 PUNKT",icon:"⭐"},
+    {kind:"point2",label:"+2 PUNKTE",icon:"🌟"},
+    {kind:"joker1",label:"+1 JOKER",icon:"🃏"},
+    {kind:"joker2",label:"+2 JOKER",icon:"🃏🃏"},
+    {kind:"free",label:"FREIFAHRT",icon:"🕊️"},
+    {kind:"pass",label:"CHALLENGE WEITERGEBEN",icon:"🎯"}
+  ];
+
+  game._giftRewards=rewards;
+  $("giftPicked").textContent="🎁";
+  $("giftSub").textContent="";
+  $("giftContinueBtn").style.display="none";
+  $("giftContinueBtn").disabled=true;
+  drawWheel($("giftWheel"),rewards.map(r=>`${r.icon} ${r.label}`),"birthday");
+  show("giftWheel");
+
+  const idx=rand(rewards.length);
+  setTimeout(()=>{
+    giftRotation=spin($("giftWheel"),rewards.length,giftRotation,idx,(rot)=>{
+      giftRotation=rot;
+      const reward=rewards[idx];
+      game.currentGift=reward;
+      applyGiftReward(reward);
+    });
+  },650);
+}
+function applyGiftReward(reward){
+  const p=playerState(game.currentPlayer);
   giftSound();
-  if(reward===0){
+
+  let result=`${reward.icon} ${reward.label}`;
+  let sub="";
+
+  if(reward.kind==="point1"){
     if(p)p.points+=1;
-    return showMystery("🎁","ÜBERRASCHUNGSGESCHENK","+1 Punkt für "+game.currentPlayer+"!",next);
-  }
-  if(reward===1){
+    sub=`${game.currentPlayer} bekommt 1 Bonuspunkt.`;
+    giftContinueAction=()=>giftNext&&giftNext();
+  }else if(reward.kind==="point2"){
+    if(p)p.points+=2;
+    sub=`${game.currentPlayer} bekommt 2 Bonuspunkte.`;
+    giftContinueAction=()=>giftNext&&giftNext();
+  }else if(reward.kind==="joker1"){
     if(p)p.joker+=1;
-    return showMystery("🎁","ÜBERRASCHUNGSGESCHENK","+1 Joker für "+game.currentPlayer+"!",next);
+    sub=`${game.currentPlayer} bekommt einen zusätzlichen Joker.`;
+    giftContinueAction=()=>giftNext&&giftNext();
+  }else if(reward.kind==="joker2"){
+    if(p)p.joker+=2;
+    sub=`${game.currentPlayer} bekommt zwei zusätzliche Joker.`;
+    giftContinueAction=()=>giftNext&&giftNext();
+  }else if(reward.kind==="free"){
+    sub="Keine Challenge in dieser Runde.";
+    giftContinueAction=()=>completeRound();
+  }else if(reward.kind==="pass"){
+    const others=activePlayers().filter(x=>x.name!==game.currentPlayer);
+    if(others.length){
+      const target=others[rand(others.length)];
+      game.currentPlayer=target.name;
+      game.lastPlayer=target.name;
+      if(game.players[target.name])game.players[target.name].picks++;
+      sub=`Die Challenge geht an ${target.name}!`;
+    }else{
+      if(p)p.points+=1;
+      result="⭐ +1 PUNKT";
+      sub="Kein anderer aktiver Spieler da – stattdessen gibt es 1 Bonuspunkt.";
+    }
+    giftContinueAction=()=>giftNext&&giftNext();
   }
-  return showMystery("🎁","ÜBERRASCHUNGSGESCHENK","Freifahrt! Diese Runde gibt es keine Challenge.",()=>completeRound());
+
+  $("giftPicked").textContent=result;
+  $("giftSub").textContent=sub;
+  $("giftContinueBtn").disabled=false;
+  $("giftContinueBtn").style.display="inline-block";
+}
+function continueGiftWheel(){
+  if($("giftContinueBtn").disabled||typeof giftContinueAction!=="function")return;
+  $("giftContinueBtn").disabled=true;
+  const action=giftContinueAction;
+  giftContinueAction=null;
+  action();
 }
 function randomMystery(){
   const events=["free","jackpot","all","choose","penalty","double"];
@@ -1108,13 +1212,34 @@ function maybeJumpscare(){
 
 /* ---------- start countdown ---------- */
 function clearAuto(){if(autoTimer){clearInterval(autoTimer);autoTimer=null}autoRunning=false}
-function setReady(ready){$("eventCountdown").style.display=ready?"none":"block";$("eventStartBtn").style.display=ready?"inline-block":"none"}
+function setReady(ready){
+  $("eventCountdown").style.display=ready?"none":"block";
+  $("eventCountdownLabel").style.display=ready?"none":"block";
+  $("eventStartBtn").style.display=ready?"inline-block":"none";
+}
 function restartCountdown(){
   clearAuto();fakeUsed=false;if(game)game._lastTick=null;setReady(false);
   if(settings.mode==="standard"){stopAmbience();return}
-  const total=settings.hours*3600+settings.minutes*60+settings.seconds;
-  if(total<=0){$("eventCountdown").textContent="00:00";setReady(true);stopAmbience();return}
-  autoEndsAt=Date.now()+total*1000;autoRunning=true;updateAuto();autoTimer=setInterval(updateAuto,200);if(settings.mode==="halloween")startAmbience();
+
+  const betweenRounds=!!game&&game.round>1;
+  const total=betweenRounds
+    ? settings.roundHours*3600+settings.roundMinutes*60+settings.roundSeconds
+    : settings.hours*3600+settings.minutes*60+settings.seconds;
+
+  $("eventCountdownLabel").textContent=betweenRounds?`NÄCHSTE RUNDE ${game.round} IN`:"START IN";
+
+  if(total<=0){
+    $("eventCountdown").textContent="00:00";
+    setReady(true);
+    stopAmbience();
+    return;
+  }
+
+  autoEndsAt=Date.now()+total*1000;
+  autoRunning=true;
+  updateAuto();
+  autoTimer=setInterval(updateAuto,200);
+  if(settings.mode==="halloween")startAmbience();
 }
 function updateAuto(){
   let remain=Math.max(0,Math.ceil((autoEndsAt-Date.now())/1000));
@@ -1294,7 +1419,7 @@ function updateModeSpecificSettings(){
 }
 function syncSettingsUI(){
   document.querySelector(`input[name="mode"][value="${settings.mode}"]`).checked=true;
-  $("hoursInput").value=settings.hours;$("minutesInput").value=settings.minutes;$("secondsInput").value=settings.seconds;$("roundsInput").value=settings.rounds;
+  $("hoursInput").value=settings.hours;$("minutesInput").value=settings.minutes;$("secondsInput").value=settings.seconds;$("roundHoursInput").value=settings.roundHours;$("roundMinutesInput").value=settings.roundMinutes;$("roundSecondsInput").value=settings.roundSeconds;$("roundsInput").value=settings.rounds;
   $("soundPack").value=settings.soundPack;$("mysteryChance").value=String(settings.mysteryChance);
   $("noRepeatPlayer").checked=settings.noRepeatPlayer;$("noRepeatChallenge").checked=settings.noRepeatChallenge;$("doubleEnabled").checked=settings.doubleEnabled;$("tvModeEnabled").checked=settings.tvMode;$("hostModeEnabled").checked=settings.hostMode;
 
@@ -1322,7 +1447,7 @@ function saveSettings(){
     if(bad){alert("Bitte bei jedem Musik-Song einen Namen und einen gültigen YouTube-Link eintragen.");return}
   }
 
-  settings.mode=mode;settings.hours=clamp($("hoursInput").value,0,99);settings.minutes=clamp($("minutesInput").value,0,59);settings.seconds=clamp($("secondsInput").value,0,59);settings.rounds=clamp($("roundsInput").value,0,99);
+  settings.mode=mode;settings.hours=clamp($("hoursInput").value,0,99);settings.minutes=clamp($("minutesInput").value,0,59);settings.seconds=clamp($("secondsInput").value,0,59);settings.roundHours=clamp($("roundHoursInput").value,0,99);settings.roundMinutes=clamp($("roundMinutesInput").value,0,59);settings.roundSeconds=clamp($("roundSecondsInput").value,0,59);settings.rounds=clamp($("roundsInput").value,0,99);
   settings.soundPack=$("soundPack").value;settings.mysteryChance=pct($("mysteryChance").value);
   settings.noRepeatPlayer=$("noRepeatPlayer").checked;settings.noRepeatChallenge=$("noRepeatChallenge").checked;settings.doubleEnabled=$("doubleEnabled").checked;settings.tvMode=$("tvModeEnabled").checked;settings.hostMode=$("hostModeEnabled").checked;
 
@@ -1362,6 +1487,11 @@ function remotePrimaryState(){
     const visible=btn&&btn.style.display!=="none"&&getComputedStyle(btn).display!=="none"&&!btn.disabled;
     if(visible)return {available:true,label:"➡️ WEITER"};
   }
+  if(screen==="giftWheel"){
+    const btn=$("giftContinueBtn");
+    const visible=btn&&btn.style.display!=="none"&&getComputedStyle(btn).display!=="none"&&!btn.disabled;
+    if(visible)return {available:true,label:"➡️ WEITER"};
+  }
 
   return {available:false,label:"✅ FERTIG"};
 }
@@ -1386,6 +1516,12 @@ function runPrimaryProgressAction(){
     const btn=$("mysteryContinueBtn");
     const visible=btn&&btn.style.display!=="none"&&getComputedStyle(btn).display!=="none"&&!btn.disabled;
     if(visible)btn.click();
+    return;
+  }
+  if(screen==="giftWheel"){
+    const btn=$("giftContinueBtn");
+    const visible=btn&&btn.style.display!=="none"&&getComputedStyle(btn).display!=="none"&&!btn.disabled;
+    if(visible)btn.click();
   }
 }
 function remoteStatus(){
@@ -1402,7 +1538,7 @@ function remoteStatus(){
     round:game?.round||1,
     rounds:settings.rounds||0,
     player:game?.musicMode&&game?.musicPlayers?.length?game.musicPlayers.join(" + "):(game?.allPlayers?"ALLE":(game?.currentPlayer||"")),
-    challenge:game?.musicMode&&game?.currentSong?.title?`🎵 ${game.currentSong.title}`:(game?.currentChallenge?.text||""),
+    challenge:game?._screen==="giftWheel"&&game?.currentGift?.label?`🎁 ${game.currentGift.label}`:(game?.musicMode&&game?.currentSong?.title?`🎵 ${game.currentSong.title}`:(game?.currentChallenge?.text||"")),
     penalty:game?.currentPenalty?.text||"",
     timer,
     points:p?.points||0,
@@ -1410,6 +1546,7 @@ function remoteStatus(){
     joker:p?.joker||0,
     ready:$("eventStartBtn")?.style.display==="inline-block",
     challengeExpired:!!challengeExpired,
+    countdownLabel:$("eventCountdownLabel")?.textContent||"",
     primaryAvailable:primary.available,
     primaryLabel:primary.label
   };
@@ -1431,6 +1568,28 @@ function hideConnectOverlay(){
     onlineStarted=true;
     show("start");
     restartCountdown();
+  }
+}
+function showConnectOverlayAgain(){
+  $("hostModal").classList.remove("open");
+  $("withoutPhoneBtn").textContent="ZURÜCK ZUM SPIEL";
+  $("onlineConnect").classList.remove("hidden");
+
+  if(remoteConnected){
+    setOnlineState("connected","Handy ist verbunden – QR-Code kann für eine neue Verbindung gescannt werden.");
+  }else{
+    setOnlineState("","QR-Code mit dem Handy scannen");
+  }
+
+  if(!remotePeer || remotePeer.destroyed){
+    $("onlineQr").innerHTML="";
+    $("onlineUrl").textContent="Neue Sitzung wird erstellt …";
+    createOnlineSession();
+    return;
+  }
+
+  if(remotePeer.disconnected){
+    try{remotePeer.reconnect()}catch(e){}
   }
 }
 function acceptRemote(conn){
@@ -1463,6 +1622,7 @@ function acceptRemote(conn){
     remoteConnected=false;
     $("remotePill").classList.remove("show");
     if(remoteStatusTimer){clearInterval(remoteStatusTimer);remoteStatusTimer=null}
+    setOnlineState("","Handy getrennt – QR-Code kann erneut gescannt werden.");
   });
   conn.on("error",()=>{remoteConnected=false;$("remotePill").classList.remove("show")});
 }
@@ -1480,7 +1640,7 @@ function sanitizeRemoteSettings(s){
   const out=JSON.parse(JSON.stringify(settings));
 
   if(["standard","halloween","birthday"].includes(s.mode))out.mode=s.mode;
-  out.hours=clamp(s.hours,0,99);out.minutes=clamp(s.minutes,0,59);out.seconds=clamp(s.seconds,0,59);out.rounds=clamp(s.rounds,0,99);
+  out.hours=clamp(s.hours,0,99);out.minutes=clamp(s.minutes,0,59);out.seconds=clamp(s.seconds,0,59);out.roundHours=clamp(s.roundHours??out.roundHours,0,99);out.roundMinutes=clamp(s.roundMinutes??out.roundMinutes,0,59);out.roundSeconds=clamp(s.roundSeconds??out.roundSeconds,0,59);out.rounds=clamp(s.rounds,0,99);
   if(["creepy","gameshow","funny","dramatic"].includes(s.soundPack))out.soundPack=s.soundPack;
   out.mysteryChance=pct(s.mysteryChance);
   ["noRepeatPlayer","noRepeatChallenge","doubleEnabled","tvMode","hostMode"].forEach(k=>{if(typeof s[k]==="boolean")out[k]=s[k]});
@@ -1603,6 +1763,7 @@ $("settingsBtn").onclick=()=>{clearAuto();stopAmbience();syncSettingsUI();$("set
 $("settingsClose").onclick=()=>{$("settingsModal").classList.remove("open");show("start");restartCountdown()};
 $("hostBtn").onclick=()=>$("hostModal").classList.add("open");
 $("hostClose").onclick=()=>$("hostModal").classList.remove("open");
+$("hostShowQr").onclick=showConnectOverlayAgain;
 $("soundBtn").onclick=()=>{ensureAudio();if(settings.mode==="halloween"&&screens.start.classList.contains("active")&&autoRunning)startAmbience()};
 $("addPlayerBtn").onclick=()=>{captureEditors();settings.players.push({name:"Neuer Spieler",active:true,birthday:false});renderPlayers()};
 $("addChallengeBtn").onclick=()=>{captureEditors();settings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",chance:0});renderChallenges()};
