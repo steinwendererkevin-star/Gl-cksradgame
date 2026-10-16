@@ -1,58 +1,52 @@
-CHALLENGE ROULETTE V18 – GESCHENK-RAD + ZWEI COUNTDOWNS
+CHALLENGE ROULETTE V18.1 – GLÜCKS-EREIGNIS HOTFIX / NEUER ABLAUF
 
-NEU 1: 🎁 ECHTES GESCHENK-RAD
-Im Geburtstagsmodus ist "Überraschungsgeschenk" jetzt ein echtes sichtbares Rad.
+BEHOBEN:
+- FERTIG/WEITER beim Glücksrad funktioniert jetzt zuverlässig.
+- "Challenge weitergeben" wurde aus dem Glücksrad entfernt.
+- Es kann dadurch kein zweites Glücks-/Geschenkrad mehr ausgelöst werden.
 
-Wenn die eingestellte Geschenk-Rad-Chance ausgelöst wird:
-1. Nach der Namensauswahl öffnet sich das Geschenk-Rad.
-2. Das Rad dreht sichtbar.
-3. Ein Geschenk wird ausgelost.
-4. Danach erscheint "WEITER".
-5. WEITER funktioniert auch auf dem Handy-Host.
+NEUER GLÜCKS-EREIGNIS-ABLAUF:
+1. Ihr drückt "JETZT STARTEN".
+2. Das Spiel prüft die eingestellte "🍀 Glücks-Ereignis"-Chance.
+3. Nur wenn die Chance trifft, erscheint groß:
+   "🍀 GLÜCKS-EREIGNIS!"
+4. Danach dreht das Namensrad GENAU EINMAL.
+5. Ein Spieler wird ausgewählt.
+6. Danach dreht das Glücksrad.
+7. Der Gewinn wird diesem Spieler direkt gutgeschrieben.
+8. Auf FERTIG endet die Runde sofort.
+9. Danach beginnt der normale Runden-Countdown.
+10. Es folgt KEINE zusätzliche Challenge in derselben Runde.
 
-Mögliche Geschenke:
-- ⭐ +1 Punkt
-- 🌟 +2 Punkte
-- 🃏 +1 Joker
-- 🃏🃏 +2 Joker
-- 🕊️ Freifahrt – keine Challenge in dieser Runde
-- 🎯 Challenge weitergeben – ein anderer aktiver Spieler wird zufällig gewählt
+GLÜCKSRAD-INHALT EINSTELLBAR:
+Im Geburtstags-Reiter gibt es jetzt:
+"🍀 Inhalt des Glücksrads"
 
-Die Seltenheit des Geschenk-Rads selbst bleibt frei in Prozent einstellbar.
+Jeder Eintrag hat:
+- Anzeige / Name
+- Gewinn-Art:
+  • Punkte
+  • Joker
+  • Freifahrt
+- Wert, z.B. 1, 2, 5 ...
 
-NEU 2: ⏱️ GETRENNTER START- UND RUNDEN-COUNTDOWN
-Es gibt jetzt zwei komplett getrennte Zeiten:
+Beispiele:
+- "+1 Punkt" → Punkte → 1
+- "+3 Punkte" → Punkte → 3
+- "+1 Joker" → Joker → 1
+- "Mega Joker" → Joker → 2
+- "Freifahrt" → Freifahrt
 
-A) START-COUNTDOWN
-- läuft nur ganz am Anfang vor Runde 1
-- Stunden / Minuten / Sekunden frei einstellbar
+Das geht am PC UND am Handy.
 
-B) RUNDEN-COUNTDOWN
-- gilt ab Runde 2
-- läuft nach jeder abgeschlossenen Runde
-- Stunden / Minuten / Sekunden frei einstellbar
-- kann deutlich kürzer als der Start-Countdown sein
-
-Beispiel:
-Start-Countdown: 02:00:00
-Runden-Countdown: 00:05:00
-
-Nach Ablauf erscheint wie bisher "JETZT STARTEN".
-Bei 00:00:00 ist die jeweilige Wartezeit praktisch deaktiviert.
-
-HANDY:
-- Beide Countdown-Zeiten können auch auf dem Handy eingestellt werden.
-- Geschenk-Rad "WEITER" kann ebenfalls vom Handy gedrückt werden.
-- Der Handy-Status zeigt START IN bzw. NÄCHSTE RUNDE X IN.
-
-ALLE V17.2-FUNKTIONEN BLEIBEN:
+WEITERHIN ENTHALTEN:
 - Musik-Challenge mit 3 verschiedenen Spielern
-- Musik-Rad + YouTube neuer Tab
-- FERTIG / WEITER übers Handy
+- YouTube öffnet in neuem Tab
+- FERTIG/WEITER über Handy
 - QR-Code erneut einblenden
-- Challenge- und Straf-Wahrscheinlichkeiten
-- Halloween-/Geburtstags-Extras
-- individuelle Lautstärken
+- Start-Countdown + separater Runden-Countdown
+- Prozent-Chancen und individuelle Sounds
+- Halloween- und Geburtstags-Extras
 
 GITHUB:
-index.html und host.html durch die V18-Dateien ersetzen und Commit changes.
+index.html und host.html durch V18.1 ersetzen und Commit changes.

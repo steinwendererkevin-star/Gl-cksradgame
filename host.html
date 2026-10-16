@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080a0f">
-<title>Challenge Roulette Host V18</title>
+<title>Challenge Roulette Host V18.1</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -58,11 +58,12 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
 .switch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .switch{display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.11);border-radius:13px;padding:10px 11px;background:#131925}
 .switch input{width:20px;height:20px;min-height:auto;accent-color:#7659ff}
-.editor-head,.player-row,.challenge-row,.penalty-row,.song-row{display:grid;align-items:center;gap:6px;margin-bottom:7px}
+.editor-head,.player-row,.challenge-row,.penalty-row,.song-row,.lucky-row{display:grid;align-items:center;gap:6px;margin-bottom:7px}
 .player-row,.editor-head.player{grid-template-columns:minmax(0,1fr) 52px 52px 38px}
 .challenge-row,.editor-head.challenge{grid-template-columns:minmax(0,1fr) 62px 78px 72px 38px}
 .penalty-row,.editor-head.penalty{grid-template-columns:minmax(0,1fr) 64px 64px 34px}
 .song-row,.editor-head.song{grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr) 34px}
+.lucky-row,.editor-head.lucky{grid-template-columns:minmax(0,1fr) 105px 58px 34px}
 .editor-head{font-size:10px;color:#8f99aa;font-weight:900;padding:0 3px}
 .editor-head span:not(:first-child){text-align:center}
 .row-check{display:grid;place-items:center}.row-check input{width:20px;height:20px;min-height:auto;accent-color:#7659ff}
@@ -211,10 +212,19 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
         <div class="chance-grid">
           <label class="percent-field"><span>🎊 Konfettikanonen</span><input id="birthdayConfettiChance" type="number" min="0" max="100"></label>
           <label class="percent-field"><span>🎉 Party-Überraschung</span><input id="birthdayPartyChance" type="number" min="0" max="100"></label>
-          <label class="percent-field"><span>🎁 Geschenk-Rad</span><input id="birthdayGiftChance" type="number" min="0" max="100"></label>
+          <label class="percent-field"><span>🍀 Glücks-Ereignis</span><input id="birthdayGiftChance" type="number" min="0" max="100"></label>
           <label class="percent-field"><span>🎵 Musik-Challenge</span><input id="birthdayMusicChallengeChance" type="number" min="0" max="100"></label>
           <label class="percent-field"><span>⏱️ Fake Countdown</span><input id="birthdayFakeCountdownChance" type="number" min="0" max="100"></label>
           <label class="percent-field"><span>✨ Secret Event</span><input id="birthdaySecretChance" type="number" min="0" max="100"></label>
+        </div>
+
+        <div id="luckyDropdown" class="dropdown-section">
+          <button id="luckyDropdownToggle" class="dropdown-toggle" type="button"><span>🍀 Inhalt des Glücksrads</span><span class="arrow">⌄</span></button>
+          <div class="dropdown-content">
+            <div class="editor-head lucky"><span>Anzeige</span><span>Gewinn</span><span>Wert</span><span></span></div>
+            <div id="luckyEditor"></div>
+            <button id="addLuckyBtn" class="add" type="button">+ Gewinn hinzufügen</button>
+          </div>
         </div>
 
         <div id="songsDropdown" class="dropdown-section">
@@ -302,7 +312,7 @@ function status(ok,text){
   s.querySelector("span:last-child").textContent=text;
 }
 function sendCommand(action){if(conn&&conn.open)conn.send({type:"command",action})}
-function screenName(s){return ({start:"STARTBILDSCHIRM",name:"NAMENSRAD",challenge:"CHALLENGE-RAD",result:"CHALLENGE",penalty:"STRAFRAD",penaltyResult:"STRAFE",mystery:"MYSTERY EVENT",giftWheel:"GESCHENK-RAD",musicWheel:"MUSIK-RAD",musicResult:"MUSIK-CHALLENGE",double:"DOUBLE OR NOTHING",doubleWheel:"DOUBLE-RAD",stats:"ERGEBNIS"})[s]||String(s||"GAME").toUpperCase()}
+function screenName(s){return ({start:"STARTBILDSCHIRM",name:"NAMENSRAD",challenge:"CHALLENGE-RAD",result:"CHALLENGE",penalty:"STRAFRAD",penaltyResult:"STRAFE",mystery:"MYSTERY EVENT",luckyEvent:"GLÜCKS-EREIGNIS",giftWheel:"GLÜCKSRAD",musicWheel:"MUSIK-RAD",musicResult:"MUSIK-CHALLENGE",double:"DOUBLE OR NOTHING",doubleWheel:"DOUBLE-RAD",stats:"ERGEBNIS"})[s]||String(s||"GAME").toUpperCase()}
 function render(s){
   $("screenLabel").textContent=screenName(s.screen);$("player").textContent=s.player||"—";
   let text=s.challenge||"";if(s.screen==="penalty"||s.screen==="penaltyResult")text=s.penalty||text;
@@ -382,6 +392,22 @@ function renderPenalties(){
   });
   updateChanceTotals();
 }
+function renderLuckyRewards(){
+  const root=$("luckyEditor");if(!root)return;
+  root.innerHTML="";
+  (currentSettings.luckyRewards||[]).forEach((reward,i)=>{
+    const row=document.createElement("div");row.className="lucky-row";
+    row.innerHTML=`<input class="l-label" maxlength="80" placeholder="+1 Punkt" value="${esc(reward.label||"")}">
+      <select class="l-type"><option value="points">Punkte</option><option value="jokers">Joker</option><option value="free">Freifahrt</option></select>
+      <input class="l-value" type="number" min="0" max="99" step="1" value="${clamp(reward.value,0,99)}">
+      <button class="remove" type="button">×</button>`;
+    row.querySelector(".l-type").value=reward.type||"points";
+    const sync=()=>{const free=row.querySelector(".l-type").value==="free";row.querySelector(".l-value").disabled=free;if(free)row.querySelector(".l-value").value=0};
+    row.querySelector(".l-type").addEventListener("change",sync);sync();
+    row.querySelector(".remove").onclick=()=>{captureEditors();currentSettings.luckyRewards.splice(i,1);renderLuckyRewards()};
+    root.appendChild(row);
+  });
+}
 function renderSongs(){
   const root=$("songEditor");if(!root)return;
   root.innerHTML="";
@@ -397,6 +423,11 @@ function captureEditors(){
   currentSettings.challenges=[...document.querySelectorAll(".challenge-row")].map(r=>({text:r.querySelector(".c-text").value.trim(),seconds:clamp(r.querySelector(".c-sec").value,1,3600),difficulty:r.querySelector(".c-diff").value,chance:Math.round(pct(r.querySelector(".c-chance").value)*10)/10})).filter(c=>c.text);
   currentSettings.penalties=[...document.querySelectorAll(".penalty-row")].map(r=>({text:r.querySelector(".r-text").value.trim(),seconds:clamp(r.querySelector(".r-sec").value,1,3600),chance:Math.round(pct(r.querySelector(".r-chance").value)*10)/10})).filter(p=>p.text);
   currentSettings.songs=[...document.querySelectorAll(".song-row")].map(r=>({title:r.querySelector(".s-title").value.trim(),url:r.querySelector(".s-url").value.trim()})).filter(x=>x.title||x.url);
+  currentSettings.luckyRewards=[...document.querySelectorAll(".lucky-row")].map(r=>({
+    label:r.querySelector(".l-label").value.trim(),
+    type:r.querySelector(".l-type").value,
+    value:r.querySelector(".l-type").value==="free"?0:clamp(r.querySelector(".l-value").value,1,99)
+  })).filter(x=>x.label);
 }
 function updateModeSpecificSettings(){
   const selected=document.querySelector('input[name="mode"]:checked')?.value||currentSettings?.mode||"standard";
@@ -417,7 +448,7 @@ function fillSettings(){
    "musicVolume","tickVolume","heartbeatVolume","wheelVolume","resultVolume","penaltyVolume","jumpscareVolume","evilLaughVolume","confettiVolume","partyVolume","giftVolume"
   ].forEach(k=>{if($(k))$(k).value=currentSettings[k]??0});
 
-  renderPlayers();renderChallenges();renderPenalties();renderSongs();updateModeSpecificSettings();
+  renderPlayers();renderChallenges();renderPenalties();renderLuckyRewards();renderSongs();updateModeSpecificSettings();
 }
 function collectSettings(){
   captureEditors();
@@ -446,6 +477,9 @@ function saveSettings(){
   if(Math.abs(totalChance(currentSettings.challenges)-100)>.01){alert("Die Challenge-Chancen müssen zusammen genau 100% ergeben.");return}
   if(!currentSettings.penalties.length){alert("Mindestens eine Strafe eintragen.");return}
   if(Math.abs(totalChance(currentSettings.penalties)-100)>.01){alert("Die Straf-Chancen müssen zusammen genau 100% ergeben.");return}
+  if(currentSettings.mode==="birthday"&&pct(currentSettings.birthdayGiftChance)>0&&!(currentSettings.luckyRewards||[]).length){
+    alert("Für das Glücks-Ereignis musst du mindestens einen Gewinn im Glücksrad eintragen.");return
+  }
   if(currentSettings.mode==="birthday"&&pct(currentSettings.birthdayMusicChallengeChance)>0){
     if(currentSettings.players.filter(p=>p.active).length<3){alert("Für die Musik-Challenge brauchst du mindestens 3 aktive Spieler.");return}
     if(!(currentSettings.songs||[]).length){alert("Für die Musik-Challenge musst du mindestens einen Song eintragen.");return}
@@ -465,6 +499,8 @@ $("addChallengeBtn").onclick=()=>{captureEditors();currentSettings.challenges.pu
 $("addPenaltyBtn").onclick=()=>{captureEditors();currentSettings.penalties.push({text:"Neue Strafe",seconds:30,chance:0});renderPenalties()};
 $("addSongBtn").onclick=()=>{captureEditors();currentSettings.songs=currentSettings.songs||[];currentSettings.songs.push({title:"",url:""});renderSongs()};
 $("songsDropdownToggle").onclick=()=>$("songsDropdown").classList.toggle("open");
+$("addLuckyBtn").onclick=()=>{captureEditors();currentSettings.luckyRewards=currentSettings.luckyRewards||[];currentSettings.luckyRewards.push({label:"+1 Punkt",type:"points",value:1});renderLuckyRewards()};
+$("luckyDropdownToggle").onclick=()=>$("luckyDropdown").classList.toggle("open");
 
 
 document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener("change",()=>{if(r.checked)updateModeSpecificSettings()}));
