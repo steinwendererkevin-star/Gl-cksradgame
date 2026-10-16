@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V18.2 Online Host</title>
+<title>Challenge Roulette V18.3 Online Host</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -273,6 +273,26 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 .joker-target-grid button{min-height:52px}
 @media(max-width:560px){.joker-target-grid{grid-template-columns:1fr}}
 
+
+.gift-finish-floating{
+  position:fixed;
+  left:50%;
+  bottom:max(24px,env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  z-index:120;
+  min-width:min(320px,72vw);
+  padding:17px 30px;
+  font-size:21px;
+  box-shadow:0 18px 48px rgba(0,0,0,.48),0 0 34px var(--glow);
+}
+#giftWheelScreen .game-shell{padding-bottom:82px}
+@media(max-height:760px){
+  #giftWheelScreen .wheel-wrap{width:min(54vh,64vw)}
+  #giftWheelScreen .heading{margin-top:42px}
+  #giftWheelScreen .gift-result{margin:2px auto 4px;font-size:clamp(20px,4vw,34px)}
+  #giftWheelScreen .gift-sub{font-size:14px}
+}
+
 </style>
 </head>
 <body>
@@ -350,7 +370,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
     <div class="wheel-wrap"><div class="pointer"></div><canvas id="giftWheel" class="wheel" width="900" height="900"></canvas><div class="wheel-ring"></div></div>
     <div id="giftPicked" class="gift-result">🎁</div>
     <div id="giftSub" class="gift-sub"></div>
-    <button id="giftContinueBtn" class="primary" type="button" style="display:none">WEITER</button>
+    <button id="giftContinueBtn" class="primary gift-finish-floating" type="button" style="display:none">FERTIG</button>
   </div>
 </section>
 
@@ -770,7 +790,7 @@ function validSongs(){return (settings.songs||[]).filter(x=>x.title&&isYouTubeUr
 
 function load(){
   try{
-    const raw=localStorage.getItem("challengeRouletteSettingsV18_2")||localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
+    const raw=localStorage.getItem("challengeRouletteSettingsV18_3")||localStorage.getItem("challengeRouletteSettingsV18_2")||localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
     if(!raw)return;
     const s=JSON.parse(raw);
     if(!s)return;
@@ -811,7 +831,7 @@ function load(){
     }
   }catch(e){}
 }
-function save(){try{localStorage.setItem("challengeRouletteSettingsV18_2",JSON.stringify(settings))}catch(e){}}
+function save(){try{localStorage.setItem("challengeRouletteSettingsV18_3",JSON.stringify(settings))}catch(e){}}
 
 function initGame(reset=true){
   if(!reset&&game)return;
@@ -1015,7 +1035,6 @@ function showMusicResult(){
     if(w)try{w.opener=null}catch(e){}
   };
   $("musicFinishBtn").onclick=finishMusicChallenge;
-$("giftContinueBtn").onclick=continueGiftWheel;
   resultStinger();
   show("musicResult");
 }
@@ -1113,6 +1132,7 @@ function runBirthdayGift(next){
 
   $("giftPicked").textContent="🍀";
   $("giftSub").textContent=`Für ${game.currentPlayer}`;
+  $("giftContinueBtn").textContent="FERTIG";
   $("giftContinueBtn").style.display="none";
   $("giftContinueBtn").disabled=true;
 
@@ -1999,6 +2019,7 @@ $("jokerBtn").onclick=useJoker;
 $("jokerTransferClose").onclick=()=>closeJokerTransfer(true);
 $("jokerTransferCancel").onclick=()=>closeJokerTransfer(true);
 $("penaltyFinishBtn").onclick=()=>{stopPenaltyTimer();completeRound()};
+$("giftContinueBtn").onclick=continueGiftWheel;
 $("doubleNoBtn").onclick=completeRound;
 $("doubleYesBtn").onclick=doubleRisk;
 $("playAgainBtn").onclick=()=>{initGame(true);show("start");restartCountdown()};
