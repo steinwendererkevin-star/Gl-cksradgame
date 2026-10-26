@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#050805">
-<title>Halloween · Hider</title>
+<title>Halloween · Hider V19.1</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
@@ -48,7 +48,13 @@ button{font:inherit}.page{position:absolute;inset:0;display:none}.page.show{disp
   <div class="bottom">
     <button id="readyBtn" class="ready">✅ READY · BIN VERSTECKT</button>
   </div>
-  <div id="foundOverlay" class="foundOverlay"><div><div style="font-size:65px">💀</div><h1>GEFUNDEN</h1><div>Du wurdest vom Sucher gefunden.</div></div></div>
+  <div id="foundOverlay" class="foundOverlay">
+    <div>
+      <div id="hiderEndIcon" style="font-size:65px">💀</div>
+      <h1 id="hiderEndTitle">GEFUNDEN</h1>
+      <div id="hiderEndText">Du wurdest vom Sucher gefunden.</div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -112,17 +118,39 @@ function render(){
   const me=state.hiders?.[myName];
   if(!me)return;
   ready=!!me.ready;
-  $("readyBtn").textContent=ready?"↩️ READY ZURÜCKNEHMEN":"✅ READY · BIN VERSTECKT";
-  $("readyBtn").classList.toggle("on",ready);
+  $("readyBtn").style.display=ready?"none":"block";
+  $("readyBtn").disabled=ready;
+
   if(state.status==="searching")$("gameStatus").textContent=`🔦 Suche läuft · Sucher: ${state.seeker}`;
-  else if(state.status==="finished")$("gameStatus").textContent=state.result==="all_found"?"✅ Alle wurden gefunden":"⏰ Suchzeit ist vorbei";
-  else $("gameStatus").textContent=ready?"✅ Du bist READY. Warte auf den Sucher.":"Verstecke dich und drücke READY.";
-  $("foundOverlay").classList.toggle("show",!!me.found);
+  else if(state.status==="finished"){
+    $("gameStatus").textContent=state.result==="all_found"?"💀 Sucher hat alle gefunden":"🏆 Zeit abgelaufen – Hider gewonnen";
+  }else $("gameStatus").textContent=ready?"✅ READY gespeichert. Warte auf den Sucher.":"Verstecke dich und drücke READY.";
+
+  if(state.status==="finished"){
+    $("foundOverlay").classList.add("show");
+    if(state.result==="all_found"){
+      $("hiderEndIcon").textContent="💀";
+      $("hiderEndTitle").textContent="VERLOREN";
+      $("hiderEndText").textContent="Es wurden alle gefunden.";
+    }else{
+      $("hiderEndIcon").textContent="👻🏆";
+      $("hiderEndTitle").textContent="GEWONNEN";
+      $("hiderEndText").textContent="Zeit abgelaufen – ihr Hider habt gewonnen!";
+    }
+  }else if(me.found){
+    $("foundOverlay").classList.add("show");
+    $("hiderEndIcon").textContent="💀";
+    $("hiderEndTitle").textContent="GEFUNDEN";
+    $("hiderEndText").textContent="Du wurdest vom Sucher gefunden.";
+  }else{
+    $("foundOverlay").classList.remove("show");
+  }
+
   updateMap();
 }
 function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function attr(v){return esc(v)}
-$("readyBtn").onclick=()=>{wake();send("hide_ready",{ready:!ready})};
+$("readyBtn").onclick=()=>{if(ready)return;wake();send("hide_ready",{ready:true})};
 function connect(){
   if(!gamePeer||!token){$("connStatus").textContent="Ungültiger QR-Link";return}
   if(typeof Peer==="undefined"){$("connStatus").textContent="PeerJS konnte nicht geladen werden";return}

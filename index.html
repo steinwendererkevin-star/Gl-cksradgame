@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V19 Halloween Test</title>
+<title>Challenge Roulette V19.1 Halloween Test</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *{box-sizing:border-box}
@@ -436,6 +436,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
     <div class="hide-map-panel">
       <strong id="hidePcHeadline">Warte auf die Hider …</strong>
       <div id="hidePcPeople" class="hide-live-list"></div>
+    </div>
+  </div>
+  <div id="hidePcEndOverlay" class="hide-popup">
+    <div class="hide-popup-card">
+      <div id="hidePcEndIcon" style="font-size:72px">🏆</div>
+      <h2 id="hidePcEndTitle">GEWONNEN</h2>
+      <div id="hidePcEndText" style="font-size:20px;font-weight:850;color:var(--muted)"></div>
     </div>
   </div>
 </section>
@@ -1775,12 +1782,23 @@ function updateHidePcHud(){
   if(hideState.status==="searching"){
     status=`🔎 Suche läuft · ${found}/${hiders.length} gefunden`;
     headline=found===hiders.length?"Alle gefunden!":"Der Sucher ist unterwegs …";
+    $("hidePcEndOverlay").classList.remove("show");
   }else if(hideState.status==="finished"){
-    status=hideState.result==="all_found"?"✅ Alle gefunden":"⏰ Zeit abgelaufen";
-    headline=hideState.result==="all_found"?"Der Sucher hat alle gefunden!":"Hide & Seek ist beendet.";
-  }else if(hiders.length&&ready===hiders.length){
-    status="✅ Alle versteckt";
-    headline="Alle Hider sind READY – der Sucher kann starten.";
+    const seekerWon=hideState.result==="all_found";
+    status=seekerWon?"✅ Alle gefunden":"⏰ Zeit abgelaufen";
+    headline=seekerWon?"Der Sucher hat alle gefunden!":"Die Hider haben durchgehalten!";
+    $("hidePcEndIcon").textContent=seekerWon?"🔦🏆":"👻🏆";
+    $("hidePcEndTitle").textContent=seekerWon?"SUCHER GEWONNEN":"HIDER GEWONNEN";
+    $("hidePcEndText").textContent=seekerWon
+      ?`${hideState.seeker} hat alle Hider gefunden.`
+      :"Die Zeit ist abgelaufen – mindestens ein Hider blieb unentdeckt.";
+    $("hidePcEndOverlay").classList.add("show");
+  }else{
+    $("hidePcEndOverlay").classList.remove("show");
+    if(hiders.length&&ready===hiders.length){
+      status="✅ Alle versteckt";
+      headline="Alle Hider sind READY – der Sucher kann starten.";
+    }
   }
   $("hidePcStatusPill").textContent=status;
   $("hidePcTimerPill").textContent=hideState.status==="searching"?`⏱️ ${formatHideSearchTime()}`:`⏱️ ${formatTime(hideState.searchSeconds)}`;
@@ -1873,7 +1891,8 @@ function acceptHideRemote(conn,md){
       conn._hideName=name;hideState.hiders[name].connected=true;broadcastHideState();return
     }
     if(msg.type==="hide_ready"&&conn._hideRole==="hider"&&conn._hideName&&hideState.hiders[conn._hideName]){
-      hideState.hiders[conn._hideName].ready=!!msg.ready;broadcastHideState();return
+      if(msg.ready===true)hideState.hiders[conn._hideName].ready=true;
+      broadcastHideState();return
     }
     if(msg.type==="hide_location"){
       const loc=msg.location;

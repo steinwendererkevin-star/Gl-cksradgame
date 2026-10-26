@@ -1,54 +1,45 @@
-CHALLENGE ROULETTE V19 – HALLOWEEN HIDE & SEEK TEST
+CHALLENGE ROULETTE V19.1 – HALLOWEEN HIDE & SEEK RESULT UPDATE
 
-WICHTIG:
-Diese Version ist eine Testversion für den komplett neuen Halloween-Modus.
-Standard und Geburtstag bleiben weiterhin enthalten.
+NEU / GEÄNDERT:
 
-NEUER HALLOWEEN-START:
-- Statt Stunden/Minuten/Sekunden stellst du eine UHRZEIT ein, z.B. 22:00.
-- Das Spiel berechnet automatisch die Zeit bis zur nächsten 22:00 Uhr und zählt herunter.
-- Nach Ablauf erscheint "JETZT STARTEN".
+1) READY IST ENDGÜLTIG
+- Sobald ein Hider "READY · BIN VERSTECKT" drückt, verschwindet der Button.
+- READY kann nicht mehr zurückgenommen werden.
+- Der Status bleibt auf READY.
 
-HIDE & SEEK:
-1. JETZT STARTEN
-2. "HALLOWEEN EVENT GESTARTET"
-3. "HIDE & SEEK"
-4. Namensrad wählt einen Sucher
-5. PC zeigt den Sucher + eigenen Seeker-QR
-6. Weiter → gemeinsamer Hider-QR
-7. Jeder Hider scannt und wählt seinen Namen
-8. Der Sucher ist bei der Hider-Namensauswahl ausgeschlossen
-9. Hider erlauben Standort und drücken READY / BIN VERSTECKT
-10. Seeker-Seite zeigt live READY / nicht READY
-11. Sind alle READY, erscheint beim Sucher "ALLE SIND VERSTECKT"
-12. Sucher drückt "JETZT SUCHEN"
-13. Eingestellte Suchzeit startet
-14. Sucher kann jeden Hider über "GEFUNDEN" markieren
-15. Wenn alle gefunden sind oder die Zeit abläuft, endet das Spiel
+2) LEINWAND / PC ZEIGT DEN GEWINNER
+Wenn der Sucher alle Hider findet:
+- große Anzeige: "🔦🏆 SUCHER GEWONNEN"
+- darunter: "<Sucher> hat alle Hider gefunden."
 
-LIVE GPS:
-- PC/Leinwand: Live-Map mit Sucher + allen Hidern
-- Hider-Handys: Live-Map mit Sucher + allen Hidern
-- Sucher-Handy: KEINE Karte der Hider
-- Gefundene Hider werden grau markiert
-- GPS-Genauigkeit wird angezeigt
-- Standortdaten werden nur in der laufenden Browser-Spiel-Sitzung verwendet
+Wenn die Suchzeit abläuft:
+- große Anzeige: "👻🏆 HIDER GEWONNEN"
+- darunter: "Die Zeit ist abgelaufen – mindestens ein Hider blieb unentdeckt."
 
-NEUE DATEIEN:
-- index.html       PC / Leinwand
-- host.html        normale Handy-Hoststeuerung
-- seeker.html      Seite für den ausgewählten Sucher
-- hider.html       Seite für alle Hider
+3) SUCHER-HANDY
+Wenn alle gefunden wurden:
+- "🏆 ALLE GEFUNDEN!"
+- "GEWONNEN! Du hast alle Hider gefunden."
 
-TECHNIK:
-- GitHub Pages / HTTPS erforderlich
-- PeerJS/WebRTC für Live-Synchronisierung
-- Browser-Geolocation für GPS
-- Leaflet + OpenStreetMap für die Live-Karte
-- Handys sollten die jeweilige Seite während des Spiels offen lassen
+Wenn die Zeit abläuft:
+- "⏰ ZEIT ABGELAUFEN"
+- "VERLOREN – du hast X von Y Hider gefunden."
+
+4) HIDER-HANDYS
+Wenn der Sucher alle findet:
+- "💀 VERLOREN"
+- "Es wurden alle gefunden."
+
+Wenn die Zeit abläuft:
+- "👻🏆 GEWONNEN"
+- "Zeit abgelaufen – ihr Hider habt gewonnen!"
+
+Zwischenstatus:
+- Wenn ein einzelner Hider vor Spielende gefunden wird, sieht nur dieser Hider weiterhin "GEFUNDEN".
+- Am endgültigen Spielende bekommen alle Hider das gemeinsame Sieg-/Niederlage-Ergebnis.
 
 GITHUB:
-ALLE 4 HTML-DATEIEN hochladen/ersetzen:
+Alle 4 HTML-Dateien ersetzen:
 index.html
 host.html
 seeker.html
