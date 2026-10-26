@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V18.3 Online Host</title>
+<title>Challenge Roulette V19 Halloween Test</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -293,6 +294,49 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
   #giftWheelScreen .gift-sub{font-size:14px}
 }
 
+
+/* ===== V19 HALLOWEEN HIDE & SEEK TEST ===== */
+.halloween-only-setting{display:none}
+#settingsCard.halloween-v19 #normalStartCountdownField,
+#settingsCard.halloween-v19 #normalRoundCountdownField{display:none}
+#settingsCard.halloween-v19 .halloween-only-setting{display:block}
+.halloween-event-card{text-align:center;max-width:1000px;width:100%;position:relative;z-index:3}
+.halloween-event-kicker{font-size:clamp(15px,2vw,22px);font-weight:950;letter-spacing:.24em;color:#ff8b35}
+.halloween-event-main{font-size:clamp(52px,11vw,128px);font-weight:1000;line-height:.92;margin:12px 0;text-shadow:0 0 42px rgba(255,91,0,.35)}
+.halloween-event-sub{font-size:clamp(18px,3vw,28px);font-weight:800;color:var(--muted);margin-top:14px}
+.hide-qr-layout{width:min(1120px,96vw);display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,440px);gap:30px;align-items:center;position:relative;z-index:4}
+.hide-qr-copy h1{font-size:clamp(42px,8vw,86px);line-height:.95;margin:8px 0 15px}
+.hide-qr-copy p{font-size:clamp(16px,2.3vw,23px);line-height:1.5;color:var(--muted)}
+.hide-qr-box{background:#fff;border-radius:26px;padding:20px;display:flex;align-items:center;justify-content:center;min-height:300px;box-shadow:0 25px 75px rgba(0,0,0,.5)}
+.hide-qr-box img,.hide-qr-box canvas{max-width:100%!important;height:auto!important}
+.hide-code-url{font-size:11px;word-break:break-all;color:#9ba6b6;margin-top:12px}
+.hide-status-pill{display:inline-flex;padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-weight:900;margin:5px 5px 0 0}
+.hide-map-shell{position:absolute;inset:0;z-index:2}
+#hidePcMap{width:100%;height:100%;background:#101418}
+.hide-map-hud{position:absolute;left:18px;right:18px;top:18px;z-index:600;display:flex;gap:10px;flex-wrap:wrap;pointer-events:none}
+.hide-map-hud .pill{background:rgba(7,8,10,.88);backdrop-filter:blur(12px)}
+.hide-map-bottom{position:absolute;left:18px;right:18px;bottom:18px;z-index:600;display:flex;justify-content:space-between;gap:12px;align-items:flex-end;pointer-events:none}
+.hide-map-panel{max-width:min(720px,80vw);background:rgba(7,8,10,.9);border:1px solid rgba(255,132,23,.25);border-radius:20px;padding:13px 16px;backdrop-filter:blur(12px)}
+.hide-map-panel strong{font-size:18px}
+.hide-live-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.hide-live-person{padding:7px 10px;border-radius:999px;background:#15171b;border:1px solid rgba(255,255,255,.12);font-size:12px;font-weight:900}
+.hide-live-person.ready{border-color:#4cd987;color:#8cf0b0}
+.hide-live-person.found{opacity:.55;text-decoration:line-through}
+.hide-live-person.offline{border-color:#dd5c5c;color:#ff9d9d}
+.hide-popup{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.86);display:none;align-items:center;justify-content:center;padding:20px}
+.hide-popup.show{display:flex}
+.hide-popup-card{width:min(570px,100%);text-align:center;border:1px solid rgba(255,132,23,.28);border-radius:28px;padding:28px;background:#120a06;box-shadow:0 35px 100px rgba(0,0,0,.7)}
+.hide-popup-card h2{font-size:clamp(34px,8vw,64px);margin:0 0 12px}
+.halloween-time-grid{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:8px}
+.leaflet-control-attribution{font-size:9px!important}
+.hide-marker{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:3px solid #fff;box-shadow:0 3px 14px rgba(0,0,0,.6);font-size:17px}
+.hide-marker.seeker{background:#e44141}.hide-marker.hider{background:#28b86f}.hide-marker.found{background:#646a74;opacity:.72}
+@media(max-width:760px){
+  .hide-qr-layout{grid-template-columns:1fr;text-align:center;overflow:auto;max-height:94vh}
+  .hide-qr-box{min-height:240px;width:min(330px,88vw);margin:auto}
+  .halloween-time-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -329,6 +373,71 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
   <button id="settingsBtn" class="settings-btn" type="button">⚙️</button>
   <button id="hostBtn" class="host-btn" type="button">🎛️</button>
   <button id="soundBtn" class="sound-btn" type="button">🔊</button>
+</section>
+
+
+<section id="halloweenIntroScreen" class="screen">
+  <div class="noise"></div>
+  <div class="theme-decor halloween-decor"><div class="bat a">🦇</div><div class="bat b">🦇</div><div class="pumpkin">🎃</div></div>
+  <div class="halloween-event-card">
+    <div class="halloween-event-kicker">🎃  HALLOWEEN  🎃</div>
+    <div class="halloween-event-main">EVENT<br>GESTARTET</div>
+    <div class="halloween-event-sub">Die erste Nacht beginnt …</div>
+  </div>
+</section>
+
+<section id="hideTitleScreen" class="screen">
+  <div class="noise"></div>
+  <div class="halloween-event-card">
+    <div class="halloween-event-kicker">ERSTES SPIEL</div>
+    <div class="halloween-event-main">HIDE<br>&amp; SEEK</div>
+    <div class="halloween-event-sub">Wer wird zum Sucher?</div>
+  </div>
+</section>
+
+<section id="hideSeekerQrScreen" class="screen">
+  <div class="noise"></div>
+  <div class="hide-qr-layout">
+    <div class="hide-qr-copy">
+      <div class="halloween-event-kicker">🔦 SUCHER AUSGEWÄHLT</div>
+      <h1><span id="hideSeekerName">—</span><br>IST DER SUCHER</h1>
+      <p>Dieser QR-Code ist <b>nur für den Sucher</b>. Die Seite danach während des ganzen Spiels geöffnet lassen und Standort erlauben.</p>
+      <div><span id="hideSeekerConnection" class="hide-status-pill">📱 Noch nicht verbunden</span></div>
+      <button id="hideSeekerNextBtn" class="primary" type="button" style="margin-top:20px">WEITER ZUM HIDER-QR</button>
+      <div id="hideSeekerUrl" class="hide-code-url"></div>
+    </div>
+    <div id="hideSeekerQr" class="hide-qr-box"></div>
+  </div>
+</section>
+
+<section id="hideHiderQrScreen" class="screen">
+  <div class="noise"></div>
+  <div class="hide-qr-layout">
+    <div class="hide-qr-copy">
+      <div class="halloween-event-kicker">👻 HIDER VERBINDEN</div>
+      <h1>ALLE HIDER<br>SCANNEN</h1>
+      <p>Jeder Hider scannt denselben QR-Code, wählt danach seinen Namen und erlaubt den Standort. Der Sucher wird nicht als Name angeboten.</p>
+      <div><span id="hideHiderConnectCount" class="hide-status-pill">0 / 0 verbunden</span><span id="hideHiderReadyCount" class="hide-status-pill">0 / 0 ready</span></div>
+      <button id="hideShowMapBtn" class="secondary" type="button" style="margin-top:20px">LIVE-MAP ANZEIGEN</button>
+      <div id="hideHiderUrl" class="hide-code-url"></div>
+    </div>
+    <div id="hideHiderQr" class="hide-qr-box"></div>
+  </div>
+</section>
+
+<section id="hideMapScreen" class="screen">
+  <div class="hide-map-shell"><div id="hidePcMap"></div></div>
+  <div class="hide-map-hud">
+    <div id="hidePcSeekerPill" class="pill">🔦 Sucher: —</div>
+    <div id="hidePcStatusPill" class="pill">👻 Verstecken</div>
+    <div id="hidePcTimerPill" class="pill">⏱️ --:--</div>
+  </div>
+  <div class="hide-map-bottom">
+    <div class="hide-map-panel">
+      <strong id="hidePcHeadline">Warte auf die Hider …</strong>
+      <div id="hidePcPeople" class="hide-live-list"></div>
+    </div>
+  </div>
 </section>
 
 <section id="nameScreen" class="screen">
@@ -511,7 +620,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
       </div>
     </div>
 
-    <div class="field">
+    <div id="normalStartCountdownField" class="field">
       <label>⏱️ Start-Countdown – nur vor Runde 1</label>
       <div class="time-grid">
         <input id="hoursInput" type="number" min="0" max="99" inputmode="numeric" placeholder="Std.">
@@ -521,7 +630,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
       <span class="help event-only">Das ist dein langer Countdown ganz am Anfang.</span>
     </div>
 
-    <div class="field">
+    <div id="normalRoundCountdownField" class="field">
       <label>🔁 Runden-Countdown – ab Runde 2</label>
       <div class="time-grid">
         <input id="roundHoursInput" type="number" min="0" max="99" inputmode="numeric" placeholder="Std.">
@@ -557,15 +666,35 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
       </div>
 
       <div id="halloweenExtrasPanel" class="mode-extra-panel">
-        <div class="mode-extra-title">🎃 Halloween – Seltenheit pro Extra</div>
-        <div class="chance-grid">
-          <label class="percent-field"><span>🎃 Böses Lachen beim Namen</span><input id="halloweenLaughChance" type="number" min="0" max="100" step="1"></label>
-          <label class="percent-field"><span>👹 Jumpscare bei Niederlage</span><input id="halloweenJumpscareChance" type="number" min="0" max="100" step="1"></label>
-          <label class="percent-field"><span>⏱️ Fake Countdown</span><input id="halloweenFakeCountdownChance" type="number" min="0" max="100" step="1"></label>
-          <label class="percent-field"><span>🌑 Runde wird dunkler</span><input id="halloweenDarkChance" type="number" min="0" max="100" step="1"></label>
-          <label class="percent-field"><span>🌑 Secret Event</span><input id="halloweenSecretChance" type="number" min="0" max="100" step="1"></label>
+        <div class="mode-extra-title">🎃 Halloween V19 – Hide &amp; Seek</div>
+
+        <div class="field halloween-only-setting">
+          <label>🕙 Event startet um</label>
+          <input id="halloweenStartTime" type="time" step="60">
+          <span class="help">Du stellst nur die Uhrzeit ein. Das Spiel berechnet automatisch die verbleibende Zeit und zählt bis dahin herunter.</span>
         </div>
-        <span class="help">0% = aus, 100% = jedes Mal.</span>
+
+        <div class="field halloween-only-setting">
+          <label>🔦 Suchzeit bei Hide &amp; Seek</label>
+          <div class="time-grid">
+            <input id="hideSeekMinutes" type="number" min="0" max="180" inputmode="numeric" placeholder="Min.">
+            <input id="hideSeekSeconds" type="number" min="0" max="59" inputmode="numeric" placeholder="Sek.">
+            <div style="display:flex;align-items:center;padding:0 10px;color:var(--muted);font-weight:800">GPS Live-Map ✓</div>
+          </div>
+          <span class="help">Der Such-Countdown startet erst, wenn alle Hider READY sind und der Sucher auf „JETZT SUCHEN“ drückt.</span>
+        </div>
+
+        <div class="field halloween-only-setting">
+          <label>🗺️ Hide &amp; Seek Test-Ablauf</label>
+          <span class="help">Halloween Event → Hide &amp; Seek → Sucher-Rad → Sucher-QR → Hider-QR → Namen wählen → READY → Live-Map → Suche.</span>
+        </div>
+
+        <!-- Legacy Halloween values stay in the file for compatibility, but are not used by the new Hide & Seek flow. -->
+        <input id="halloweenLaughChance" type="hidden" value="0">
+        <input id="halloweenJumpscareChance" type="hidden" value="0">
+        <input id="halloweenFakeCountdownChance" type="hidden" value="0">
+        <input id="halloweenDarkChance" type="hidden" value="0">
+        <input id="halloweenSecretChance" type="hidden" value="0">
       </div>
 
       <div id="birthdayExtrasPanel" class="mode-extra-panel">
@@ -680,6 +809,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
   </div>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
@@ -688,13 +818,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 
 const $=id=>document.getElementById(id);
 const screens={
-  start:$("startScreen"),name:$("nameScreen"),challenge:$("challengeScreen"),result:$("resultScreen"),
+  start:$("startScreen"),halloweenIntro:$("halloweenIntroScreen"),hideTitle:$("hideTitleScreen"),hideSeekerQr:$("hideSeekerQrScreen"),hideHiderQr:$("hideHiderQrScreen"),hideMap:$("hideMapScreen"),name:$("nameScreen"),challenge:$("challengeScreen"),result:$("resultScreen"),
   penalty:$("penaltyScreen"),penaltyResult:$("penaltyResultScreen"),mystery:$("mysteryScreen"),luckyEvent:$("luckyEventScreen"),giftWheel:$("giftWheelScreen"),musicWheel:$("musicWheelScreen"),musicResult:$("musicResultScreen"),
   double:$("doubleScreen"),doubleWheel:$("doubleWheelScreen"),stats:$("statsScreen")
 };
 
 let settings={
-  mode:"standard",hours:0,minutes:0,seconds:30,roundHours:0,roundMinutes:5,roundSeconds:0,rounds:10,
+  mode:"standard",hours:0,minutes:0,seconds:30,roundHours:0,roundMinutes:5,roundSeconds:0,rounds:10,halloweenStartTime:"22:00",hideSeekMinutes:20,hideSeekSeconds:0,
   soundPack:"creepy",mysteryChance:5,
   noRepeatPlayer:true,noRepeatChallenge:true,doubleEnabled:true,tvMode:false,hostMode:false,
 
@@ -790,7 +920,7 @@ function validSongs(){return (settings.songs||[]).filter(x=>x.title&&isYouTubeUr
 
 function load(){
   try{
-    const raw=localStorage.getItem("challengeRouletteSettingsV18_3")||localStorage.getItem("challengeRouletteSettingsV18_2")||localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
+    const raw=localStorage.getItem("challengeRouletteSettingsV19_HALLOWEEN_TEST")||localStorage.getItem("challengeRouletteSettingsV18_3")||localStorage.getItem("challengeRouletteSettingsV18_2")||localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
     if(!raw)return;
     const s=JSON.parse(raw);
     if(!s)return;
@@ -831,7 +961,7 @@ function load(){
     }
   }catch(e){}
 }
-function save(){try{localStorage.setItem("challengeRouletteSettingsV18_3",JSON.stringify(settings))}catch(e){}}
+function save(){try{localStorage.setItem("challengeRouletteSettingsV19_HALLOWEEN_TEST",JSON.stringify(settings))}catch(e){}}
 
 function initGame(reset=true){
   if(!reset&&game)return;
@@ -1427,9 +1557,29 @@ function setReady(ready){
   $("eventCountdownLabel").style.display=ready?"none":"block";
   $("eventStartBtn").style.display=ready?"inline-block":"none";
 }
+function secondsUntilHalloweenTime(){
+  const value=settings.halloweenStartTime||"22:00";
+  const parts=value.split(":").map(Number);
+  const now=new Date();
+  const target=new Date(now);
+  target.setHours(parts[0]||0,parts[1]||0,0,0);
+  if(target.getTime()<=now.getTime()+500)target.setDate(target.getDate()+1);
+  return Math.max(0,Math.ceil((target.getTime()-now.getTime())/1000));
+}
 function restartCountdown(){
   clearAuto();fakeUsed=false;if(game)game._lastTick=null;setReady(false);
   if(settings.mode==="standard"){stopAmbience();return}
+
+  if(settings.mode==="halloween"){
+    const total=secondsUntilHalloweenTime();
+    $("eventCountdownLabel").textContent=`HALLOWEEN STARTET UM ${settings.halloweenStartTime||"22:00"}`;
+    autoEndsAt=Date.now()+total*1000;
+    autoRunning=true;
+    updateAuto();
+    autoTimer=setInterval(updateAuto,200);
+    startAmbience();
+    return;
+  }
 
   const betweenRounds=!!game&&game.round>1;
   const total=betweenRounds
@@ -1453,12 +1603,304 @@ function restartCountdown(){
 }
 function updateAuto(){
   let remain=Math.max(0,Math.ceil((autoEndsAt-Date.now())/1000));
-  const fakeChance=settings.mode==="halloween"?settings.halloweenFakeCountdownChance:settings.mode==="birthday"?settings.birthdayFakeCountdownChance:0;
+  const fakeChance=settings.mode==="birthday"?settings.birthdayFakeCountdownChance:0;
   if(fakeChance>0&&!fakeUsed&&remain<=3&&remain>0&&chance(fakeChance)){fakeUsed=true;autoEndsAt+=3*1000;remain+=3}
   $("eventCountdown").textContent=formatTime(remain);
   if(settings.mode==="halloween"&&remain<=30&&remain>0&&game._lastTick!==remain){game._lastTick=remain;tickSound()}
   if(remain<=0&&autoRunning){clearAuto();stopAmbience();setReady(true)}
 }
+
+
+/* ---------- HALLOWEEN V19: HIDE & SEEK ---------- */
+function hideActiveHiders(){
+  return hideState?Object.keys(hideState.hiders):[];
+}
+function makeHideState(seeker){
+  const hiders={};
+  activePlayers().filter(p=>p.name!==seeker).forEach(p=>{
+    hiders[p.name]={ready:false,found:false,connected:false,location:null,lastSeen:0};
+  });
+  return {
+    seeker,
+    seekerConnected:false,
+    seekerLocation:null,
+    seekerLastSeen:0,
+    status:"setup",
+    searchSeconds:Math.max(10,(settings.hideSeekMinutes||0)*60+(settings.hideSeekSeconds||0)),
+    searchEndsAt:0,
+    result:"",
+    hiders
+  };
+}
+function startHalloweenEvent(){
+  if(activePlayers().length<2){
+    alert("Für Hide & Seek brauchst du mindestens 2 aktive Spieler.");
+    return;
+  }
+  if(!remotePeerId){
+    alert("Die Online-Sitzung ist noch nicht bereit. Bitte kurz den QR-/Host-Status prüfen.");
+    return;
+  }
+  clearAuto();stopAmbience();setReady(false);
+  hideState=null;
+  hideConnections.forEach(c=>{try{c.close()}catch(e){}});
+  hideConnections.clear();
+  if(hideTickTimer){clearInterval(hideTickTimer);hideTickTimer=null}
+  clearHidePcMap();
+  show("halloweenIntro");
+  setTimeout(()=>{show("hideTitle");setTimeout(startHideSeekerWheel,1700)},1900);
+}
+function startHideSeekerWheel(){
+  const list=activePlayers();
+  const chosen=list[rand(list.length)];
+  game.currentPlayer=chosen.name;
+  $("nameScreen").querySelector(".heading h1").textContent="Wer muss suchen?";
+  $("nameHint").textContent="Der Sucher wird ausgelost …";
+  $("namePicked").textContent="";
+  $("spinNameBtn").style.display="none";
+  drawWheel($("nameWheel"),list.map(p=>p.name));
+  show("name");
+  const idx=list.findIndex(p=>p.name===chosen.name);
+  setTimeout(()=>{
+    nameRotation=spin($("nameWheel"),list.length,nameRotation,idx,(rot)=>{
+      nameRotation=rot;
+      $("namePicked").textContent=`🔦 ${chosen.name} ist der Sucher!`;
+      hideState=makeHideState(chosen.name);
+      setTimeout(showHideSeekerQr,1200);
+    });
+  },650);
+}
+function hideUrl(page){
+  const u=new URL(page,location.href);
+  u.search="";
+  u.hash="";
+  u.searchParams.set("peer",remotePeerId);
+  u.searchParams.set("token",remoteToken);
+  return u.toString();
+}
+function renderQr(targetId,url){
+  const el=$(targetId);el.innerHTML="";
+  if(typeof QRCode!=="undefined")new QRCode(el,{text:url,width:300,height:300,correctLevel:QRCode.CorrectLevel.M});
+  else el.textContent="QR-Code konnte nicht geladen werden.";
+}
+function showHideSeekerQr(){
+  if(!hideState)return;
+  hideState.status="seeker_connect";
+  $("hideSeekerName").textContent=hideState.seeker;
+  const url=hideUrl("seeker.html");
+  $("hideSeekerUrl").textContent=url;
+  renderQr("hideSeekerQr",url);
+  updateHideSetupUi();
+  show("hideSeekerQr");
+  broadcastHideState();
+}
+function showHideHiderQr(){
+  if(!hideState)return;
+  hideState.status="hiders_connect";
+  const url=hideUrl("hider.html");
+  $("hideHiderUrl").textContent=url;
+  renderQr("hideHiderQr",url);
+  updateHideSetupUi();
+  show("hideHiderQr");
+  broadcastHideState();
+}
+function updateHideSetupUi(){
+  if(!hideState)return;
+  $("hideSeekerConnection").textContent=hideState.seekerConnected?"✅ Sucher verbunden":"📱 Sucher noch nicht verbunden";
+  const names=hideActiveHiders(),total=names.length;
+  const connected=names.filter(n=>hideState.hiders[n].connected).length;
+  const ready=names.filter(n=>hideState.hiders[n].ready).length;
+  $("hideHiderConnectCount").textContent=`${connected} / ${total} verbunden`;
+  $("hideHiderReadyCount").textContent=`${ready} / ${total} ready`;
+  if(game?._screen==="hideHiderQr"&&total>0&&connected===total){
+    setTimeout(()=>{if(game?._screen==="hideHiderQr")showHidePcMap()},650);
+  }
+}
+function clearHidePcMap(){
+  hidePcMarkers={};hidePcMapFitted=false;
+  if(hidePcMap){try{hidePcMap.remove()}catch(e){}hidePcMap=null}
+}
+function ensureHidePcMap(){
+  if(hidePcMap||typeof L==="undefined")return;
+  hidePcMap=L.map("hidePcMap",{zoomControl:true}).setView([0,0],2);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    maxZoom:19,attribution:"© OpenStreetMap"
+  }).addTo(hidePcMap);
+}
+function hideIcon(role,found=false){
+  const cls=found?"found":role==="seeker"?"seeker":"hider";
+  const emoji=found?"✓":role==="seeker"?"🔦":"👻";
+  return L.divIcon({className:"",html:`<div class="hide-marker ${cls}">${emoji}</div>`,iconSize:[34,34],iconAnchor:[17,17]});
+}
+function updateHidePcMap(){
+  if(!hideState)return;
+  ensureHidePcMap();
+  if(!hidePcMap)return;
+  const points=[];
+  const update=(key,name,role,loc,found=false)=>{
+    if(!loc)return;
+    points.push([loc.lat,loc.lng]);
+    let marker=hidePcMarkers[key];
+    if(!marker){
+      marker=L.marker([loc.lat,loc.lng],{icon:hideIcon(role,found)}).addTo(hidePcMap);
+      hidePcMarkers[key]=marker;
+    }else{
+      marker.setLatLng([loc.lat,loc.lng]);marker.setIcon(hideIcon(role,found));
+    }
+    marker.bindTooltip(`${role==="seeker"?"Sucher":"Hider"}: ${name}${found?" · GEFUNDEN":""}${loc.accuracy?` · ±${Math.round(loc.accuracy)}m`:""}`);
+  };
+  update("seeker",hideState.seeker,"seeker",hideState.seekerLocation,false);
+  Object.entries(hideState.hiders).forEach(([name,h])=>update("h:"+name,name,"hider",h.location,h.found));
+  if(points.length&&!hidePcMapFitted){
+    hidePcMapFitted=true;
+    if(points.length===1)hidePcMap.setView(points[0],18);
+    else hidePcMap.fitBounds(points,{padding:[70,70],maxZoom:19});
+  }
+}
+function hideRemainingSeconds(){
+  if(!hideState||hideState.status!=="searching")return hideState?.searchSeconds||0;
+  return Math.max(0,Math.ceil((hideState.searchEndsAt-Date.now())/1000));
+}
+function formatHideSearchTime(){
+  return formatTime(hideRemainingSeconds());
+}
+function updateHidePcHud(){
+  if(!hideState)return;
+  $("hidePcSeekerPill").textContent=`🔦 Sucher: ${hideState.seeker}`;
+  const hiders=Object.entries(hideState.hiders);
+  const ready=hiders.filter(([,h])=>h.ready).length;
+  const found=hiders.filter(([,h])=>h.found).length;
+  let status="👻 Verstecken";
+  let headline=`${ready}/${hiders.length} Hider sind READY`;
+  if(hideState.status==="searching"){
+    status=`🔎 Suche läuft · ${found}/${hiders.length} gefunden`;
+    headline=found===hiders.length?"Alle gefunden!":"Der Sucher ist unterwegs …";
+  }else if(hideState.status==="finished"){
+    status=hideState.result==="all_found"?"✅ Alle gefunden":"⏰ Zeit abgelaufen";
+    headline=hideState.result==="all_found"?"Der Sucher hat alle gefunden!":"Hide & Seek ist beendet.";
+  }else if(hiders.length&&ready===hiders.length){
+    status="✅ Alle versteckt";
+    headline="Alle Hider sind READY – der Sucher kann starten.";
+  }
+  $("hidePcStatusPill").textContent=status;
+  $("hidePcTimerPill").textContent=hideState.status==="searching"?`⏱️ ${formatHideSearchTime()}`:`⏱️ ${formatTime(hideState.searchSeconds)}`;
+  $("hidePcHeadline").textContent=headline;
+  $("hidePcPeople").innerHTML=[
+    `<span class="hide-live-person ${hideState.seekerConnected?"ready":"offline"}">🔦 ${escapeHtml(hideState.seeker)} ${hideState.seekerConnected?"ONLINE":"OFFLINE"}</span>`,
+    ...hiders.map(([name,h])=>`<span class="hide-live-person ${h.found?"found":h.ready?"ready":h.connected?"":"offline"}">👻 ${escapeHtml(name)} · ${h.found?"GEFUNDEN":h.ready?"READY":h.connected?"VERBUNDEN":"OFFLINE"}</span>`)
+  ].join("");
+  updateHidePcMap();
+}
+function showHidePcMap(){
+  if(!hideState)return;
+  show("hideMap");
+  setTimeout(()=>{ensureHidePcMap();hidePcMap?.invalidateSize();updateHidePcHud()},100);
+}
+function hideAllReady(){
+  if(!hideState)return false;
+  const vals=Object.values(hideState.hiders);
+  return vals.length>0&&vals.every(h=>h.ready);
+}
+function startHideSearch(){
+  if(!hideState||!hideAllReady()||hideState.status==="searching")return;
+  hideState.status="searching";
+  hideState.searchEndsAt=Date.now()+hideState.searchSeconds*1000;
+  hideState.result="";
+  hideLastBroadcastSecond=-1;
+  if(hideTickTimer)clearInterval(hideTickTimer);
+  hideTickTimer=setInterval(()=>{
+    if(!hideState||hideState.status!=="searching")return;
+    const sec=hideRemainingSeconds();
+    updateHidePcHud();
+    if(sec!==hideLastBroadcastSecond){hideLastBroadcastSecond=sec;broadcastHideState()}
+    if(sec<=0)finishHideGame("time");
+  },250);
+  showHidePcMap();
+  updateHidePcHud();
+  broadcastHideState();
+}
+function markHiderFound(name){
+  if(!hideState||hideState.status!=="searching"||!hideState.hiders[name])return;
+  hideState.hiders[name].found=true;
+  updateHidePcHud();
+  if(Object.values(hideState.hiders).every(h=>h.found))finishHideGame("all_found");
+  else broadcastHideState();
+}
+function finishHideGame(result){
+  if(!hideState)return;
+  hideState.status="finished";hideState.result=result;
+  if(hideTickTimer){clearInterval(hideTickTimer);hideTickTimer=null}
+  updateHidePcHud();broadcastHideState();
+}
+function publicHideState(forRole){
+  if(!hideState)return null;
+  const state=JSON.parse(JSON.stringify(hideState));
+  state.serverNow=Date.now();
+  state.remainingSeconds=hideRemainingSeconds();
+  state.candidates=Object.entries(hideState.hiders).filter(([,h])=>!h.connected).map(([n])=>n);
+  if(forRole==="seeker"){
+    state.seekerLocation=null;
+    Object.values(state.hiders).forEach(h=>h.location=null);
+  }
+  return state;
+}
+function sendHideState(conn){
+  if(!conn||!conn.open)return;
+  try{conn.send({type:"hide_state",state:publicHideState(conn._hideRole)})}catch(e){}
+}
+function broadcastHideState(){
+  updateHideSetupUi();updateHidePcHud();
+  hideConnections.forEach(conn=>sendHideState(conn));
+}
+function acceptHideRemote(conn,md){
+  conn._hideRole=md.role;
+  conn._hideName="";
+  hideConnections.add(conn);
+  conn.on("open",()=>{
+    if(!hideState){try{conn.send({type:"hide_error",message:"Hide & Seek ist noch nicht gestartet."})}catch(e){}}
+    if(md.role==="seeker"&&hideState)hideState.seekerConnected=true;
+    sendHideState(conn);broadcastHideState();
+  });
+  conn.on("data",msg=>{
+    if(!msg||!hideState)return;
+    if(msg.type==="hide_request"){sendHideState(conn);return}
+    if(msg.type==="hide_select_name"&&conn._hideRole==="hider"){
+      const name=String(msg.name||"");
+      if(!hideState.hiders[name])return;
+      const already=[...hideConnections].some(c=>c!==conn&&c._hideRole==="hider"&&c._hideName===name&&c.open);
+      if(already){try{conn.send({type:"hide_error",message:"Dieser Name ist bereits verbunden."})}catch(e){};return}
+      if(conn._hideName&&hideState.hiders[conn._hideName])hideState.hiders[conn._hideName].connected=false;
+      conn._hideName=name;hideState.hiders[name].connected=true;broadcastHideState();return
+    }
+    if(msg.type==="hide_ready"&&conn._hideRole==="hider"&&conn._hideName&&hideState.hiders[conn._hideName]){
+      hideState.hiders[conn._hideName].ready=!!msg.ready;broadcastHideState();return
+    }
+    if(msg.type==="hide_location"){
+      const loc=msg.location;
+      if(!loc||!Number.isFinite(Number(loc.lat))||!Number.isFinite(Number(loc.lng)))return;
+      const clean={lat:Number(loc.lat),lng:Number(loc.lng),accuracy:Number(loc.accuracy)||0,ts:Date.now()};
+      if(conn._hideRole==="seeker"){hideState.seekerLocation=clean;hideState.seekerLastSeen=Date.now()}
+      else if(conn._hideRole==="hider"&&conn._hideName&&hideState.hiders[conn._hideName]){
+        hideState.hiders[conn._hideName].location=clean;hideState.hiders[conn._hideName].lastSeen=Date.now();
+      }
+      updateHidePcMap();broadcastHideState();return
+    }
+    if(msg.type==="hide_start_search"&&conn._hideRole==="seeker"){startHideSearch();return}
+    if(msg.type==="hide_found"&&conn._hideRole==="seeker"){markHiderFound(String(msg.name||""));return}
+  });
+  conn.on("close",()=>{
+    hideConnections.delete(conn);
+    if(hideState){
+      if(conn._hideRole==="seeker")hideState.seekerConnected=false;
+      else if(conn._hideRole==="hider"&&conn._hideName&&hideState.hiders[conn._hideName]){
+        hideState.hiders[conn._hideName].connected=false;
+      }
+      broadcastHideState();
+    }
+  });
+  conn.on("error",()=>{});
+}
+
 
 /* ---------- audio ---------- */
 function ensureAudio(){
@@ -1658,10 +2100,11 @@ function updateModeSpecificSettings(){
   const h=$("halloweenExtrasPanel"),b=$("birthdayExtrasPanel");
   if(h)h.classList.toggle("active",selected==="halloween");
   if(b)b.classList.toggle("active",selected==="birthday");
+  $("settingsCard").classList.toggle("halloween-v19",selected==="halloween");
 }
 function syncSettingsUI(){
   document.querySelector(`input[name="mode"][value="${settings.mode}"]`).checked=true;
-  $("hoursInput").value=settings.hours;$("minutesInput").value=settings.minutes;$("secondsInput").value=settings.seconds;$("roundHoursInput").value=settings.roundHours;$("roundMinutesInput").value=settings.roundMinutes;$("roundSecondsInput").value=settings.roundSeconds;$("roundsInput").value=settings.rounds;
+  $("hoursInput").value=settings.hours;$("minutesInput").value=settings.minutes;$("secondsInput").value=settings.seconds;$("roundHoursInput").value=settings.roundHours;$("roundMinutesInput").value=settings.roundMinutes;$("roundSecondsInput").value=settings.roundSeconds;$("roundsInput").value=settings.rounds;$("halloweenStartTime").value=settings.halloweenStartTime||"22:00";$("hideSeekMinutes").value=settings.hideSeekMinutes??20;$("hideSeekSeconds").value=settings.hideSeekSeconds??0;
   $("soundPack").value=settings.soundPack;$("mysteryChance").value=String(settings.mysteryChance);
   $("noRepeatPlayer").checked=settings.noRepeatPlayer;$("noRepeatChallenge").checked=settings.noRepeatChallenge;$("doubleEnabled").checked=settings.doubleEnabled;$("tvModeEnabled").checked=settings.tvMode;$("hostModeEnabled").checked=settings.hostMode;
 
@@ -1694,7 +2137,7 @@ function saveSettings(){
     if(bad){alert("Bitte bei jedem Musik-Song einen Namen und einen gültigen YouTube-Link eintragen.");return}
   }
 
-  settings.mode=mode;settings.hours=clamp($("hoursInput").value,0,99);settings.minutes=clamp($("minutesInput").value,0,59);settings.seconds=clamp($("secondsInput").value,0,59);settings.roundHours=clamp($("roundHoursInput").value,0,99);settings.roundMinutes=clamp($("roundMinutesInput").value,0,59);settings.roundSeconds=clamp($("roundSecondsInput").value,0,59);settings.rounds=clamp($("roundsInput").value,0,99);
+  settings.mode=mode;settings.hours=clamp($("hoursInput").value,0,99);settings.minutes=clamp($("minutesInput").value,0,59);settings.seconds=clamp($("secondsInput").value,0,59);settings.roundHours=clamp($("roundHoursInput").value,0,99);settings.roundMinutes=clamp($("roundMinutesInput").value,0,59);settings.roundSeconds=clamp($("roundSecondsInput").value,0,59);settings.rounds=clamp($("roundsInput").value,0,99);settings.halloweenStartTime=$("halloweenStartTime").value||"22:00";settings.hideSeekMinutes=clamp($("hideSeekMinutes").value,0,180);settings.hideSeekSeconds=clamp($("hideSeekSeconds").value,0,59);
   settings.soundPack=$("soundPack").value;settings.mysteryChance=pct($("mysteryChance").value);
   settings.noRepeatPlayer=$("noRepeatPlayer").checked;settings.noRepeatChallenge=$("noRepeatChallenge").checked;settings.doubleEnabled=$("doubleEnabled").checked;settings.tvMode=$("tvModeEnabled").checked;settings.hostMode=$("hostModeEnabled").checked;
 
@@ -1709,7 +2152,9 @@ function saveSettings(){
 
 /* ---------- ONLINE P2P HOST ---------- */
 let remotePeer=null,remoteConn=null,remoteStatusTimer=null,remoteConnected=false,onlineStarted=false;
-let remoteToken="";
+let remoteToken="",remotePeerId="";
+let hideState=null,hideConnections=new Set(),hideTickTimer=null,hideLastBroadcastSecond=-1;
+let hidePcMap=null,hidePcMarkers={},hidePcMapFitted=false;
 
 function randomToken(){
   const a=new Uint8Array(18);
@@ -1844,7 +2289,15 @@ function showConnectOverlayAgain(){
 }
 function acceptRemote(conn){
   const md=conn.metadata||{};
-  if(md.token!==remoteToken||md.role!=="host"){
+  if(md.token!==remoteToken){
+    try{conn.close()}catch(e){}
+    return;
+  }
+  if(md.role==="seeker"||md.role==="hider"){
+    acceptHideRemote(conn,md);
+    return;
+  }
+  if(md.role!=="host"){
     try{conn.close()}catch(e){}
     return;
   }
@@ -1891,6 +2344,9 @@ function sanitizeRemoteSettings(s){
 
   if(["standard","halloween","birthday"].includes(s.mode))out.mode=s.mode;
   out.hours=clamp(s.hours,0,99);out.minutes=clamp(s.minutes,0,59);out.seconds=clamp(s.seconds,0,59);out.roundHours=clamp(s.roundHours??out.roundHours,0,99);out.roundMinutes=clamp(s.roundMinutes??out.roundMinutes,0,59);out.roundSeconds=clamp(s.roundSeconds??out.roundSeconds,0,59);out.rounds=clamp(s.rounds,0,99);
+  if(/^([01]\d|2[0-3]):[0-5]\d$/.test(String(s.halloweenStartTime||"")))out.halloweenStartTime=String(s.halloweenStartTime);
+  out.hideSeekMinutes=clamp(s.hideSeekMinutes??out.hideSeekMinutes,0,180);
+  out.hideSeekSeconds=clamp(s.hideSeekSeconds??out.hideSeekSeconds,0,59);
   if(["creepy","gameshow","funny","dramatic"].includes(s.soundPack))out.soundPack=s.soundPack;
   out.mysteryChance=pct(s.mysteryChance);
   ["noRepeatPlayer","noRepeatChallenge","doubleEnabled","tvMode","hostMode"].forEach(k=>{if(typeof s[k]==="boolean")out[k]=s[k]});
@@ -1944,9 +2400,10 @@ function applyRemoteSettings(incoming){
 function runRemoteCommand(action,payload){
   ensureAudio();
   if(action==="start"){
+    if(settings.mode!=="standard"&&game?._screen==="start"&&$("eventStartBtn").style.display!=="inline-block")return;
     clearAuto();stopAmbience();setReady(false);
     if(!game)initGame(true);
-    beginRound();
+    if(settings.mode==="halloween")startHalloweenEvent();else beginRound();
   }else if(action==="finish"||action==="primary"){
     runPrimaryProgressAction();
   }else if(action==="joker"){
@@ -1983,6 +2440,7 @@ function createOnlineSession(){
   try{
     remotePeer=new Peer(undefined,{debug:1});
     remotePeer.on("open",id=>{
+      remotePeerId=id;
       const hostUrl=new URL("host.html",location.href);
       hostUrl.search="";
       hostUrl.hash="";
@@ -2013,7 +2471,7 @@ function createOnlineSession(){
 /* ---------- controls ---------- */
 $("standardStartBtn").onclick=()=>{ensureAudio();beginRound()};
 $("withoutPhoneBtn").onclick=hideConnectOverlay;
-$("eventStartBtn").onclick=()=>{ensureAudio();setReady(false);initGame(game?false:true);beginRound()};
+$("eventStartBtn").onclick=()=>{ensureAudio();setReady(false);initGame(game?false:true);if(settings.mode==="halloween")startHalloweenEvent();else beginRound()};
 $("finishBtn").onclick=successfulFinish;
 $("jokerBtn").onclick=useJoker;
 $("jokerTransferClose").onclick=()=>closeJokerTransfer(true);
@@ -2045,6 +2503,8 @@ $("hostSkipCountdown").onclick=()=>{clearAuto();stopAmbience();setReady(true);$(
 $("hostPenalty").onclick=()=>{$("hostModal").classList.remove("open");if(game?.currentPlayer)triggerPenalty()};
 $("hostNext").onclick=()=>{$("hostModal").classList.remove("open");completeRound()};
 $("hostEnd").onclick=()=>{$("hostModal").classList.remove("open");showStats()};
+$("hideSeekerNextBtn").onclick=showHideHiderQr;
+$("hideShowMapBtn").onclick=showHidePcMap;
 
 ["pointerdown","touchstart","keydown"].forEach(evt=>window.addEventListener(evt,()=>ensureAudio(),{once:true,passive:true}));
 

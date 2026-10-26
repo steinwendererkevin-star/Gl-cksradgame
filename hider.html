@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050805">
+<title>Halloween · Hider</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#040705;color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}
+button{font:inherit}.page{position:absolute;inset:0;display:none}.page.show{display:block}
+#selectPage{overflow:auto;padding:18px;background:radial-gradient(circle at 50% 0,#12321e,transparent 40%),#050805}.wrap{max-width:620px;margin:auto}.brand{font-size:12px;letter-spacing:.2em;color:#59dd8e;font-weight:1000;margin:8px 0 16px}
+.card{border:1px solid rgba(89,221,142,.22);background:rgba(8,18,12,.94);border-radius:24px;padding:18px;margin-bottom:12px}.card h1{font-size:clamp(38px,11vw,64px);line-height:.95;margin:4px 0 12px}.muted{color:#9fc6aa;line-height:1.5}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}.names button,.ready{min-height:58px;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:#14241a;color:#fff;font-size:17px;font-weight:1000}.ready{width:100%;background:linear-gradient(135deg,#2aca70,#10713d);border:0;margin-top:12px}.ready.on{background:linear-gradient(135deg,#f29a2b,#a74d00)}
+#map{width:100%;height:100%}.overlay{position:absolute;z-index:700;left:12px;right:12px;top:max(12px,env(safe-area-inset-top));pointer-events:none}.hud{background:rgba(5,9,6,.9);border:1px solid rgba(89,221,142,.23);border-radius:18px;padding:11px 13px;backdrop-filter:blur(12px);box-shadow:0 10px 35px rgba(0,0,0,.35)}.hud strong{font-size:19px}.line{font-size:12px;color:#acd2b7;margin-top:4px}
+.bottom{position:absolute;z-index:700;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));pointer-events:none}.bottom .ready{pointer-events:auto;box-shadow:0 14px 35px rgba(0,0,0,.4)}
+.marker{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:3px solid white;box-shadow:0 3px 14px rgba(0,0,0,.65);font-size:17px}.marker.me{background:#f0a52b}.marker.seeker{background:#e44141}.marker.hider{background:#2eb86f}.marker.found{background:#666b74}
+.foundOverlay{position:absolute;z-index:900;inset:0;background:rgba(0,0,0,.83);display:none;align-items:center;justify-content:center;text-align:center;padding:20px}.foundOverlay.show{display:flex}.foundOverlay h1{font-size:clamp(48px,14vw,90px);margin:0}
+.small{font-size:12px;color:#789083}.leaflet-control-attribution{font-size:8px!important}
+@media(max-width:430px){.names{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="selectPage" class="page show">
+  <div class="wrap">
+    <div class="brand">🎃 HALLOWEEN · HIDER</div>
+    <div class="card">
+      <div class="muted">WER BIST DU?</div>
+      <h1>NAMEN<br>AUSWÄHLEN</h1>
+      <div class="muted">Der Sucher wird hier absichtlich nicht angezeigt. Nach der Auswahl Standort erlauben.</div>
+      <div id="connStatus" class="small" style="margin-top:10px">Verbinde …</div>
+      <div id="nameButtons" class="names"></div>
+    </div>
+  </div>
+</div>
+
+<div id="mapPage" class="page">
+  <div id="map"></div>
+  <div class="overlay">
+    <div class="hud">
+      <strong id="meLabel">👻 —</strong>
+      <div id="gameStatus" class="line">Verstecke dich und drücke READY.</div>
+      <div id="locationStatus" class="line">📍 Standort wird angefragt …</div>
+    </div>
+  </div>
+  <div class="bottom">
+    <button id="readyBtn" class="ready">✅ READY · BIN VERSTECKT</button>
+  </div>
+  <div id="foundOverlay" class="foundOverlay"><div><div style="font-size:65px">💀</div><h1>GEFUNDEN</h1><div>Du wurdest vom Sucher gefunden.</div></div></div>
+</div>
+
+<script>
+(()=>{"use strict";
+const $=id=>document.getElementById(id),qs=new URLSearchParams(location.search);
+const gamePeer=qs.get("peer"),token=qs.get("token");
+let peer=null,conn=null,state=null,myName=sessionStorage.getItem("hideName")||"",ready=false,watchId=null,wakeLock=null,map=null,markers={},fitted=false;
+function send(type,data={}){if(conn&&conn.open)conn.send({type,...data})}
+async function wake(){try{if("wakeLock"in navigator)wakeLock=await navigator.wakeLock.request("screen")}catch(e){}}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")wake()});
+function markerIcon(role,found=false,isMe=false){
+  const cls=found?"found":isMe?"me":role==="seeker"?"seeker":"hider";
+  const emoji=found?"✓":role==="seeker"?"🔦":isMe?"📍":"👻";
+  return L.divIcon({className:"",html:`<div class="marker ${cls}">${emoji}</div>`,iconSize:[34,34],iconAnchor:[17,17]});
+}
+function ensureMap(){
+  if(map||typeof L==="undefined")return;
+  map=L.map("map",{zoomControl:false}).setView([0,0],2);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
+}
+function updateMap(){
+  if(!state||!myName)return;
+  ensureMap();if(!map)return;
+  const pts=[];
+  function upd(key,name,role,loc,found,isMe=false){
+    if(!loc)return;pts.push([loc.lat,loc.lng]);
+    let m=markers[key];
+    if(!m){m=L.marker([loc.lat,loc.lng],{icon:markerIcon(role,found,isMe)}).addTo(map);markers[key]=m}
+    else{m.setLatLng([loc.lat,loc.lng]);m.setIcon(markerIcon(role,found,isMe))}
+    m.bindTooltip(`${isMe?"Du":role==="seeker"?"Sucher":name}${found?" · GEFUNDEN":""}`);
+  }
+  upd("seeker",state.seeker,"seeker",state.seekerLocation,false,false);
+  Object.entries(state.hiders||{}).forEach(([name,h])=>upd("h:"+name,name,"hider",h.location,h.found,name===myName));
+  if(pts.length&&!fitted){fitted=true;if(pts.length===1)map.setView(pts[0],18);else map.fitBounds(pts,{padding:[55,55],maxZoom:19})}
+}
+function startGeo(){
+  if(!navigator.geolocation){$("locationStatus").textContent="⚠️ Standort nicht unterstützt";return}
+  if(watchId!=null)return;
+  watchId=navigator.geolocation.watchPosition(pos=>{
+    $("locationStatus").textContent=`📍 GPS aktiv · ±${Math.round(pos.coords.accuracy)} m`;
+    send("hide_location",{location:{lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:pos.coords.accuracy}});
+  },()=>{$("locationStatus").textContent="⚠️ GPS nicht freigegeben – Browser-Berechtigung prüfen."},{enableHighAccuracy:true,maximumAge:1500,timeout:12000});
+}
+function selectName(name){
+  myName=name;sessionStorage.setItem("hideName",name);ready=false;
+  send("hide_select_name",{name});wake();startGeo();
+  $("selectPage").classList.remove("show");$("mapPage").classList.add("show");
+  $("meLabel").textContent=`👻 ${name}`;
+  setTimeout(()=>{ensureMap();map?.invalidateSize();updateMap()},120);
+}
+function renderSelect(){
+  if(!state)return;
+  const candidates=Object.keys(state.hiders||{}).filter(n=>n===myName||!state.hiders[n].connected);
+  $("nameButtons").innerHTML=candidates.map(n=>`<button data-name="${attr(n)}">${esc(n)}</button>`).join("");
+  document.querySelectorAll("#nameButtons button").forEach(b=>b.onclick=()=>selectName(b.dataset.name));
+  if(myName&&state.hiders?.[myName]&&!state.hiders[myName].connected)selectName(myName);
+}
+function render(){
+  if(!state)return;
+  if(!myName){renderSelect();return}
+  const me=state.hiders?.[myName];
+  if(!me)return;
+  ready=!!me.ready;
+  $("readyBtn").textContent=ready?"↩️ READY ZURÜCKNEHMEN":"✅ READY · BIN VERSTECKT";
+  $("readyBtn").classList.toggle("on",ready);
+  if(state.status==="searching")$("gameStatus").textContent=`🔦 Suche läuft · Sucher: ${state.seeker}`;
+  else if(state.status==="finished")$("gameStatus").textContent=state.result==="all_found"?"✅ Alle wurden gefunden":"⏰ Suchzeit ist vorbei";
+  else $("gameStatus").textContent=ready?"✅ Du bist READY. Warte auf den Sucher.":"Verstecke dich und drücke READY.";
+  $("foundOverlay").classList.toggle("show",!!me.found);
+  updateMap();
+}
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function attr(v){return esc(v)}
+$("readyBtn").onclick=()=>{wake();send("hide_ready",{ready:!ready})};
+function connect(){
+  if(!gamePeer||!token){$("connStatus").textContent="Ungültiger QR-Link";return}
+  if(typeof Peer==="undefined"){$("connStatus").textContent="PeerJS konnte nicht geladen werden";return}
+  peer=new Peer(undefined,{debug:1});
+  peer.on("open",()=>{
+    conn=peer.connect(gamePeer,{reliable:true,metadata:{role:"hider",token}});
+    conn.on("open",()=>{$("connStatus").textContent="✅ Verbunden";send("hide_request")});
+    conn.on("data",m=>{
+      if(m?.type==="hide_state"){state=m.state;render()}
+      if(m?.type==="hide_error"){alert(m.message||"Fehler");if((m.message||"").includes("Name")){myName="";sessionStorage.removeItem("hideName");$("mapPage").classList.remove("show");$("selectPage").classList.add("show")}}
+    });
+    conn.on("close",()=>{$("connStatus").textContent="❌ Verbindung verloren – QR erneut scannen"});
+  });
+  peer.on("error",()=>{$("connStatus").textContent="❌ Verbindungsfehler"});
+}
+connect();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070303">
+<title>Halloween · Seeker</title>
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#060303;color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}body{padding:16px;min-height:100vh;background:radial-gradient(circle at 50% 0,#351209,transparent 35%),linear-gradient(#100705,#040303)}
+.wrap{max-width:680px;margin:auto}.brand{font-size:12px;letter-spacing:.2em;color:#f48a3c;font-weight:1000;margin:8px 0 16px}.card{border:1px solid rgba(255,126,32,.23);background:rgba(18,10,7,.92);border-radius:24px;padding:18px;margin-bottom:12px;box-shadow:0 25px 70px rgba(0,0,0,.35)}
+h1{font-size:clamp(34px,10vw,60px);line-height:.95;margin:4px 0 10px}.muted{color:#c8a88f;line-height:1.45}.status{font-weight:900;margin:8px 0;color:#ffbe8c}.list{display:grid;gap:8px;margin-top:12px}.person{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px;border-radius:15px;background:#121113;border:1px solid rgba(255,255,255,.09);font-weight:900}.person.ready{border-color:#3cc978}.person.found{opacity:.55;text-decoration:line-through}
+button{width:100%;min-height:58px;border:0;border-radius:17px;font-size:17px;font-weight:1000;padding:12px;margin-top:10px;background:linear-gradient(135deg,#ef6d16,#a52e00);color:#fff}button:disabled{opacity:.35}.foundbtn{width:auto;min-height:42px;margin:0;padding:8px 11px;background:#353941;font-size:13px}.timer{font-size:clamp(64px,20vw,110px);font-weight:1000;text-align:center;font-variant-numeric:tabular-nums;line-height:1;margin:14px 0}.popup{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.88);padding:18px;z-index:20}.popup.show{display:flex}.popup .card{text-align:center;max-width:520px;width:100%}.small{font-size:12px;color:#8e8178}.loc{padding:9px 12px;border-radius:12px;background:#121113;margin-top:8px;font-size:13px;font-weight:800}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">🎃 HALLOWEEN · SEEKER</div>
+  <div class="card">
+    <div class="muted">DU BIST DER SUCHER</div>
+    <h1 id="seekerName">—</h1>
+    <div id="connStatus" class="status">Verbinde …</div>
+    <div id="locationStatus" class="loc">📍 Standort wird angefragt …</div>
+  </div>
+  <div class="card">
+    <div class="muted">HIDER STATUS</div>
+    <div id="readyList" class="list"></div>
+  </div>
+  <div id="searchCard" class="card" style="display:none">
+    <div class="muted">VERBLEIBENDE SUCHZEIT</div>
+    <div id="timer" class="timer">--:--</div>
+    <div id="foundList" class="list"></div>
+  </div>
+  <div id="endCard" class="card" style="display:none;text-align:center">
+    <h1 id="endTitle">ENDE</h1>
+    <div id="endText" class="muted"></div>
+  </div>
+  <div class="small">Diese Seite während Hide &amp; Seek geöffnet lassen. Standort wird nur an die laufende Spiel-Sitzung übertragen.</div>
+</div>
+
+<div id="readyPopup" class="popup">
+  <div class="card">
+    <div style="font-size:55px">👻✅</div>
+    <h1>ALLE SIND<br>VERSTECKT</h1>
+    <div class="muted">Wenn du bereit bist, startet mit dem Button der Such-Countdown.</div>
+    <button id="startSearchBtn">🔦 JETZT SUCHEN</button>
+  </div>
+</div>
+
+<script>
+(()=>{"use strict";
+const $=id=>document.getElementById(id),qs=new URLSearchParams(location.search);
+const gamePeer=qs.get("peer"),token=qs.get("token");
+let peer=null,conn=null,state=null,watchId=null,wakeLock=null,localTimer=null,wasAllReady=false;
+function fmt(sec){sec=Math.max(0,Math.floor(sec||0));return `${String(Math.floor(sec/60)).padStart(2,"0")}:${String(sec%60).padStart(2,"0")}`}
+async function wake(){try{if("wakeLock"in navigator)wakeLock=await navigator.wakeLock.request("screen")}catch(e){}}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")wake()});
+function send(type,data={}){if(conn&&conn.open)conn.send({type,...data})}
+function startGeo(){
+  if(!navigator.geolocation){$("locationStatus").textContent="📍 Standort nicht unterstützt";return}
+  if(watchId!=null)return;
+  watchId=navigator.geolocation.watchPosition(pos=>{
+    const l={lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:pos.coords.accuracy};
+    $("locationStatus").textContent=`📍 Standort aktiv · ±${Math.round(pos.coords.accuracy)} m`;
+    send("hide_location",{location:l});
+  },err=>{$("locationStatus").textContent="⚠️ Standort nicht freigegeben – bitte Browser-Berechtigung prüfen."},
+  {enableHighAccuracy:true,maximumAge:1500,timeout:12000});
+}
+function render(){
+  if(!state)return;
+  $("seekerName").textContent=state.seeker||"—";
+  const entries=Object.entries(state.hiders||{});
+  $("readyList").innerHTML=entries.map(([n,h])=>`<div class="person ${h.ready?"ready":""}"><span>👻 ${esc(n)}</span><span>${h.found?"✅ GEFUNDEN":h.ready?"✅ READY":h.connected?"📱 VERBUNDEN":"⏳ WARTE"}</span></div>`).join("");
+  const all=entries.length>0&&entries.every(([,h])=>h.ready);
+  if(all&&state.status!=="searching"&&state.status!=="finished"&&!wasAllReady){$("readyPopup").classList.add("show")}
+  wasAllReady=all;
+  $("searchCard").style.display=state.status==="searching"?"block":"none";
+  $("endCard").style.display=state.status==="finished"?"block":"none";
+  if(state.status==="searching"){
+    $("readyPopup").classList.remove("show");
+    renderFound();
+    updateTimer();
+  }
+  if(state.status==="finished"){
+    $("readyPopup").classList.remove("show");
+    $("endTitle").textContent=state.result==="all_found"?"ALLE GEFUNDEN!":"ZEIT ABGELAUFEN";
+    const f=entries.filter(([,h])=>h.found).length;
+    $("endText").textContent=`${f} von ${entries.length} Hider gefunden.`;
+  }
+}
+function renderFound(){
+  const entries=Object.entries(state.hiders||{});
+  $("foundList").innerHTML=entries.map(([n,h])=>`<div class="person ${h.found?"found":""}"><span>👻 ${esc(n)}</span>${h.found?`<span>GEFUNDEN ✓</span>`:`<button class="foundbtn" data-name="${attr(n)}">✅ GEFUNDEN</button>`}</div>`).join("");
+  document.querySelectorAll(".foundbtn").forEach(b=>b.onclick=()=>send("hide_found",{name:b.dataset.name}));
+}
+function updateTimer(){
+  if(!state||state.status!=="searching")return;
+  const remain=Math.max(0,Math.ceil((Number(state.searchEndsAt||0)-Date.now())/1000));
+  $("timer").textContent=fmt(remain);
+}
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function attr(v){return esc(v)}
+$("startSearchBtn").onclick=()=>{wake();$("readyPopup").classList.remove("show");send("hide_start_search")};
+function connect(){
+  if(!gamePeer||!token){$("connStatus").textContent="Ungültiger QR-Link";return}
+  if(typeof Peer==="undefined"){$("connStatus").textContent="PeerJS konnte nicht geladen werden";return}
+  peer=new Peer(undefined,{debug:1});
+  peer.on("open",()=>{
+    conn=peer.connect(gamePeer,{reliable:true,metadata:{role:"seeker",token}});
+    conn.on("open",()=>{$("connStatus").textContent="✅ Mit Spiel verbunden";wake();startGeo();send("hide_request")});
+    conn.on("data",m=>{
+      if(m?.type==="hide_state"){state=m.state;render()}
+      if(m?.type==="hide_error")alert(m.message||"Fehler");
+    });
+    conn.on("close",()=>{$("connStatus").textContent="❌ Verbindung verloren – QR am PC neu öffnen"});
+  });
+  peer.on("error",()=>{$("connStatus").textContent="❌ Verbindungsfehler"});
+}
+localTimer=setInterval(updateTimer,250);connect();
+})();
+</script>
+</body>
+</html>
