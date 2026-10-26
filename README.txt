@@ -1,36 +1,25 @@
-CHALLENGE ROULETTE V19.2 – HALLOWEEN CLEANUP
+CHALLENGE ROULETTE V19.3 – AUTO-SAVE
 
-NEU:
-- Versionsanzeige "V19.2" steht auf der Main-Seite direkt über dem Host-QR-Code.
-- Gewinner-/Verlierer-Anzeige auf der Leinwand hat jetzt einen großen WEITER-Button.
-- WEITER führt auf einen neutralen "HIDE & SEEK BEENDET – Bereit für das nächste Halloween-Spiel"-Screen.
-  Dort kann später das nächste Halloween-Spiel direkt angehängt werden.
+ÄNDERUNGEN:
+- Einstellungen werden jetzt automatisch gespeichert.
+- Auf PC und Administrator-Handy wird jede Änderung nach ca. 0,25–0,30 Sekunden gespeichert.
+- Beim Schließen der Einstellungen wird ein eventuell noch ausstehender Save sofort ausgeführt.
+- Spieler/Challenges/Strafen/Songs/Glücksrad-Einträge werden ebenfalls automatisch gespeichert.
+- Kurzzeitig unvollständige Chance-Summen werden nicht mehr einfach verworfen.
+- Das Admin-Handy bekommt eine sichtbare Bestätigung: "✓ Automatisch gespeichert".
+- Auto-Save vom Admin-Handy unterbricht ein laufendes Hide & Seek NICHT.
+- Wenn du die Halloween-Startzeit vor dem Start änderst, aktualisiert sich der Countdown direkt.
 
-HALLOWEEN ADMIN-HANDY:
-- Keine Strafe-Taste.
-- Kein Joker / Weitergeben.
-- Keine Runde überspringen / Ranglisten-Steuerung.
-- Keine Punkte-, Streak- oder Joker-Anzeige.
-- Stattdessen eigener Hide-&-Seek-Status:
-  * Sucher
-  * Hider READY / verbunden / gefunden
-  * Countdown beenden (nur am Start)
-  * Einstellungen
-  * Hide & Seek neu starten
-  * WEITER nach dem Ergebnis
+HALLOWEEN BLEIBT:
+- Event-Startzeit einstellbar.
+- Hide-&-Seek-Suchzeit einstellbar.
+- "Countdown beenden" bleibt am Admin-Handy.
+- Kein Strafrad / keine Strafen.
+- Keine Joker / kein Weitergeben.
+- Keine Rangliste im Halloween-Modus.
+- V19.3 steht über dem QR-Code.
 
-HALLOWEEN EINSTELLUNGEN:
-- Kein Challenge-Bereich.
-- Kein Strafen-Bereich.
-- Kein Runden-/Mystery-/Double-or-Nothing-Bereich.
-- Keine Challenge-/Joker-Allgemeinextras.
-- Spieler bleiben einstellbar.
-- Halloween Start-Uhrzeit bleibt.
-- Hide-&-Seek-Suchzeit bleibt.
-- Standard und Geburtstag behalten ihre bisherigen Challenge-/Strafen-/Ranglisten-Funktionen.
-
-WICHTIG:
-Alle vier HTML-Dateien auf GitHub ersetzen:
+UPLOAD:
 index.html
 host.html
 seeker.html

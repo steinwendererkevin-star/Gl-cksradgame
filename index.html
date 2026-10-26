@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V19.2 Halloween Test</title>
+<title>Challenge Roulette V19.3 Halloween AutoSave</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *{box-sizing:border-box}
@@ -370,7 +370,7 @@ body.halloween-mode #hostEnd{display:none!important}
   <div class="online-card">
     <h1>📱 Handy verbinden</h1>
     <p>Scanne den QR-Code mit deinem Handy. Die Host-Steuerung läuft komplett im Browser.</p>
-    <div class="version-badge">CHALLENGE ROULETTE · V19.2</div>
+    <div class="version-badge">CHALLENGE ROULETTE · V19.3</div>
     <div id="onlineQr" class="online-qr"></div>
     <div id="onlineUrl" class="online-url">Sitzung wird erstellt …</div>
     <div id="onlineState" class="online-state"><span class="online-dot"></span><span>Verbindung wird vorbereitet …</span></div>
@@ -826,7 +826,8 @@ body.halloween-mode #hostEnd{display:none!important}
       <span class="help">Die Straf-Chancen müssen zusammen 100% ergeben.</span>
     </div>
 
-    <button id="saveBtn" class="save" type="button">SPEICHERN</button>
+    <button id="saveBtn" class="save" type="button" disabled>✓ AUTOMATISCH GESPEICHERT</button>
+<div id="autoSaveState" class="save-state">Änderungen werden automatisch gespeichert.</div>
   </div>
 </div>
 
@@ -916,6 +917,7 @@ let giftNext=null,giftContinueAction=null;
 let jokerTransferActive=false,jokerTransferFrom="",jokerTransferRemaining=0;
 let musicFinishLocked=false;
 let autoTimer=null,challengeTimerHandle=null,penaltyTimerHandle=null,wheelClickTimer=null;
+let settingsAutoSaveTimer=null,settingsAutoSaveBusy=false;
 let autoEndsAt=0,challengeEndsAt=0,penaltyEndsAt=0;
 let autoRunning=false,challengeExpired=false,fakeUsed=false;
 let audioCtx=null,masterGain=null,ambienceNodes=[],ambienceTimer=null,audioUnlocked=false;
@@ -964,7 +966,7 @@ function validSongs(){return (settings.songs||[]).filter(x=>x.title&&isYouTubeUr
 
 function load(){
   try{
-    const raw=localStorage.getItem("challengeRouletteSettingsV19_HALLOWEEN_TEST")||localStorage.getItem("challengeRouletteSettingsV18_3")||localStorage.getItem("challengeRouletteSettingsV18_2")||localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
+    const raw=localStorage.getItem("challengeRouletteSettingsV19_3")||localStorage.getItem("challengeRouletteSettingsV19_HALLOWEEN_TEST")||localStorage.getItem("challengeRouletteSettingsV18_3")||localStorage.getItem("challengeRouletteSettingsV18_2")||localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
     if(!raw)return;
     const s=JSON.parse(raw);
     if(!s)return;
@@ -1005,7 +1007,7 @@ function load(){
     }
   }catch(e){}
 }
-function save(){try{localStorage.setItem("challengeRouletteSettingsV19_HALLOWEEN_TEST",JSON.stringify(settings))}catch(e){}}
+function save(){try{localStorage.setItem("challengeRouletteSettingsV19_3",JSON.stringify(settings))}catch(e){}}
 
 function initGame(reset=true){
   if(!reset&&game)return;
@@ -2181,6 +2183,67 @@ function syncSettingsUI(){
 
   renderPlayers();renderChallenges();renderPenalties();renderLuckyRewards();renderSongs();$("settingsCard").classList.toggle("event-settings",settings.mode!=="standard");updateModeSpecificSettings();
 }
+
+function collectSettingsFromUiNoValidation(){
+  captureEditors();
+  const mode=document.querySelector('input[name="mode"]:checked')?.value;
+  if(mode)settings.mode=mode;
+  settings.hours=clamp($("hoursInput").value,0,99);
+  settings.minutes=clamp($("minutesInput").value,0,59);
+  settings.seconds=clamp($("secondsInput").value,0,59);
+  settings.roundHours=clamp($("roundHoursInput").value,0,99);
+  settings.roundMinutes=clamp($("roundMinutesInput").value,0,59);
+  settings.roundSeconds=clamp($("roundSecondsInput").value,0,59);
+  settings.rounds=clamp($("roundsInput").value,0,99);
+  settings.halloweenStartTime=$("halloweenStartTime").value||"22:00";
+  settings.hideSeekMinutes=clamp($("hideSeekMinutes").value,0,180);
+  settings.hideSeekSeconds=clamp($("hideSeekSeconds").value,0,59);
+  settings.soundPack=$("soundPack").value;
+  settings.mysteryChance=pct($("mysteryChance").value);
+  settings.noRepeatPlayer=$("noRepeatPlayer").checked;
+  settings.noRepeatChallenge=$("noRepeatChallenge").checked;
+  settings.doubleEnabled=$("doubleEnabled").checked;
+  settings.tvMode=$("tvModeEnabled").checked;
+  settings.hostMode=$("hostModeEnabled").checked;
+  ["halloweenLaughChance","halloweenJumpscareChance","halloweenFakeCountdownChance","halloweenDarkChance","halloweenSecretChance",
+   "birthdayConfettiChance","birthdayPartyChance","birthdayGiftChance","birthdayMusicChallengeChance","birthdayFakeCountdownChance","birthdaySecretChance",
+   "musicVolume","tickVolume","heartbeatVolume","wheelVolume","resultVolume","penaltyVolume","jumpscareVolume","evilLaughVolume","confettiVolume","partyVolume","giftVolume"
+  ].forEach(k=>{if($(k))settings[k]=pct($(k).value)});
+}
+function autoSaveSettingsNow(){
+  if(settingsAutoSaveBusy)return;
+  settingsAutoSaveBusy=true;
+  try{
+    collectSettingsFromUiNoValidation();
+    save();
+    applyTheme();
+    if($("autoSaveState")){
+      $("autoSaveState").textContent=`✓ Automatisch gespeichert · ${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"})}`;
+    }
+  }finally{
+    settingsAutoSaveBusy=false;
+  }
+}
+function scheduleSettingsAutoSave(){
+  if(settingsAutoSaveBusy)return;
+  if(settingsAutoSaveTimer)clearTimeout(settingsAutoSaveTimer);
+  if($("autoSaveState"))$("autoSaveState").textContent="Speichert automatisch …";
+  settingsAutoSaveTimer=setTimeout(autoSaveSettingsNow,250);
+}
+function installSettingsAutoSave(){
+  const modal=$("settingsModal");
+  if(!modal||modal.dataset.autosaveInstalled==="1")return;
+  modal.dataset.autosaveInstalled="1";
+  modal.addEventListener("input",e=>{
+    if(e.target.matches("input,select,textarea"))scheduleSettingsAutoSave();
+  });
+  modal.addEventListener("change",e=>{
+    if(e.target.matches("input,select,textarea"))scheduleSettingsAutoSave();
+  });
+  modal.addEventListener("click",e=>{
+    if(e.target.closest(".add,.remove"))setTimeout(scheduleSettingsAutoSave,0);
+  });
+}
 function saveSettings(){
   captureEditors();
   const mode=document.querySelector('input[name="mode"]:checked').value;
@@ -2401,7 +2464,8 @@ function acceptRemote(conn){
     if(!msg)return;
     if(msg.type==="command")runRemoteCommand(msg.action,msg.payload);
     else if(msg.type==="request_settings")sendRemoteSettings();
-    else if(msg.type==="save_settings")applyRemoteSettings(msg.settings);
+    else if(msg.type==="save_settings")applyRemoteSettings(msg.settings,false);
+    else if(msg.type==="autosave_settings")applyRemoteSettings(msg.settings,true);
   });
   conn.on("close",()=>{
     remoteConnected=false;
@@ -2446,11 +2510,11 @@ function sanitizeRemoteSettings(s){
   }
   if(Array.isArray(s.challenges)){
     const arr=s.challenges.slice(0,100).map(c=>({text:String(c?.text||"").trim().slice(0,180),seconds:clamp(c?.seconds,1,3600),difficulty:["leicht","mittel","schwer"].includes(c?.difficulty)?c.difficulty:"mittel",chance:Math.round(pct(c?.chance)*10)/10})).filter(c=>c.text);
-    if(arr.length&&Math.abs(totalChance(arr)-100)<=.11)out.challenges=arr;
+    if(arr.length)out.challenges=arr;
   }
   if(Array.isArray(s.penalties)){
     const arr=s.penalties.slice(0,100).map(p=>({text:String(p?.text||"").trim().slice(0,180),seconds:clamp(p?.seconds,1,3600),chance:Math.round(pct(p?.chance)*10)/10})).filter(p=>p.text);
-    if(arr.length&&Math.abs(totalChance(arr)-100)<=.11)out.penalties=arr;
+    if(arr.length)out.penalties=arr;
   }
   if(Array.isArray(s.songs)){
     out.songs=s.songs.slice(0,100).map(x=>({title:String(x?.title||"").trim().slice(0,120),url:String(x?.url||"").trim().slice(0,500)})).filter(x=>x.title&&isYouTubeUrl(x.url));
@@ -2465,17 +2529,29 @@ function sanitizeRemoteSettings(s){
   }
   return out;
 }
-function applyRemoteSettings(incoming){
+function applyRemoteSettings(incoming,soft=false){
   const cleaned=sanitizeRemoteSettings(incoming);
   if(!cleaned)return;
+  const oldMode=settings.mode;
   settings=cleaned;
   save();
   applyTheme();
-  syncSettingsUI();
-  initGame(true);
-  show("start");
-  restartCountdown();
-  sendRemoteSettings();
+
+  // Bei Autosave niemals ein laufendes Spiel unterbrechen.
+  if(!soft){
+    syncSettingsUI();
+    initGame(true);
+    show("start");
+    restartCountdown();
+    sendRemoteSettings();
+  }else if(game?._screen==="start"){
+    if(oldMode!==settings.mode)initGame(true);
+    restartCountdown();
+  }
+
+  if(remoteConn&&remoteConn.open){
+    try{remoteConn.send({type:"settings_saved",auto:!!soft,at:Date.now()})}catch(e){}
+  }
   setTimeout(sendRemoteStatus,80);
 }
 
@@ -2565,7 +2641,7 @@ $("doubleYesBtn").onclick=doubleRisk;
 $("playAgainBtn").onclick=()=>{initGame(true);show("start");restartCountdown()};
 $("backHomeBtn").onclick=()=>{initGame(true);show("start");restartCountdown()};
 $("settingsBtn").onclick=()=>{clearAuto();stopAmbience();syncSettingsUI();$("settingsModal").classList.add("open")};
-$("settingsClose").onclick=()=>{$("settingsModal").classList.remove("open");show("start");restartCountdown()};
+$("settingsClose").onclick=()=>{autoSaveSettingsNow();$("settingsModal").classList.remove("open");show("start");restartCountdown()};
 $("hostBtn").onclick=()=>$("hostModal").classList.add("open");
 $("hostClose").onclick=()=>$("hostModal").classList.remove("open");
 $("hostShowQr").onclick=showConnectOverlayAgain;
@@ -2577,7 +2653,7 @@ $("addSongBtn").onclick=()=>{captureEditors();settings.songs.push({title:"",url:
 $("songsDropdownToggle").onclick=()=>$("songsDropdown").classList.toggle("open");
 $("addLuckyBtn").onclick=()=>{captureEditors();settings.luckyRewards=settings.luckyRewards||[];settings.luckyRewards.push({label:"+1 Punkt",type:"points",value:1});renderLuckyRewards()};
 $("luckyDropdownToggle").onclick=()=>$("luckyDropdown").classList.toggle("open");
-$("saveBtn").onclick=saveSettings;
+$("saveBtn").onclick=autoSaveSettingsNow;
 document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener("change",()=>{if(r.checked){$("settingsCard").classList.toggle("event-settings",r.value!=="standard");updateModeSpecificSettings()}}));
 $("volumeDropdownToggle").onclick=()=>$("volumeDropdown").classList.toggle("open");
 
@@ -2591,7 +2667,7 @@ $("hidePcContinueBtn").onclick=continueAfterHide;
 
 ["pointerdown","touchstart","keydown"].forEach(evt=>window.addEventListener(evt,()=>ensureAudio(),{once:true,passive:true}));
 
-load();applyTheme();syncSettingsUI();initGame(true);drawWheel($("doubleWheel"),["DOUBLE WIN","STRAFE"],"double");show("start");createOnlineSession();
+load();applyTheme();syncSettingsUI();installSettingsAutoSave();initGame(true);drawWheel($("doubleWheel"),["DOUBLE WIN","STRAFE"],"double");show("start");createOnlineSession();
 
 })();
 </script>
