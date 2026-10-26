@@ -1,23 +1,23 @@
-CHALLENGE ROULETTE V19.3 – AUTO-SAVE
+CHALLENGE ROULETTE V19.4 – HALLOWEEN TIME FIX
 
-ÄNDERUNGEN:
-- Einstellungen werden jetzt automatisch gespeichert.
-- Auf PC und Administrator-Handy wird jede Änderung nach ca. 0,25–0,30 Sekunden gespeichert.
-- Beim Schließen der Einstellungen wird ein eventuell noch ausstehender Save sofort ausgeführt.
-- Spieler/Challenges/Strafen/Songs/Glücksrad-Einträge werden ebenfalls automatisch gespeichert.
-- Kurzzeitig unvollständige Chance-Summen werden nicht mehr einfach verworfen.
-- Das Admin-Handy bekommt eine sichtbare Bestätigung: "✓ Automatisch gespeichert".
-- Auto-Save vom Admin-Handy unterbricht ein laufendes Hide & Seek NICHT.
-- Wenn du die Halloween-Startzeit vor dem Start änderst, aktualisiert sich der Countdown direkt.
+FIX:
+In V19.3 wurde der komplette Bereich "Allgemeine Extras" im Halloween-Modus ausgeblendet.
+Darin lagen aber auch die neuen Halloween-Felder.
 
-HALLOWEEN BLEIBT:
-- Event-Startzeit einstellbar.
-- Hide-&-Seek-Suchzeit einstellbar.
-- "Countdown beenden" bleibt am Admin-Handy.
-- Kein Strafrad / keine Strafen.
-- Keine Joker / kein Weitergeben.
-- Keine Rangliste im Halloween-Modus.
-- V19.3 steht über dem QR-Code.
+JETZT SICHTBAR UND ÄNDERBAR:
+- Event startet um: Uhrzeit (z.B. 22:00)
+- Hide & Seek Suchzeit: Minuten + Sekunden
+
+DAS GILT FÜR:
+- PC / Leinwand Einstellungen
+- Administrator-Handy Einstellungen
+
+WEITERHIN ENTHALTEN:
+- AutoSave
+- Countdown beenden am Admin-Handy
+- Keine Challenges/Strafen/Joker/Rangliste in Halloween
+- Standard und Geburtstag bleiben unverändert
+- Version V19.4 über dem Main-QR-Code
 
 UPLOAD:
 index.html
