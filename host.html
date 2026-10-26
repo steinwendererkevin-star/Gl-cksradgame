@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080a0f">
-<title>Challenge Roulette Host V19.4 Halloween Time Fix</title>
+<title>Challenge Roulette Host V19.5 Halloween Two Events</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -260,20 +260,46 @@ body.halloween-host .player-row .remove{grid-column:3}
       </div>
 
       <div id="halloweenExtrasPanel" class="mode-extra-panel">
-        <div class="mode-extra-title">🎃 Halloween V19.4 – Hide &amp; Seek</div>
-        <div class="field">
-          <label>🕙 Event startet um</label>
-          <input id="halloweenStartTime" type="time" step="60">
-        </div>
-        <div class="field">
-          <label>🔦 Suchzeit</label>
-          <div class="time-grid">
-            <input id="hideSeekMinutes" type="number" min="0" max="180" inputmode="numeric" placeholder="Min.">
-            <input id="hideSeekSeconds" type="number" min="0" max="59" inputmode="numeric" placeholder="Sek.">
-            <div></div>
+        <div class="mode-extra-title">🎃 Halloween V19.5 – Events</div>
+
+        <div id="hideSeekSettingsDropdown" class="dropdown-section open">
+          <button id="hideSeekSettingsDropdownToggle" class="dropdown-toggle" type="button">
+            <span>🔦 Hide and Seek Modus</span><span class="arrow">⌄</span>
+          </button>
+          <div class="dropdown-content">
+            <div class="field">
+              <label>🕙 Countdown 1 – Hide &amp; Seek startet um</label>
+              <input id="halloweenStartTime" type="time" step="60">
+            </div>
+            <div class="field">
+              <label>🔦 Suchzeit des Seekers</label>
+              <div class="time-grid">
+                <input id="hideSeekMinutes" type="number" min="0" max="180" inputmode="numeric" placeholder="Min.">
+                <input id="hideSeekSeconds" type="number" min="0" max="59" inputmode="numeric" placeholder="Sek.">
+                <div></div>
+              </div>
+              <span class="help">Start erst, wenn alle Hider READY sind.</span>
+            </div>
           </div>
-          <span class="help">Start erst, wenn alle Hider READY sind.</span>
         </div>
+
+        <div id="storySettingsDropdown" class="dropdown-section">
+          <button id="storySettingsDropdownToggle" class="dropdown-toggle" type="button">
+            <span>📖 Halloween Story</span><span class="arrow">⌄</span>
+          </button>
+          <div class="dropdown-content">
+            <div class="field">
+              <label>🕛 Countdown 2 – Halloween Story startet um</label>
+              <input id="halloweenStoryStartTime" type="time" step="60">
+              <span class="help">Nach Hide &amp; Seek und „WEITER“ läuft dieser zweite Countdown.</span>
+            </div>
+            <div class="field">
+              <label>📖 Story-Inhalt</label>
+              <span class="help">Der eigentliche Story-Inhalt kommt im nächsten Schritt.</span>
+            </div>
+          </div>
+        </div>
+
         <input id="halloweenLaughChance" type="hidden" value="0">
         <input id="halloweenJumpscareChance" type="hidden" value="0">
         <input id="halloweenFakeCountdownChance" type="hidden" value="0">
@@ -387,14 +413,14 @@ function status(ok,text){
   s.querySelector("span:last-child").textContent=text;
 }
 function sendCommand(action,payload){if(conn&&conn.open)conn.send({type:"command",action,payload})}
-function screenName(s){return ({start:"STARTBILDSCHIRM",halloweenIntro:"HALLOWEEN EVENT",hideTitle:"HIDE & SEEK",hideSeekerQr:"SUCHER QR",hideHiderQr:"HIDER QR",hideMap:"LIVE-MAP",name:"NAMENSRAD",challenge:"CHALLENGE-RAD",result:"CHALLENGE",penalty:"STRAFRAD",penaltyResult:"STRAFE",mystery:"MYSTERY EVENT",luckyEvent:"GLÜCKS-EREIGNIS",giftWheel:"GLÜCKSRAD",musicWheel:"MUSIK-RAD",musicResult:"MUSIK-CHALLENGE",double:"DOUBLE OR NOTHING",doubleWheel:"DOUBLE-RAD",stats:"ERGEBNIS"})[s]||String(s||"GAME").toUpperCase()}
+function screenName(s){return ({start:"STARTBILDSCHIRM",halloweenIntro:"HALLOWEEN EVENT",hideTitle:"HIDE & SEEK",hideSeekerQr:"SUCHER QR",hideHiderQr:"HIDER QR",hideMap:"LIVE-MAP",halloweenStory:"HALLOWEEN STORY",name:"NAMENSRAD",challenge:"CHALLENGE-RAD",result:"CHALLENGE",penalty:"STRAFRAD",penaltyResult:"STRAFE",mystery:"MYSTERY EVENT",luckyEvent:"GLÜCKS-EREIGNIS",giftWheel:"GLÜCKSRAD",musicWheel:"MUSIK-RAD",musicResult:"MUSIK-CHALLENGE",double:"DOUBLE OR NOTHING",doubleWheel:"DOUBLE-RAD",stats:"ERGEBNIS"})[s]||String(s||"GAME").toUpperCase()}
 function render(s){
   const halloween=s.mode==="halloween";
   document.body.classList.toggle("halloween-host",halloween);
   $("screenLabel").textContent=screenName(s.screen);$("player").textContent=halloween?(s.hideSeeker||s.player||"—"):(s.player||"—");
   let text=s.challenge||"";if(s.screen==="penalty"||s.screen==="penaltyResult")text=s.penalty||text;
   if(!text&&s.screen==="start")text=s.ready?"Bereit zum Starten":(s.countdownLabel||"Countdown läuft");
-  $("challenge").textContent=halloween?(s.screen==="start"?(s.ready?"Bereit zum Starten":"Countdown läuft"):"Hide & Seek"):(text||"—");$("timer").textContent=s.timer||"";
+  $("challenge").textContent=halloween?(s.screen==="start"?(s.ready?"Bereit zum Starten":"Countdown läuft"):((s.halloweenStage||"hide")==="story"?"Halloween Story":"Hide & Seek")):(text||"—");$("timer").textContent=s.timer||"";
   $("round").textContent=s.rounds?`Runde ${s.round} / ${s.rounds}`:`Runde ${s.round}`;
   $("points").textContent=`${s.points||0} Punkte`;$("streak").textContent=`🔥 ${s.streak||0}`;$("jokerState").textContent=`🃏 ${s.joker||0}`;
   $("startBtn").textContent=s.screen==="start"&&s.ready?"JETZT STARTEN":"START / SOFORT STARTEN";
@@ -402,17 +428,28 @@ function render(s){
 
   if(halloween){
     const hs=s.hideStatus||"";
-    let summary="Warte auf Hide & Seek …";
-    if(hs==="seeker_connect")summary="🔦 Sucher-QR wird angezeigt.";
-    else if(hs==="hiders_connect")summary="👻 Hider verbinden sich und verstecken sich.";
-    else if(hs==="searching")summary="🔎 Die Suche läuft.";
-    else if(hs==="finished")summary=s.hideResult==="all_found"?"🏆 Sucher hat gewonnen.":"🏆 Hider haben gewonnen.";
-    else if(s.screen==="halloweenNext")summary="✅ Hide & Seek beendet.";
+    const stage=s.halloweenStage||"hide";
+    $("hostHideStatusCard").querySelector("h3").textContent=stage==="story"?"📖 Halloween Story":"🎃 Hide & Seek";
+
+    let summary=stage==="story"?"Warte auf Countdown 2 …":"Warte auf Hide & Seek …";
+    if(stage==="hide"){
+      if(hs==="seeker_connect")summary="🔦 Sucher-QR wird angezeigt.";
+      else if(hs==="hiders_connect")summary="👻 Hider verbinden sich und verstecken sich.";
+      else if(hs==="searching")summary="🔎 Die Suche läuft.";
+      else if(hs==="finished")summary=s.hideResult==="all_found"?"🏆 Sucher hat gewonnen.":"🏆 Hider haben gewonnen.";
+    }else{
+      if(s.screen==="start")summary=s.ready?"📖 Halloween Story ist startbereit.":"⏱️ Countdown 2 läuft.";
+      else if(s.screen==="halloweenStory")summary="📖 Halloween Story wurde gestartet.";
+    }
+
     $("hostHideSummary").textContent=summary;
-    $("hostHidePeople").innerHTML=(s.hideHiders||[]).map(x=>`<div class="host-hide-person ${x.found?"found":x.ready?"ready":""}"><span>👻 ${esc(x.name)}</span><span>${x.found?"GEFUNDEN":x.ready?"READY":x.connected?"VERBUNDEN":"OFFLINE"}</span></div>`).join("");
-    $("hostHideContinueBtn").style.display=hs==="finished"?"block":"none";
+    $("hostHidePeople").innerHTML=stage==="hide"
+      ?(s.hideHiders||[]).map(x=>`<div class="host-hide-person ${x.found?"found":x.ready?"ready":""}"><span>👻 ${esc(x.name)}</span><span>${x.found?"GEFUNDEN":x.ready?"READY":x.connected?"VERBUNDEN":"OFFLINE"}</span></div>`).join("")
+      :"";
+    $("hostHideContinueBtn").style.display=stage==="hide"&&hs==="finished"?"block":"none";
     $("hostHideSkipBtn").style.display=s.screen==="start"?"block":"none";
     $("hostHideRestartBtn").style.display=s.screen==="start"?"none":"block";
+    $("hostHideRestartBtn").textContent=stage==="story"?"↻ STORY NEUSTART":"↻ HIDE & SEEK NEUSTART";
   }
 
   const primary=$("finishBtn");
@@ -554,7 +591,7 @@ function updateModeSpecificSettings(){
 function fillSettings(){
   if(!currentSettings)return;
   const m=document.querySelector(`input[name="mode"][value="${currentSettings.mode}"]`);if(m)m.checked=true;
-  $("hoursInput").value=currentSettings.hours||0;$("minutesInput").value=currentSettings.minutes||0;$("secondsInput").value=currentSettings.seconds||0;$("roundHoursInput").value=currentSettings.roundHours||0;$("roundMinutesInput").value=currentSettings.roundMinutes||0;$("roundSecondsInput").value=currentSettings.roundSeconds||0;$("roundsInput").value=currentSettings.rounds||0;$("halloweenStartTime").value=currentSettings.halloweenStartTime||"22:00";$("hideSeekMinutes").value=currentSettings.hideSeekMinutes??20;$("hideSeekSeconds").value=currentSettings.hideSeekSeconds??0;
+  $("hoursInput").value=currentSettings.hours||0;$("minutesInput").value=currentSettings.minutes||0;$("secondsInput").value=currentSettings.seconds||0;$("roundHoursInput").value=currentSettings.roundHours||0;$("roundMinutesInput").value=currentSettings.roundMinutes||0;$("roundSecondsInput").value=currentSettings.roundSeconds||0;$("roundsInput").value=currentSettings.rounds||0;$("halloweenStartTime").value=currentSettings.halloweenStartTime||"22:00";$("halloweenStoryStartTime").value=currentSettings.halloweenStoryStartTime||"00:00";$("hideSeekMinutes").value=currentSettings.hideSeekMinutes??20;$("hideSeekSeconds").value=currentSettings.hideSeekSeconds??0;
   $("soundPack").value=currentSettings.soundPack||"creepy";
   $("mysteryChance").value=String(currentSettings.mysteryChance??5);
   $("noRepeatPlayer").checked=!!currentSettings.noRepeatPlayer;$("noRepeatChallenge").checked=!!currentSettings.noRepeatChallenge;$("doubleEnabled").checked=!!currentSettings.doubleEnabled;
@@ -570,7 +607,7 @@ function fillSettings(){
 function collectSettings(){
   captureEditors();
   const mode=document.querySelector('input[name="mode"]:checked');if(mode)currentSettings.mode=mode.value;
-  currentSettings.hours=clamp($("hoursInput").value,0,99);currentSettings.minutes=clamp($("minutesInput").value,0,59);currentSettings.seconds=clamp($("secondsInput").value,0,59);currentSettings.roundHours=clamp($("roundHoursInput").value,0,99);currentSettings.roundMinutes=clamp($("roundMinutesInput").value,0,59);currentSettings.roundSeconds=clamp($("roundSecondsInput").value,0,59);currentSettings.rounds=clamp($("roundsInput").value,0,99);currentSettings.halloweenStartTime=$("halloweenStartTime").value||"22:00";currentSettings.hideSeekMinutes=clamp($("hideSeekMinutes").value,0,180);currentSettings.hideSeekSeconds=clamp($("hideSeekSeconds").value,0,59);
+  currentSettings.hours=clamp($("hoursInput").value,0,99);currentSettings.minutes=clamp($("minutesInput").value,0,59);currentSettings.seconds=clamp($("secondsInput").value,0,59);currentSettings.roundHours=clamp($("roundHoursInput").value,0,99);currentSettings.roundMinutes=clamp($("roundMinutesInput").value,0,59);currentSettings.roundSeconds=clamp($("roundSecondsInput").value,0,59);currentSettings.rounds=clamp($("roundsInput").value,0,99);currentSettings.halloweenStartTime=$("halloweenStartTime").value||"22:00";currentSettings.halloweenStoryStartTime=$("halloweenStoryStartTime").value||"00:00";currentSettings.hideSeekMinutes=clamp($("hideSeekMinutes").value,0,180);currentSettings.hideSeekSeconds=clamp($("hideSeekSeconds").value,0,59);
   currentSettings.soundPack=$("soundPack").value;currentSettings.mysteryChance=pct($("mysteryChance").value);
   currentSettings.noRepeatPlayer=$("noRepeatPlayer").checked;currentSettings.noRepeatChallenge=$("noRepeatChallenge").checked;currentSettings.doubleEnabled=$("doubleEnabled").checked;
   currentSettings.tvMode=$("tvModeEnabled").checked;currentSettings.hostMode=$("hostModeEnabled").checked;
@@ -663,6 +700,8 @@ $("addChallengeBtn").onclick=()=>{captureEditors();currentSettings.challenges.pu
 $("addPenaltyBtn").onclick=()=>{captureEditors();currentSettings.penalties.push({text:"Neue Strafe",seconds:30,chance:0});renderPenalties()};
 $("addSongBtn").onclick=()=>{captureEditors();currentSettings.songs=currentSettings.songs||[];currentSettings.songs.push({title:"",url:""});renderSongs()};
 $("songsDropdownToggle").onclick=()=>$("songsDropdown").classList.toggle("open");
+$("hideSeekSettingsDropdownToggle").onclick=()=>$("hideSeekSettingsDropdown").classList.toggle("open");
+$("storySettingsDropdownToggle").onclick=()=>$("storySettingsDropdown").classList.toggle("open");
 $("addLuckyBtn").onclick=()=>{captureEditors();currentSettings.luckyRewards=currentSettings.luckyRewards||[];currentSettings.luckyRewards.push({label:"+1 Punkt",type:"points",value:1});renderLuckyRewards()};
 $("luckyDropdownToggle").onclick=()=>$("luckyDropdown").classList.toggle("open");
 

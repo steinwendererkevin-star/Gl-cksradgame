@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V19.4 Halloween Time Fix</title>
+<title>Challenge Roulette V19.5 Halloween Two Events</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *{box-sizing:border-box}
@@ -372,7 +372,7 @@ body.halloween-mode #hostEnd{display:none!important}
   <div class="online-card">
     <h1>📱 Handy verbinden</h1>
     <p>Scanne den QR-Code mit deinem Handy. Die Host-Steuerung läuft komplett im Browser.</p>
-    <div class="version-badge">CHALLENGE ROULETTE · V19.4</div>
+    <div class="version-badge">CHALLENGE ROULETTE · V19.5</div>
     <div id="onlineQr" class="online-qr"></div>
     <div id="onlineUrl" class="online-url">Sitzung wird erstellt …</div>
     <div id="onlineState" class="online-state"><span class="online-dot"></span><span>Verbindung wird vorbereitet …</span></div>
@@ -476,13 +476,14 @@ body.halloween-mode #hostEnd{display:none!important}
   </div>
 </section>
 
-<section id="halloweenNextScreen" class="screen">
+<section id="halloweenStoryScreen" class="screen">
   <div class="noise"></div>
   <div class="theme-decor halloween-decor"><div class="bat a">🦇</div><div class="bat b">🦇</div><div class="pumpkin">🎃</div></div>
   <div class="halloween-next-card">
-    <div class="halloween-event-kicker">🎃 HALLOWEEN EVENT</div>
-    <h1>HIDE &amp; SEEK<br>BEENDET</h1>
-    <p>Bereit für das nächste Halloween-Spiel.</p>
+    <div class="halloween-event-kicker">🎃 HALLOWEEN EVENT 2</div>
+    <h1>HALLOWEEN<br>STORY</h1>
+    <p>Die Halloween Story wurde gestartet.</p>
+    <p style="font-size:clamp(14px,2vw,19px);opacity:.8">Der Story-Inhalt kommt im nächsten Schritt.</p>
   </div>
 </section>
 
@@ -712,30 +713,49 @@ body.halloween-mode #hostEnd{display:none!important}
       </div>
 
       <div id="halloweenExtrasPanel" class="mode-extra-panel">
-        <div class="mode-extra-title">🎃 Halloween V19.4 – Hide &amp; Seek</div>
+        <div class="mode-extra-title">🎃 Halloween V19.5 – Events</div>
 
-        <div class="field halloween-only-setting">
-          <label>🕙 Event startet um</label>
-          <input id="halloweenStartTime" type="time" step="60">
-          <span class="help">Du stellst nur die Uhrzeit ein. Das Spiel berechnet automatisch die verbleibende Zeit und zählt bis dahin herunter.</span>
-        </div>
+        <div id="hideSeekSettingsDropdown" class="dropdown-section open">
+          <button id="hideSeekSettingsDropdownToggle" class="dropdown-toggle" type="button">
+            <span>🔦 Hide and Seek Modus</span><span class="arrow">⌄</span>
+          </button>
+          <div class="dropdown-content">
+            <div class="field halloween-only-setting">
+              <label>🕙 Countdown 1 – Hide &amp; Seek startet um</label>
+              <input id="halloweenStartTime" type="time" step="60">
+              <span class="help">Wenn dieser Countdown abläuft, erscheint „JETZT STARTEN“. Danach beginnt Hide &amp; Seek.</span>
+            </div>
 
-        <div class="field halloween-only-setting">
-          <label>🔦 Suchzeit bei Hide &amp; Seek</label>
-          <div class="time-grid">
-            <input id="hideSeekMinutes" type="number" min="0" max="180" inputmode="numeric" placeholder="Min.">
-            <input id="hideSeekSeconds" type="number" min="0" max="59" inputmode="numeric" placeholder="Sek.">
-            <div style="display:flex;align-items:center;padding:0 10px;color:var(--muted);font-weight:800">GPS Live-Map ✓</div>
+            <div class="field halloween-only-setting">
+              <label>🔦 Suchzeit des Seekers</label>
+              <div class="time-grid">
+                <input id="hideSeekMinutes" type="number" min="0" max="180" inputmode="numeric" placeholder="Min.">
+                <input id="hideSeekSeconds" type="number" min="0" max="59" inputmode="numeric" placeholder="Sek.">
+                <div style="display:flex;align-items:center;padding:0 10px;color:var(--muted);font-weight:800">GPS Live-Map ✓</div>
+              </div>
+              <span class="help">Der Such-Countdown startet erst, wenn alle Hider READY sind und der Sucher „JETZT SUCHEN“ drückt.</span>
+            </div>
           </div>
-          <span class="help">Der Such-Countdown startet erst, wenn alle Hider READY sind und der Sucher auf „JETZT SUCHEN“ drückt.</span>
         </div>
 
-        <div class="field halloween-only-setting">
-          <label>🗺️ Hide &amp; Seek Test-Ablauf</label>
-          <span class="help">Halloween Event → Hide &amp; Seek → Sucher-Rad → Sucher-QR → Hider-QR → Namen wählen → READY → Live-Map → Suche.</span>
+        <div id="storySettingsDropdown" class="dropdown-section">
+          <button id="storySettingsDropdownToggle" class="dropdown-toggle" type="button">
+            <span>📖 Halloween Story</span><span class="arrow">⌄</span>
+          </button>
+          <div class="dropdown-content">
+            <div class="field halloween-only-setting">
+              <label>🕛 Countdown 2 – Halloween Story startet um</label>
+              <input id="halloweenStoryStartTime" type="time" step="60">
+              <span class="help">Nach Hide &amp; Seek und „WEITER“ läuft der zweite Countdown bis zu dieser Uhrzeit. Danach wieder „JETZT STARTEN“ drücken.</span>
+            </div>
+            <div class="field halloween-only-setting">
+              <label>📖 Story-Inhalt</label>
+              <span class="help">Der eigentliche Inhalt der Halloween Story wird als Nächstes eingebaut. V19.5 bereitet nur Ablauf, Countdown und Start vor.</span>
+            </div>
+          </div>
         </div>
 
-        <!-- Legacy Halloween values stay in the file for compatibility, but are not used by the new Hide & Seek flow. -->
+        <!-- Legacy Halloween values bleiben nur für Kompatibilität vorhanden. -->
         <input id="halloweenLaughChance" type="hidden" value="0">
         <input id="halloweenJumpscareChance" type="hidden" value="0">
         <input id="halloweenFakeCountdownChance" type="hidden" value="0">
@@ -865,13 +885,13 @@ body.halloween-mode #hostEnd{display:none!important}
 
 const $=id=>document.getElementById(id);
 const screens={
-  start:$("startScreen"),halloweenIntro:$("halloweenIntroScreen"),hideTitle:$("hideTitleScreen"),hideSeekerQr:$("hideSeekerQrScreen"),hideHiderQr:$("hideHiderQrScreen"),hideMap:$("hideMapScreen"),halloweenNext:$("halloweenNextScreen"),name:$("nameScreen"),challenge:$("challengeScreen"),result:$("resultScreen"),
+  start:$("startScreen"),halloweenIntro:$("halloweenIntroScreen"),hideTitle:$("hideTitleScreen"),hideSeekerQr:$("hideSeekerQrScreen"),hideHiderQr:$("hideHiderQrScreen"),hideMap:$("hideMapScreen"),halloweenStory:$("halloweenStoryScreen"),name:$("nameScreen"),challenge:$("challengeScreen"),result:$("resultScreen"),
   penalty:$("penaltyScreen"),penaltyResult:$("penaltyResultScreen"),mystery:$("mysteryScreen"),luckyEvent:$("luckyEventScreen"),giftWheel:$("giftWheelScreen"),musicWheel:$("musicWheelScreen"),musicResult:$("musicResultScreen"),
   double:$("doubleScreen"),doubleWheel:$("doubleWheelScreen"),stats:$("statsScreen")
 };
 
 let settings={
-  mode:"standard",hours:0,minutes:0,seconds:30,roundHours:0,roundMinutes:5,roundSeconds:0,rounds:10,halloweenStartTime:"22:00",hideSeekMinutes:20,hideSeekSeconds:0,
+  mode:"standard",hours:0,minutes:0,seconds:30,roundHours:0,roundMinutes:5,roundSeconds:0,rounds:10,halloweenStartTime:"22:00",halloweenStoryStartTime:"00:00",hideSeekMinutes:20,hideSeekSeconds:0,
   soundPack:"creepy",mysteryChance:5,
   noRepeatPlayer:true,noRepeatChallenge:true,doubleEnabled:true,tvMode:false,hostMode:false,
 
@@ -968,7 +988,7 @@ function validSongs(){return (settings.songs||[]).filter(x=>x.title&&isYouTubeUr
 
 function load(){
   try{
-    const raw=localStorage.getItem("challengeRouletteSettingsV19_3")||localStorage.getItem("challengeRouletteSettingsV19_HALLOWEEN_TEST")||localStorage.getItem("challengeRouletteSettingsV18_3")||localStorage.getItem("challengeRouletteSettingsV18_2")||localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
+    const raw=localStorage.getItem("challengeRouletteSettingsV19_5")||localStorage.getItem("challengeRouletteSettingsV19_3")||localStorage.getItem("challengeRouletteSettingsV19_HALLOWEEN_TEST")||localStorage.getItem("challengeRouletteSettingsV18_3")||localStorage.getItem("challengeRouletteSettingsV18_2")||localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
     if(!raw)return;
     const s=JSON.parse(raw);
     if(!s)return;
@@ -1009,7 +1029,7 @@ function load(){
     }
   }catch(e){}
 }
-function save(){try{localStorage.setItem("challengeRouletteSettingsV19_3",JSON.stringify(settings))}catch(e){}}
+function save(){try{localStorage.setItem("challengeRouletteSettingsV19_5",JSON.stringify(settings))}catch(e){}}
 
 function initGame(reset=true){
   if(!reset&&game)return;
@@ -1582,7 +1602,7 @@ function completeRound(){
   game.round++;$("nameHint").textContent="Dreh das Rad.";updateRoundUI();show("start");restartCountdown();
 }
 function showStats(){
-  if(settings.mode==="halloween"){show("halloweenNext");return}
+  if(settings.mode==="halloween"){halloweenStage="story";show("start");restartCountdown();return}
 
   const rows=Object.entries(game.players).map(([name,s])=>({name,...s})).sort((a,b)=>b.points-a.points||b.success-a.success||a.fails-b.fails);
   const win=rows[0];$("winnerName").textContent=win?`🏆 ${win.name}`:"🏆 Ende";$("winnerSub").textContent=win?`${win.points} Punkte`:"";
@@ -1608,8 +1628,8 @@ function setReady(ready){
   $("eventCountdownLabel").style.display=ready?"none":"block";
   $("eventStartBtn").style.display=ready?"inline-block":"none";
 }
-function secondsUntilHalloweenTime(){
-  const value=settings.halloweenStartTime||"22:00";
+function secondsUntilClockTime(value){
+  value=value||"00:00";
   const parts=value.split(":").map(Number);
   const now=new Date();
   const target=new Date(now);
@@ -1617,13 +1637,21 @@ function secondsUntilHalloweenTime(){
   if(target.getTime()<=now.getTime()+500)target.setDate(target.getDate()+1);
   return Math.max(0,Math.ceil((target.getTime()-now.getTime())/1000));
 }
+function currentHalloweenTargetTime(){
+  return halloweenStage==="story"
+    ? (settings.halloweenStoryStartTime||"00:00")
+    : (settings.halloweenStartTime||"22:00");
+}
 function restartCountdown(){
   clearAuto();fakeUsed=false;if(game)game._lastTick=null;setReady(false);
   if(settings.mode==="standard"){stopAmbience();return}
 
   if(settings.mode==="halloween"){
-    const total=secondsUntilHalloweenTime();
-    $("eventCountdownLabel").textContent=`HALLOWEEN STARTET UM ${settings.halloweenStartTime||"22:00"}`;
+    const targetTime=currentHalloweenTargetTime();
+    const total=secondsUntilClockTime(targetTime);
+    $("eventCountdownLabel").textContent=halloweenStage==="story"
+      ? `HALLOWEEN STORY STARTET UM ${targetTime}`
+      : `HIDE & SEEK STARTET UM ${targetTime}`;
     autoEndsAt=Date.now()+total*1000;
     autoRunning=true;
     updateAuto();
@@ -1682,6 +1710,15 @@ function makeHideState(seeker){
     result:"",
     hiders
   };
+}
+function startCurrentHalloweenEvent(){
+  if(halloweenStage==="story")startHalloweenStory();
+  else startHalloweenEvent();
+}
+function startHalloweenStory(){
+  clearAuto();stopAmbience();setReady(false);
+  show("halloweenStory");
+  setTimeout(sendRemoteStatus,80);
 }
 function startHalloweenEvent(){
   if(activePlayers().length<2){
@@ -1897,8 +1934,20 @@ function finishHideGame(result){
 function continueAfterHide(){
   if(!hideState||hideState.status!=="finished")return;
   $("hidePcEndOverlay").classList.remove("show");
-  show("halloweenNext");
+
+  // Endergebnis noch einmal an Sucher/Hider senden, danach alte GPS-Verbindungen schließen.
   broadcastHideState();
+  setTimeout(()=>{
+    hideConnections.forEach(c=>{try{c.close()}catch(e){}});
+    hideConnections.clear();
+  },350);
+
+  halloweenStage="story";
+  hideState=null;
+  clearHidePcMap();
+  show("start");
+  restartCountdown();
+  setTimeout(sendRemoteStatus,80);
 }
 
 function publicHideState(forRole){
@@ -2167,6 +2216,7 @@ function captureEditors(readText=true){
 }
 function updateModeSpecificSettings(){
   const selected=document.querySelector('input[name="mode"]:checked')?.value||settings.mode;
+  if(selected==="halloween"&&settings.mode!=="halloween")halloweenStage="hide";
   const h=$("halloweenExtrasPanel"),b=$("birthdayExtrasPanel");
   if(h)h.classList.toggle("active",selected==="halloween");
   if(b)b.classList.toggle("active",selected==="birthday");
@@ -2174,7 +2224,7 @@ function updateModeSpecificSettings(){
 }
 function syncSettingsUI(){
   document.querySelector(`input[name="mode"][value="${settings.mode}"]`).checked=true;
-  $("hoursInput").value=settings.hours;$("minutesInput").value=settings.minutes;$("secondsInput").value=settings.seconds;$("roundHoursInput").value=settings.roundHours;$("roundMinutesInput").value=settings.roundMinutes;$("roundSecondsInput").value=settings.roundSeconds;$("roundsInput").value=settings.rounds;$("halloweenStartTime").value=settings.halloweenStartTime||"22:00";$("hideSeekMinutes").value=settings.hideSeekMinutes??20;$("hideSeekSeconds").value=settings.hideSeekSeconds??0;
+  $("hoursInput").value=settings.hours;$("minutesInput").value=settings.minutes;$("secondsInput").value=settings.seconds;$("roundHoursInput").value=settings.roundHours;$("roundMinutesInput").value=settings.roundMinutes;$("roundSecondsInput").value=settings.roundSeconds;$("roundsInput").value=settings.rounds;$("halloweenStartTime").value=settings.halloweenStartTime||"22:00";$("halloweenStoryStartTime").value=settings.halloweenStoryStartTime||"00:00";$("hideSeekMinutes").value=settings.hideSeekMinutes??20;$("hideSeekSeconds").value=settings.hideSeekSeconds??0;
   $("soundPack").value=settings.soundPack;$("mysteryChance").value=String(settings.mysteryChance);
   $("noRepeatPlayer").checked=settings.noRepeatPlayer;$("noRepeatChallenge").checked=settings.noRepeatChallenge;$("doubleEnabled").checked=settings.doubleEnabled;$("tvModeEnabled").checked=settings.tvMode;$("hostModeEnabled").checked=settings.hostMode;
 
@@ -2198,6 +2248,7 @@ function collectSettingsFromUiNoValidation(){
   settings.roundSeconds=clamp($("roundSecondsInput").value,0,59);
   settings.rounds=clamp($("roundsInput").value,0,99);
   settings.halloweenStartTime=$("halloweenStartTime").value||"22:00";
+  settings.halloweenStoryStartTime=$("halloweenStoryStartTime").value||"00:00";
   settings.hideSeekMinutes=clamp($("hideSeekMinutes").value,0,180);
   settings.hideSeekSeconds=clamp($("hideSeekSeconds").value,0,59);
   settings.soundPack=$("soundPack").value;
@@ -2273,7 +2324,7 @@ function saveSettings(){
     if(bad){alert("Bitte bei jedem Musik-Song einen Namen und einen gültigen YouTube-Link eintragen.");return}
   }
 
-  settings.mode=mode;settings.hours=clamp($("hoursInput").value,0,99);settings.minutes=clamp($("minutesInput").value,0,59);settings.seconds=clamp($("secondsInput").value,0,59);settings.roundHours=clamp($("roundHoursInput").value,0,99);settings.roundMinutes=clamp($("roundMinutesInput").value,0,59);settings.roundSeconds=clamp($("roundSecondsInput").value,0,59);settings.rounds=clamp($("roundsInput").value,0,99);settings.halloweenStartTime=$("halloweenStartTime").value||"22:00";settings.hideSeekMinutes=clamp($("hideSeekMinutes").value,0,180);settings.hideSeekSeconds=clamp($("hideSeekSeconds").value,0,59);
+  settings.mode=mode;settings.hours=clamp($("hoursInput").value,0,99);settings.minutes=clamp($("minutesInput").value,0,59);settings.seconds=clamp($("secondsInput").value,0,59);settings.roundHours=clamp($("roundHoursInput").value,0,99);settings.roundMinutes=clamp($("roundMinutesInput").value,0,59);settings.roundSeconds=clamp($("roundSecondsInput").value,0,59);settings.rounds=clamp($("roundsInput").value,0,99);settings.halloweenStartTime=$("halloweenStartTime").value||"22:00";settings.halloweenStoryStartTime=$("halloweenStoryStartTime").value||"00:00";settings.hideSeekMinutes=clamp($("hideSeekMinutes").value,0,180);settings.hideSeekSeconds=clamp($("hideSeekSeconds").value,0,59);
   settings.soundPack=$("soundPack").value;settings.mysteryChance=pct($("mysteryChance").value);
   settings.noRepeatPlayer=$("noRepeatPlayer").checked;settings.noRepeatChallenge=$("noRepeatChallenge").checked;settings.doubleEnabled=$("doubleEnabled").checked;settings.tvMode=$("tvModeEnabled").checked;settings.hostMode=$("hostModeEnabled").checked;
 
@@ -2289,6 +2340,7 @@ function saveSettings(){
 /* ---------- ONLINE P2P HOST ---------- */
 let remotePeer=null,remoteConn=null,remoteStatusTimer=null,remoteConnected=false,onlineStarted=false;
 let remoteToken="",remotePeerId="";
+let halloweenStage="hide";
 let hideState=null,hideConnections=new Set(),hideTickTimer=null,hideLastBroadcastSecond=-1;
 let hidePcMap=null,hidePcMarkers={},hidePcMapFitted=false;
 
@@ -2379,6 +2431,7 @@ function remoteStatus(){
     points:p?.points||0,
     streak:p?.streak||0,
     joker:settings.mode==="halloween"?0:(p?.joker||0),
+    halloweenStage:settings.mode==="halloween"?halloweenStage:"",
     hideStatus:settings.mode==="halloween"?(hideState?.status||""):"",
     hideResult:settings.mode==="halloween"?(hideState?.result||""):"",
     hideSeeker:settings.mode==="halloween"?(hideState?.seeker||""):"",
@@ -2493,6 +2546,7 @@ function sanitizeRemoteSettings(s){
   if(["standard","halloween","birthday"].includes(s.mode))out.mode=s.mode;
   out.hours=clamp(s.hours,0,99);out.minutes=clamp(s.minutes,0,59);out.seconds=clamp(s.seconds,0,59);out.roundHours=clamp(s.roundHours??out.roundHours,0,99);out.roundMinutes=clamp(s.roundMinutes??out.roundMinutes,0,59);out.roundSeconds=clamp(s.roundSeconds??out.roundSeconds,0,59);out.rounds=clamp(s.rounds,0,99);
   if(/^([01]\d|2[0-3]):[0-5]\d$/.test(String(s.halloweenStartTime||"")))out.halloweenStartTime=String(s.halloweenStartTime);
+  if(/^([01]\d|2[0-3]):[0-5]\d$/.test(String(s.halloweenStoryStartTime||"")))out.halloweenStoryStartTime=String(s.halloweenStoryStartTime);
   out.hideSeekMinutes=clamp(s.hideSeekMinutes??out.hideSeekMinutes,0,180);
   out.hideSeekSeconds=clamp(s.hideSeekSeconds??out.hideSeekSeconds,0,59);
   if(["creepy","gameshow","funny","dramatic"].includes(s.soundPack))out.soundPack=s.soundPack;
@@ -2536,6 +2590,7 @@ function applyRemoteSettings(incoming,soft=false){
   if(!cleaned)return;
   const oldMode=settings.mode;
   settings=cleaned;
+  if(oldMode!=="halloween"&&settings.mode==="halloween")halloweenStage="hide";
   save();
   applyTheme();
 
@@ -2563,7 +2618,7 @@ function runRemoteCommand(action,payload){
     if(settings.mode!=="standard"&&game?._screen==="start"&&$("eventStartBtn").style.display!=="inline-block")return;
     clearAuto();stopAmbience();setReady(false);
     if(!game)initGame(true);
-    if(settings.mode==="halloween")startHalloweenEvent();else beginRound();
+    if(settings.mode==="halloween")startCurrentHalloweenEvent();else beginRound();
   }else if(action==="finish"||action==="primary"){
     runPrimaryProgressAction();
   }else if(action==="joker"){
@@ -2631,7 +2686,7 @@ function createOnlineSession(){
 /* ---------- controls ---------- */
 $("standardStartBtn").onclick=()=>{ensureAudio();beginRound()};
 $("withoutPhoneBtn").onclick=hideConnectOverlay;
-$("eventStartBtn").onclick=()=>{ensureAudio();setReady(false);initGame(game?false:true);if(settings.mode==="halloween")startHalloweenEvent();else beginRound()};
+$("eventStartBtn").onclick=()=>{ensureAudio();setReady(false);initGame(game?false:true);if(settings.mode==="halloween")startCurrentHalloweenEvent();else beginRound()};
 $("finishBtn").onclick=successfulFinish;
 $("jokerBtn").onclick=useJoker;
 $("jokerTransferClose").onclick=()=>closeJokerTransfer(true);
@@ -2653,6 +2708,8 @@ $("addChallengeBtn").onclick=()=>{captureEditors();settings.challenges.push({tex
 $("addPenaltyBtn").onclick=()=>{captureEditors();settings.penalties.push({text:"Neue Strafe",seconds:30,chance:0});renderPenalties()};
 $("addSongBtn").onclick=()=>{captureEditors();settings.songs.push({title:"",url:""});renderSongs();setTimeout(()=>document.querySelector(".song-row:last-child .s-title")?.focus(),0)};
 $("songsDropdownToggle").onclick=()=>$("songsDropdown").classList.toggle("open");
+$("hideSeekSettingsDropdownToggle").onclick=()=>$("hideSeekSettingsDropdown").classList.toggle("open");
+$("storySettingsDropdownToggle").onclick=()=>$("storySettingsDropdown").classList.toggle("open");
 $("addLuckyBtn").onclick=()=>{captureEditors();settings.luckyRewards=settings.luckyRewards||[];settings.luckyRewards.push({label:"+1 Punkt",type:"points",value:1});renderLuckyRewards()};
 $("luckyDropdownToggle").onclick=()=>$("luckyDropdown").classList.toggle("open");
 $("saveBtn").onclick=autoSaveSettingsNow;
