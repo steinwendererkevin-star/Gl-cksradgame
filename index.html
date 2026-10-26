@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V19.1 Halloween Test</title>
+<title>Challenge Roulette V19.2 Halloween Test</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *{box-sizing:border-box}
@@ -337,6 +337,31 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
   .halloween-time-grid{grid-template-columns:1fr}
 }
 
+
+.version-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  margin:0 auto 12px;padding:8px 14px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);
+  font-size:12px;font-weight:1000;letter-spacing:.12em;color:#fff
+}
+#settingsCard.halloween-v19 #gameSettingsField,
+#settingsCard.halloween-v19 #generalExtrasField,
+#settingsCard.halloween-v19 #challengeSettingsField,
+#settingsCard.halloween-v19 #penaltySettingsField{display:none}
+#settingsCard.halloween-v19 #playerBirthdayHeader,
+#settingsCard.halloween-v19 .p-bday,
+#settingsCard.halloween-v19 .birthday-player-help{display:none!important}
+#settingsCard.halloween-v19 .editor-head.player{grid-template-columns:1fr 70px 38px}
+#settingsCard.halloween-v19 .player-row{grid-template-columns:1fr 70px 38px}
+#settingsCard.halloween-v19 .player-row .remove{grid-column:3}
+.halloween-next-card{text-align:center;max-width:850px;width:100%;position:relative;z-index:4}
+.halloween-next-card h1{font-size:clamp(46px,9vw,100px);line-height:.95;margin:10px 0}
+.halloween-next-card p{font-size:clamp(17px,2.7vw,25px);color:var(--muted);font-weight:800}
+#hidePcContinueBtn{margin-top:22px;min-width:min(320px,82vw)}
+body.halloween-mode #hostPenalty,
+body.halloween-mode #hostNext,
+body.halloween-mode #hostEnd{display:none!important}
+
 </style>
 </head>
 <body>
@@ -345,6 +370,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
   <div class="online-card">
     <h1>📱 Handy verbinden</h1>
     <p>Scanne den QR-Code mit deinem Handy. Die Host-Steuerung läuft komplett im Browser.</p>
+    <div class="version-badge">CHALLENGE ROULETTE · V19.2</div>
     <div id="onlineQr" class="online-qr"></div>
     <div id="onlineUrl" class="online-url">Sitzung wird erstellt …</div>
     <div id="onlineState" class="online-state"><span class="online-dot"></span><span>Verbindung wird vorbereitet …</span></div>
@@ -443,7 +469,18 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
       <div id="hidePcEndIcon" style="font-size:72px">🏆</div>
       <h2 id="hidePcEndTitle">GEWONNEN</h2>
       <div id="hidePcEndText" style="font-size:20px;font-weight:850;color:var(--muted)"></div>
+      <button id="hidePcContinueBtn" class="primary" type="button">WEITER</button>
     </div>
+  </div>
+</section>
+
+<section id="halloweenNextScreen" class="screen">
+  <div class="noise"></div>
+  <div class="theme-decor halloween-decor"><div class="bat a">🦇</div><div class="bat b">🦇</div><div class="pumpkin">🎃</div></div>
+  <div class="halloween-next-card">
+    <div class="halloween-event-kicker">🎃 HALLOWEEN EVENT</div>
+    <h1>HIDE &amp; SEEK<br>BEENDET</h1>
+    <p>Bereit für das nächste Halloween-Spiel.</p>
   </div>
 </section>
 
@@ -647,7 +684,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
       <span class="help event-only">Nach jeder fertigen Runde läuft nur noch dieser kürzere Countdown. Bei 00:00 erscheint direkt „Jetzt Starten“.</span>
     </div>
 
-    <div class="field">
+    <div id="gameSettingsField" class="field">
       <label>Spiel</label>
       <div class="time-grid">
         <input id="roundsInput" type="number" min="0" max="99" inputmode="numeric" placeholder="Runden">
@@ -662,7 +699,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
       <span class="help">0 Runden = endlos. Boss-Challenge kommt standardmäßig jede 5. Runde.</span>
     </div>
 
-    <div class="field">
+    <div id="generalExtrasField" class="field">
       <label>Allgemeine Extras</label>
       <div class="switch-grid">
         <label class="switch"><input id="noRepeatPlayer" type="checkbox"><span>Kein Spieler zweimal</span></label>
@@ -763,15 +800,15 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
       </div>
     </div>
 
-    <div class="field">
+    <div id="playerSettingsField" class="field">
       <label>Spieler</label>
-      <div class="editor-head player"><span>Name</span><span>Aktiv</span><span>🎂</span><span></span></div>
+      <div class="editor-head player"><span>Name</span><span>Aktiv</span><span id="playerBirthdayHeader">🎂</span><span></span></div>
       <div id="playerEditor"></div>
       <button id="addPlayerBtn" class="add" type="button">+ Spieler hinzufügen</button>
-      <span class="help">🎂 markiert das Geburtstagskind. Jeder aktive Spieler startet mit einem Joker.</span>
+      <span class="help birthday-player-help">🎂 markiert das Geburtstagskind. Jeder aktive Spieler startet mit einem Joker.</span>
     </div>
 
-    <div class="field">
+    <div id="challengeSettingsField" class="field">
       <label>Challenges</label>
       <div class="editor-head challenge"><span>Challenge</span><span>Zeit</span><span>Schwere</span><span>Chance %</span><span></span></div>
       <div id="challengeEditor"></div>
@@ -780,8 +817,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
       <span class="help">Die Challenge-Chancen müssen zusammen 100% ergeben.</span>
     </div>
 
-    <div class="field">
-      <label>Strafen – in allen Modi</label>
+    <div id="penaltySettingsField" class="field">
+      <label>Strafen – in Standard & Geburtstag</label>
       <div class="editor-head penalty"><span>Strafe</span><span>Zeit</span><span>Chance %</span><span></span></div>
       <div id="penaltyEditor"></div>
       <div id="penaltyChanceTotal" class="chance-total">Gesamt: 100%</div>
@@ -825,7 +862,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 
 const $=id=>document.getElementById(id);
 const screens={
-  start:$("startScreen"),halloweenIntro:$("halloweenIntroScreen"),hideTitle:$("hideTitleScreen"),hideSeekerQr:$("hideSeekerQrScreen"),hideHiderQr:$("hideHiderQrScreen"),hideMap:$("hideMapScreen"),name:$("nameScreen"),challenge:$("challengeScreen"),result:$("resultScreen"),
+  start:$("startScreen"),halloweenIntro:$("halloweenIntroScreen"),hideTitle:$("hideTitleScreen"),hideSeekerQr:$("hideSeekerQrScreen"),hideHiderQr:$("hideHiderQrScreen"),hideMap:$("hideMapScreen"),halloweenNext:$("halloweenNextScreen"),name:$("nameScreen"),challenge:$("challengeScreen"),result:$("resultScreen"),
   penalty:$("penaltyScreen"),penaltyResult:$("penaltyResultScreen"),mystery:$("mysteryScreen"),luckyEvent:$("luckyEventScreen"),giftWheel:$("giftWheelScreen"),musicWheel:$("musicWheelScreen"),musicResult:$("musicResultScreen"),
   double:$("doubleScreen"),doubleWheel:$("doubleWheelScreen"),stats:$("statsScreen")
 };
@@ -995,6 +1032,7 @@ function modeLabel(){return settings.mode==="halloween"?"🎃 HALLOWEEN":setting
 function applyTheme(){
   document.documentElement.dataset.theme=settings.mode;
   document.body.classList.toggle("event-mode",settings.mode!=="standard");
+  document.body.classList.toggle("halloween-mode",settings.mode==="halloween");
   document.body.classList.toggle("tv-mode",!!settings.tvMode);
   document.body.classList.toggle("host-enabled",!!settings.hostMode);
   $("settingsCard").classList.toggle("event-settings",settings.mode!=="standard");
@@ -1540,6 +1578,8 @@ function completeRound(){
   game.round++;$("nameHint").textContent="Dreh das Rad.";updateRoundUI();show("start");restartCountdown();
 }
 function showStats(){
+  if(settings.mode==="halloween"){show("halloweenNext");return}
+
   const rows=Object.entries(game.players).map(([name,s])=>({name,...s})).sort((a,b)=>b.points-a.points||b.success-a.success||a.fails-b.fails);
   const win=rows[0];$("winnerName").textContent=win?`🏆 ${win.name}`:"🏆 Ende";$("winnerSub").textContent=win?`${win.points} Punkte`:"";
   $("statsWrap").innerHTML=`<table class="stat-table"><thead><tr><th>Spieler</th><th>Punkte</th><th>✅</th><th>❌</th><th>🔥</th><th>🎯</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${escapeHtml(r.name)}</td><td><b>${r.points}</b></td><td>${r.success}</td><td>${r.fails}</td><td>${r.maxStreak}</td><td>${r.picks}</td></tr>`).join("")}</tbody></table>`;
@@ -1850,6 +1890,13 @@ function finishHideGame(result){
   if(hideTickTimer){clearInterval(hideTickTimer);hideTickTimer=null}
   updateHidePcHud();broadcastHideState();
 }
+function continueAfterHide(){
+  if(!hideState||hideState.status!=="finished")return;
+  $("hidePcEndOverlay").classList.remove("show");
+  show("halloweenNext");
+  broadcastHideState();
+}
+
 function publicHideState(forRole){
   if(!hideState)return null;
   const state=JSON.parse(JSON.stringify(hideState));
@@ -2138,10 +2185,15 @@ function saveSettings(){
   captureEditors();
   const mode=document.querySelector('input[name="mode"]:checked').value;
   if(!settings.players.some(p=>p.active)){alert("Mindestens ein Spieler muss aktiv sein.");return}
-  if(!settings.challenges.length){alert("Mindestens eine Challenge eintragen.");return}
-  if(Math.abs(totalChance(settings.challenges)-100)>.01){alert("Die Challenge-Chancen müssen zusammen genau 100% ergeben.");return}
-  if(!settings.penalties.length){alert("Mindestens eine Strafe eintragen.");return}
-  if(Math.abs(totalChance(settings.penalties)-100)>.01){alert("Die Straf-Chancen müssen zusammen genau 100% ergeben.");return}
+  if(mode!=="halloween"){
+    if(!settings.challenges.length){alert("Mindestens eine Challenge eintragen.");return}
+    if(Math.abs(totalChance(settings.challenges)-100)>.01){alert("Die Challenge-Chancen müssen zusammen genau 100% ergeben.");return}
+    if(!settings.penalties.length){alert("Mindestens eine Strafe eintragen.");return}
+    if(Math.abs(totalChance(settings.penalties)-100)>.01){alert("Die Straf-Chancen müssen zusammen genau 100% ergeben.");return}
+  }
+  if(mode==="halloween"&&settings.players.filter(p=>p.active).length<2){
+    alert("Für Halloween Hide & Seek brauchst du mindestens 2 aktive Spieler.");return
+  }
 
   const luckyChance=pct($("birthdayGiftChance").value);
   if(mode==="birthday"&&luckyChance>0&&!settings.luckyRewards.length){
@@ -2203,6 +2255,9 @@ function remotePrimaryState(){
     const visible=btn&&btn.style.display!=="none"&&getComputedStyle(btn).display!=="none"&&!btn.disabled;
     if(visible)return {available:true,label:"✅ FERTIG"};
   }
+  if(settings.mode==="halloween"&&screen==="hideMap"&&hideState?.status==="finished"){
+    return {available:true,label:"➡️ WEITER"};
+  }
 
   return {available:false,label:"✅ FERTIG"};
 }
@@ -2233,6 +2288,10 @@ function runPrimaryProgressAction(){
     const btn=$("giftContinueBtn");
     const visible=btn&&btn.style.display!=="none"&&getComputedStyle(btn).display!=="none"&&!btn.disabled;
     if(visible)btn.click();
+    return;
+  }
+  if(settings.mode==="halloween"&&screen==="hideMap"&&hideState?.status==="finished"){
+    continueAfterHide();
   }
 }
 function remoteStatus(){
@@ -2254,7 +2313,11 @@ function remoteStatus(){
     timer,
     points:p?.points||0,
     streak:p?.streak||0,
-    joker:p?.joker||0,
+    joker:settings.mode==="halloween"?0:(p?.joker||0),
+    hideStatus:settings.mode==="halloween"?(hideState?.status||""):"",
+    hideResult:settings.mode==="halloween"?(hideState?.result||""):"",
+    hideSeeker:settings.mode==="halloween"?(hideState?.seeker||""):"",
+    hideHiders:settings.mode==="halloween"&&hideState?Object.entries(hideState.hiders).map(([name,h])=>({name,ready:h.ready,found:h.found,connected:h.connected})):[],
     ready:$("eventStartBtn")?.style.display==="inline-block",
     challengeExpired:!!challengeExpired,
     countdownLabel:$("eventCountdownLabel")?.textContent||"",
@@ -2524,6 +2587,7 @@ $("hostNext").onclick=()=>{$("hostModal").classList.remove("open");completeRound
 $("hostEnd").onclick=()=>{$("hostModal").classList.remove("open");showStats()};
 $("hideSeekerNextBtn").onclick=showHideHiderQr;
 $("hideShowMapBtn").onclick=showHidePcMap;
+$("hidePcContinueBtn").onclick=continueAfterHide;
 
 ["pointerdown","touchstart","keydown"].forEach(evt=>window.addEventListener(evt,()=>ensureAudio(),{once:true,passive:true}));
 

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080a0f">
-<title>Challenge Roulette Host V19.1 Halloween Test</title>
+<title>Challenge Roulette Host V19.2 Halloween Test</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -106,6 +106,34 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
 .joker-cancel{width:100%;min-height:45px;margin-top:9px;border-radius:14px;border:1px solid rgba(255,255,255,.11);background:#151b27;color:#fff;font-weight:900}
 @media(max-width:420px){.joker-targets{grid-template-columns:1fr}}
 
+
+body.halloween-host .normal-only-control{display:none!important}
+body.halloween-host .halloween-hide-control{display:block}
+.halloween-hide-control{display:none}
+body.halloween-host #normalHostMeta{display:none}
+body.halloween-host #jokerTransferCard{display:none!important}
+body.halloween-host #normalGameControls{display:none}
+body.halloween-host #normalGameManagement{display:none}
+body.halloween-host #hostChallengeText{display:none}
+body.halloween-host #hostHideStatusCard{display:block}
+#hostHideStatusCard{display:none;border:1px solid rgba(255,130,35,.25);border-radius:20px;background:#130b07;padding:14px;margin:12px 0}
+#hostHideStatusCard h3{margin:0 0 8px;font-size:19px}
+#hostHidePeople{display:grid;gap:7px}
+.host-hide-person{display:flex;justify-content:space-between;gap:8px;padding:9px 11px;border-radius:12px;background:#151518;border:1px solid rgba(255,255,255,.08);font-size:13px;font-weight:900}
+.host-hide-person.ready{border-color:#41cc7d;color:#98efb9}
+.host-hide-person.found{opacity:.55;text-decoration:line-through}
+body.halloween-host #settingsModal .mode-card input[value="halloween"]:checked{}
+body.halloween-host #gameSettingsField,
+body.halloween-host #generalExtrasField,
+body.halloween-host #challengeSettingsField,
+body.halloween-host #penaltySettingsField{display:none!important}
+body.halloween-host #playerBirthdayHeader,
+body.halloween-host .p-bday,
+body.halloween-host .birthday-player-help{display:none!important}
+body.halloween-host .editor-head.player{grid-template-columns:1fr 70px 38px}
+body.halloween-host .player-row{grid-template-columns:1fr 70px 38px}
+body.halloween-host .player-row .remove{grid-column:3}
+
 </style>
 <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
 </head>
@@ -122,13 +150,29 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
       <h1 id="player" class="player">—</h1>
       <div id="challenge" class="challenge">Verbindung wird hergestellt …</div>
       <div id="timer" class="timer"></div>
-      <div class="meta">
+      <div id="normalHostMeta" class="meta">
         <div id="round" class="pill">Runde —</div><div id="points" class="pill">0 Punkte</div>
         <div id="streak" class="pill">🔥 0</div><div id="jokerState" class="pill">🃏 0</div>
       </div>
     </div>
 
     <button id="startBtn" class="main-start" type="button">JETZT STARTEN</button>
+
+    <div id="hostHideStatusCard">
+      <h3>🎃 Hide &amp; Seek</h3>
+      <div id="hostHideSummary" class="challenge">Warte auf das Event …</div>
+      <div id="hostHidePeople"></div>
+      <button id="hostHideContinueBtn" class="action finish" type="button" style="display:none;width:100%;margin-top:10px">➡️ WEITER</button>
+    </div>
+
+    <div class="halloween-hide-control">
+      <div class="section-title">HIDE &amp; SEEK STEUERUNG</div>
+      <div class="grid">
+        <button id="hostHideSettingsBtn" class="action settings" type="button">⚙️ EINSTELLUNGEN</button>
+        <button id="hostHideSkipBtn" class="action" type="button">⏱️ COUNTDOWN BEENDEN</button>
+        <button id="hostHideRestartBtn" class="action" type="button">↻ HIDE &amp; SEEK NEUSTART</button>
+      </div>
+    </div>
 
     <div id="jokerTransferCard" class="joker-transfer-card">
       <h3>🃏 Challenge weitergeben</h3>
@@ -137,15 +181,15 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
       <button id="jokerCancelBtn" class="joker-cancel" type="button">ABBRECHEN</button>
     </div>
 
-    <div class="grid">
+    <div id="normalGameControls" class="grid">
       <button id="finishBtn" class="action finish" type="button">✅ FERTIG</button>
       <button id="jokerBtn" class="action joker" type="button">🃏 JOKER</button>
       <button id="penaltyBtn" class="action penalty" type="button">😈 STRAFE</button>
       <button id="skipBtn" class="action" type="button">⏱️ COUNTDOWN BEENDEN</button>
     </div>
 
-    <div class="section-title">SPIELSTEUERUNG</div>
-    <div class="grid">
+    <div id="normalManagementTitle" class="section-title">SPIELSTEUERUNG</div>
+    <div id="normalGameManagement" class="grid">
       <button id="settingsBtn" class="action settings" type="button">⚙️ EINSTELLUNGEN</button>
       <button id="nextBtn" class="action" type="button">⏭️ RUNDE ÜBERSPRINGEN</button>
       <button id="restartBtn" class="action" type="button">↻ NEUSTART</button>
@@ -193,7 +237,7 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
       <span class="help">Nach Runde 1 wird nur noch diese Zeit verwendet.</span>
     </div>
 
-    <div class="field">
+    <div id="gameSettingsField" class="field">
       <label>Spiel</label>
       <div class="time-grid">
         <input id="roundsInput" type="number" min="0" max="99" inputmode="numeric" placeholder="Runden">
@@ -203,7 +247,7 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
       <span class="help">0 Runden = endlos.</span>
     </div>
 
-    <div class="field">
+    <div id="generalExtrasField" class="field">
       <label>Allgemeine Extras</label>
       <div class="switch-grid">
         <label class="switch"><input id="noRepeatPlayer" type="checkbox"><span>Kein Spieler zweimal</span></label>
@@ -288,14 +332,14 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
       </div>
     </div>
 
-    <div class="field">
+    <div id="playerSettingsField" class="field">
       <label>Spieler</label>
-      <div class="editor-head player"><span>Name</span><span>Aktiv</span><span>🎂</span><span></span></div>
+      <div class="editor-head player"><span>Name</span><span>Aktiv</span><span id="playerBirthdayHeader">🎂</span><span></span></div>
       <div id="playerEditor"></div>
       <button id="addPlayerBtn" class="add" type="button">+ Spieler hinzufügen</button>
     </div>
 
-    <div class="field">
+    <div id="challengeSettingsField" class="field">
       <label>Challenges</label>
       <div class="editor-head challenge"><span>Challenge</span><span>Zeit</span><span>Schwere</span><span>Chance %</span><span></span></div>
       <div id="challengeEditor"></div>
@@ -303,7 +347,7 @@ input,select,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,2
       <button id="addChallengeBtn" class="add" type="button">+ Challenge hinzufügen</button>
     </div>
 
-    <div class="field">
+    <div id="penaltySettingsField" class="field">
       <label>Strafen</label>
       <div class="editor-head penalty"><span>Strafe</span><span>Zeit</span><span>Chance %</span><span></span></div>
       <div id="penaltyEditor"></div>
@@ -342,13 +386,31 @@ function status(ok,text){
 function sendCommand(action,payload){if(conn&&conn.open)conn.send({type:"command",action,payload})}
 function screenName(s){return ({start:"STARTBILDSCHIRM",halloweenIntro:"HALLOWEEN EVENT",hideTitle:"HIDE & SEEK",hideSeekerQr:"SUCHER QR",hideHiderQr:"HIDER QR",hideMap:"LIVE-MAP",name:"NAMENSRAD",challenge:"CHALLENGE-RAD",result:"CHALLENGE",penalty:"STRAFRAD",penaltyResult:"STRAFE",mystery:"MYSTERY EVENT",luckyEvent:"GLÜCKS-EREIGNIS",giftWheel:"GLÜCKSRAD",musicWheel:"MUSIK-RAD",musicResult:"MUSIK-CHALLENGE",double:"DOUBLE OR NOTHING",doubleWheel:"DOUBLE-RAD",stats:"ERGEBNIS"})[s]||String(s||"GAME").toUpperCase()}
 function render(s){
-  $("screenLabel").textContent=screenName(s.screen);$("player").textContent=s.player||"—";
+  const halloween=s.mode==="halloween";
+  document.body.classList.toggle("halloween-host",halloween);
+  $("screenLabel").textContent=screenName(s.screen);$("player").textContent=halloween?(s.hideSeeker||s.player||"—"):(s.player||"—");
   let text=s.challenge||"";if(s.screen==="penalty"||s.screen==="penaltyResult")text=s.penalty||text;
   if(!text&&s.screen==="start")text=s.ready?"Bereit zum Starten":(s.countdownLabel||"Countdown läuft");
-  $("challenge").textContent=text||"—";$("timer").textContent=s.timer||"";
+  $("challenge").textContent=halloween?(s.screen==="start"?(s.ready?"Bereit zum Starten":"Countdown läuft"):"Hide & Seek"):(text||"—");$("timer").textContent=s.timer||"";
   $("round").textContent=s.rounds?`Runde ${s.round} / ${s.rounds}`:`Runde ${s.round}`;
   $("points").textContent=`${s.points||0} Punkte`;$("streak").textContent=`🔥 ${s.streak||0}`;$("jokerState").textContent=`🃏 ${s.joker||0}`;
   $("startBtn").textContent=s.screen==="start"&&s.ready?"JETZT STARTEN":"START / SOFORT STARTEN";
+  $("startBtn").style.display=halloween&&s.screen!=="start"?"none":"block";
+
+  if(halloween){
+    const hs=s.hideStatus||"";
+    let summary="Warte auf Hide & Seek …";
+    if(hs==="seeker_connect")summary="🔦 Sucher-QR wird angezeigt.";
+    else if(hs==="hiders_connect")summary="👻 Hider verbinden sich und verstecken sich.";
+    else if(hs==="searching")summary="🔎 Die Suche läuft.";
+    else if(hs==="finished")summary=s.hideResult==="all_found"?"🏆 Sucher hat gewonnen.":"🏆 Hider haben gewonnen.";
+    else if(s.screen==="halloweenNext")summary="✅ Hide & Seek beendet.";
+    $("hostHideSummary").textContent=summary;
+    $("hostHidePeople").innerHTML=(s.hideHiders||[]).map(x=>`<div class="host-hide-person ${x.found?"found":x.ready?"ready":""}"><span>👻 ${esc(x.name)}</span><span>${x.found?"GEFUNDEN":x.ready?"READY":x.connected?"VERBUNDEN":"OFFLINE"}</span></div>`).join("");
+    $("hostHideContinueBtn").style.display=hs==="finished"?"block":"none";
+    $("hostHideSkipBtn").style.display=s.screen==="start"?"block":"none";
+    $("hostHideRestartBtn").style.display=s.screen==="start"?"none":"block";
+  }
 
   const primary=$("finishBtn");
   primary.textContent=s.primaryLabel||"✅ FERTIG";
@@ -482,6 +544,7 @@ function updateModeSpecificSettings(){
   $("birthdayExtrasPanel")?.classList.toggle("active",selected==="birthday");
   $("normalStartCountdownField").style.display=selected==="halloween"?"none":"block";
   $("normalRoundCountdownField").style.display=selected==="halloween"?"none":"block";
+  document.body.classList.toggle("halloween-host",selected==="halloween");
 }
 function fillSettings(){
   if(!currentSettings)return;
@@ -522,10 +585,15 @@ function saveSettings(){
   if(!currentSettings||!conn||!conn.open)return;
   collectSettings();
   if(!currentSettings.players.some(p=>p.active)){alert("Mindestens ein Spieler muss aktiv sein.");return}
-  if(!currentSettings.challenges.length){alert("Mindestens eine Challenge eintragen.");return}
-  if(Math.abs(totalChance(currentSettings.challenges)-100)>.01){alert("Die Challenge-Chancen müssen zusammen genau 100% ergeben.");return}
-  if(!currentSettings.penalties.length){alert("Mindestens eine Strafe eintragen.");return}
-  if(Math.abs(totalChance(currentSettings.penalties)-100)>.01){alert("Die Straf-Chancen müssen zusammen genau 100% ergeben.");return}
+  if(currentSettings.mode!=="halloween"){
+    if(!currentSettings.challenges.length){alert("Mindestens eine Challenge eintragen.");return}
+    if(Math.abs(totalChance(currentSettings.challenges)-100)>.01){alert("Die Challenge-Chancen müssen zusammen genau 100% ergeben.");return}
+    if(!currentSettings.penalties.length){alert("Mindestens eine Strafe eintragen.");return}
+    if(Math.abs(totalChance(currentSettings.penalties)-100)>.01){alert("Die Straf-Chancen müssen zusammen genau 100% ergeben.");return}
+  }
+  if(currentSettings.mode==="halloween"&&currentSettings.players.filter(p=>p.active).length<2){
+    alert("Für Halloween Hide & Seek brauchst du mindestens 2 aktive Spieler.");return
+  }
   if(currentSettings.mode==="birthday"&&pct(currentSettings.birthdayGiftChance)>0&&!(currentSettings.luckyRewards||[]).length){
     alert("Für das Glücks-Ereignis musst du mindestens einen Gewinn im Glücksrad eintragen.");return
   }
@@ -543,6 +611,10 @@ $("penaltyBtn").onclick=()=>sendCommand("penalty");$("skipBtn").onclick=()=>send
 $("restartBtn").onclick=()=>{if(confirm("Spiel wirklich neu starten?"))sendCommand("restart")};
 $("endBtn").onclick=()=>{if(confirm("Spiel beenden und Statistik anzeigen?"))sendCommand("end")};
 $("settingsBtn").onclick=openSettings;$("settingsClose").onclick=()=>$("settingsModal").classList.remove("open");$("saveSettingsBtn").onclick=saveSettings;
+$("hostHideSettingsBtn").onclick=openSettings;
+$("hostHideSkipBtn").onclick=()=>sendCommand("skip_countdown");
+$("hostHideRestartBtn").onclick=()=>{if(confirm("Hide & Seek wirklich neu starten?"))sendCommand("restart")};
+$("hostHideContinueBtn").onclick=()=>sendCommand("primary");
 $("addPlayerBtn").onclick=()=>{captureEditors();currentSettings.players.push({name:"Neuer Spieler",active:true,birthday:false});renderPlayers()};
 $("addChallengeBtn").onclick=()=>{captureEditors();currentSettings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",chance:0});renderChallenges()};
 $("addPenaltyBtn").onclick=()=>{captureEditors();currentSettings.penalties.push({text:"Neue Strafe",seconds:30,chance:0});renderPenalties()};

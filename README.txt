@@ -1,45 +1,36 @@
-CHALLENGE ROULETTE V19.1 – HALLOWEEN HIDE & SEEK RESULT UPDATE
+CHALLENGE ROULETTE V19.2 – HALLOWEEN CLEANUP
 
-NEU / GEÄNDERT:
+NEU:
+- Versionsanzeige "V19.2" steht auf der Main-Seite direkt über dem Host-QR-Code.
+- Gewinner-/Verlierer-Anzeige auf der Leinwand hat jetzt einen großen WEITER-Button.
+- WEITER führt auf einen neutralen "HIDE & SEEK BEENDET – Bereit für das nächste Halloween-Spiel"-Screen.
+  Dort kann später das nächste Halloween-Spiel direkt angehängt werden.
 
-1) READY IST ENDGÜLTIG
-- Sobald ein Hider "READY · BIN VERSTECKT" drückt, verschwindet der Button.
-- READY kann nicht mehr zurückgenommen werden.
-- Der Status bleibt auf READY.
+HALLOWEEN ADMIN-HANDY:
+- Keine Strafe-Taste.
+- Kein Joker / Weitergeben.
+- Keine Runde überspringen / Ranglisten-Steuerung.
+- Keine Punkte-, Streak- oder Joker-Anzeige.
+- Stattdessen eigener Hide-&-Seek-Status:
+  * Sucher
+  * Hider READY / verbunden / gefunden
+  * Countdown beenden (nur am Start)
+  * Einstellungen
+  * Hide & Seek neu starten
+  * WEITER nach dem Ergebnis
 
-2) LEINWAND / PC ZEIGT DEN GEWINNER
-Wenn der Sucher alle Hider findet:
-- große Anzeige: "🔦🏆 SUCHER GEWONNEN"
-- darunter: "<Sucher> hat alle Hider gefunden."
+HALLOWEEN EINSTELLUNGEN:
+- Kein Challenge-Bereich.
+- Kein Strafen-Bereich.
+- Kein Runden-/Mystery-/Double-or-Nothing-Bereich.
+- Keine Challenge-/Joker-Allgemeinextras.
+- Spieler bleiben einstellbar.
+- Halloween Start-Uhrzeit bleibt.
+- Hide-&-Seek-Suchzeit bleibt.
+- Standard und Geburtstag behalten ihre bisherigen Challenge-/Strafen-/Ranglisten-Funktionen.
 
-Wenn die Suchzeit abläuft:
-- große Anzeige: "👻🏆 HIDER GEWONNEN"
-- darunter: "Die Zeit ist abgelaufen – mindestens ein Hider blieb unentdeckt."
-
-3) SUCHER-HANDY
-Wenn alle gefunden wurden:
-- "🏆 ALLE GEFUNDEN!"
-- "GEWONNEN! Du hast alle Hider gefunden."
-
-Wenn die Zeit abläuft:
-- "⏰ ZEIT ABGELAUFEN"
-- "VERLOREN – du hast X von Y Hider gefunden."
-
-4) HIDER-HANDYS
-Wenn der Sucher alle findet:
-- "💀 VERLOREN"
-- "Es wurden alle gefunden."
-
-Wenn die Zeit abläuft:
-- "👻🏆 GEWONNEN"
-- "Zeit abgelaufen – ihr Hider habt gewonnen!"
-
-Zwischenstatus:
-- Wenn ein einzelner Hider vor Spielende gefunden wird, sieht nur dieser Hider weiterhin "GEFUNDEN".
-- Am endgültigen Spielende bekommen alle Hider das gemeinsame Sieg-/Niederlage-Ergebnis.
-
-GITHUB:
-Alle 4 HTML-Dateien ersetzen:
+WICHTIG:
+Alle vier HTML-Dateien auf GitHub ersetzen:
 index.html
 host.html
 seeker.html
