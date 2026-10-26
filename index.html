@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V19.5 Halloween Two Events</title>
+<title>Challenge Roulette V19.6 Halloween Story QR Test</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *{box-sizing:border-box}
@@ -364,6 +364,23 @@ body.halloween-mode #hostPenalty,
 body.halloween-mode #hostNext,
 body.halloween-mode #hostEnd{display:none!important}
 
+
+.story-shell{position:relative;z-index:4;width:min(1100px,94vw);display:grid;grid-template-columns:minmax(290px,390px) 1fr;gap:28px;align-items:center}
+.story-qr-card,.story-chapter-card{background:rgba(10,8,9,.92);border:1px solid rgba(255,120,35,.28);border-radius:28px;padding:24px;box-shadow:0 30px 100px rgba(0,0,0,.55)}
+.story-qr-card{text-align:center}
+.story-qr-card h2{font-size:24px;margin:4px 0 8px}
+.story-qr-card p{color:var(--muted);font-weight:750;line-height:1.45}
+.story-connect-qr{width:240px;height:240px;margin:16px auto;background:#fff;border-radius:18px;padding:10px;display:flex;align-items:center;justify-content:center}
+.story-connect-url{font-size:10px;color:#9fa6b2;word-break:break-all;margin-top:8px}
+.story-chapter-card .story-kicker{font-size:13px;font-weight:1000;letter-spacing:.16em;color:#ff8a32}
+.story-chapter-card h1{font-size:clamp(38px,6vw,76px);line-height:.96;margin:8px 0 16px}
+.story-progress{font-size:16px;font-weight:950;margin-bottom:16px}
+.story-text{font-size:clamp(17px,2.2vw,24px);line-height:1.45;font-weight:780}
+.story-clue{margin-top:20px;padding:16px;border-radius:17px;background:#17100c;border:1px solid rgba(255,132,23,.24);font-size:clamp(16px,2vw,21px);font-weight:900}
+.story-phone-count{display:inline-flex;margin-top:12px;padding:8px 12px;border-radius:999px;background:#15171c;border:1px solid rgba(255,255,255,.1);font-size:12px;font-weight:950}
+.story-finished{color:#8cf0b0}
+@media(max-width:800px){.story-shell{grid-template-columns:1fr;overflow:auto;max-height:94vh}.story-connect-qr{width:210px;height:210px}}
+
 </style>
 </head>
 <body>
@@ -372,7 +389,7 @@ body.halloween-mode #hostEnd{display:none!important}
   <div class="online-card">
     <h1>📱 Handy verbinden</h1>
     <p>Scanne den QR-Code mit deinem Handy. Die Host-Steuerung läuft komplett im Browser.</p>
-    <div class="version-badge">CHALLENGE ROULETTE · V19.5</div>
+    <div class="version-badge">CHALLENGE ROULETTE · V19.6</div>
     <div id="onlineQr" class="online-qr"></div>
     <div id="onlineUrl" class="online-url">Sitzung wird erstellt …</div>
     <div id="onlineState" class="online-state"><span class="online-dot"></span><span>Verbindung wird vorbereitet …</span></div>
@@ -479,11 +496,22 @@ body.halloween-mode #hostEnd{display:none!important}
 <section id="halloweenStoryScreen" class="screen">
   <div class="noise"></div>
   <div class="theme-decor halloween-decor"><div class="bat a">🦇</div><div class="bat b">🦇</div><div class="pumpkin">🎃</div></div>
-  <div class="halloween-next-card">
-    <div class="halloween-event-kicker">🎃 HALLOWEEN EVENT 2</div>
-    <h1>HALLOWEEN<br>STORY</h1>
-    <p>Die Halloween Story wurde gestartet.</p>
-    <p style="font-size:clamp(14px,2vw,19px);opacity:.8">Der Story-Inhalt kommt im nächsten Schritt.</p>
+  <div class="story-shell">
+    <div class="story-qr-card">
+      <div class="halloween-event-kicker">🎃 HALLOWEEN EVENT 2</div>
+      <h2>📱 Story-Handy verbinden</h2>
+      <p>Einmal scannen. Danach könnt ihr mit dem Handy die versteckten Hinweis-QR-Codes finden und scannen.</p>
+      <div id="storyConnectQr" class="story-connect-qr"></div>
+      <div id="storyConnectUrl" class="story-connect-url">Story-Link wird erstellt …</div>
+      <div id="storyPhoneCount" class="story-phone-count">📱 0 Story-Handys verbunden</div>
+    </div>
+    <div class="story-chapter-card">
+      <div id="storyPcKicker" class="story-kicker">DIE ERSTE NACHRICHT</div>
+      <h1 id="storyPcTitle">HALLOWEEN STORY</h1>
+      <div id="storyPcProgress" class="story-progress">Kapitel 0 / 7</div>
+      <div id="storyPcText" class="story-text">Verbindet mindestens ein Handy und findet danach Hinweis 1.</div>
+      <div id="storyPcClue" class="story-clue">🔎 Der erste Test-QR-Code ist „Hinweis 1“ im PDF.</div>
+    </div>
   </div>
 </section>
 
@@ -713,7 +741,7 @@ body.halloween-mode #hostEnd{display:none!important}
       </div>
 
       <div id="halloweenExtrasPanel" class="mode-extra-panel">
-        <div class="mode-extra-title">🎃 Halloween V19.5 – Events</div>
+        <div class="mode-extra-title">🎃 Halloween V19.6 – Events</div>
 
         <div id="hideSeekSettingsDropdown" class="dropdown-section open">
           <button id="hideSeekSettingsDropdownToggle" class="dropdown-toggle" type="button">
@@ -750,8 +778,9 @@ body.halloween-mode #hostEnd{display:none!important}
             </div>
             <div class="field halloween-only-setting">
               <label>📖 Story-Inhalt</label>
-              <span class="help">Der eigentliche Inhalt der Halloween Story wird als Nächstes eingebaut. V19.5 bereitet nur Ablauf, Countdown und Start vor.</span>
+              <span class="help">Testversion: 7 QR-Hinweise in fester Reihenfolge. Die echten Orte und Texte können wir danach an dein Grundstück anpassen.</span>
             </div>
+            <button id="storyDirectTestBtn" class="add" type="button">🧪 STORY TEST DIREKT STARTEN</button>
           </div>
         </div>
 
@@ -988,7 +1017,7 @@ function validSongs(){return (settings.songs||[]).filter(x=>x.title&&isYouTubeUr
 
 function load(){
   try{
-    const raw=localStorage.getItem("challengeRouletteSettingsV19_5")||localStorage.getItem("challengeRouletteSettingsV19_3")||localStorage.getItem("challengeRouletteSettingsV19_HALLOWEEN_TEST")||localStorage.getItem("challengeRouletteSettingsV18_3")||localStorage.getItem("challengeRouletteSettingsV18_2")||localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
+    const raw=localStorage.getItem("challengeRouletteSettingsV19_6")||localStorage.getItem("challengeRouletteSettingsV19_5")||localStorage.getItem("challengeRouletteSettingsV19_3")||localStorage.getItem("challengeRouletteSettingsV19_HALLOWEEN_TEST")||localStorage.getItem("challengeRouletteSettingsV18_3")||localStorage.getItem("challengeRouletteSettingsV18_2")||localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
     if(!raw)return;
     const s=JSON.parse(raw);
     if(!s)return;
@@ -1029,7 +1058,7 @@ function load(){
     }
   }catch(e){}
 }
-function save(){try{localStorage.setItem("challengeRouletteSettingsV19_5",JSON.stringify(settings))}catch(e){}}
+function save(){try{localStorage.setItem("challengeRouletteSettingsV19_6",JSON.stringify(settings))}catch(e){}}
 
 function initGame(reset=true){
   if(!reset&&game)return;
@@ -1715,9 +1744,119 @@ function startCurrentHalloweenEvent(){
   if(halloweenStage==="story")startHalloweenStory();
   else startHalloweenEvent();
 }
+function makeStoryState(){
+  return {progress:0,total:STORY_TEST_CODES.length,status:"playing",startedAt:Date.now(),lastCode:""};
+}
+function storyUrl(){
+  const u=new URL("story.html",location.href);
+  u.search="";
+  u.hash="";
+  u.searchParams.set("peer",remotePeerId);
+  u.searchParams.set("token",remoteToken);
+  return u.toString();
+}
+function renderStoryConnectQr(){
+  if(!remotePeerId)return;
+  const url=storyUrl();
+  $("storyConnectUrl").textContent=url;
+  $("storyConnectQr").innerHTML="";
+  if(typeof QRCode!=="undefined"){
+    new QRCode($("storyConnectQr"),{text:url,width:220,height:220,correctLevel:QRCode.CorrectLevel.M});
+  }
+}
+function currentStoryChapter(){
+  if(!storyState||storyState.progress<=0)return null;
+  return STORY_CHAPTERS[Math.min(storyState.progress,STORY_CHAPTERS.length)-1]||null;
+}
+function updateStoryPc(){
+  if(!storyState)return;
+  const chapter=currentStoryChapter();
+  const p=storyState.progress;
+  $("storyPhoneCount").textContent=`📱 ${[...storyConnections].filter(c=>c.open).length} Story-Handy${[...storyConnections].filter(c=>c.open).length===1?"":"s"} verbunden`;
+  $("storyPcProgress").textContent=`Kapitel ${p} / ${storyState.total}`;
+  if(!chapter){
+    $("storyPcKicker").textContent="DIE ERSTE NACHRICHT";
+    $("storyPcTitle").textContent="HALLOWEEN STORY";
+    $("storyPcText").textContent="Die Geschichte beginnt erst, wenn ihr Hinweis 1 gefunden und gescannt habt.";
+    $("storyPcClue").textContent="🔎 Findet Hinweis 1.";
+    return;
+  }
+  $("storyPcKicker").textContent=chapter.kicker;
+  $("storyPcTitle").textContent=chapter.title;
+  $("storyPcText").textContent=chapter.text;
+  $("storyPcClue").textContent=`🔎 ${chapter.clue}`;
+  $("storyPcProgress").classList.toggle("story-finished",p>=storyState.total);
+}
+function publicStoryState(){
+  if(!storyState)return null;
+  return {
+    progress:storyState.progress,
+    total:storyState.total,
+    status:storyState.status,
+    chapter:currentStoryChapter(),
+    finished:storyState.progress>=storyState.total
+  };
+}
+function sendStoryState(conn){
+  if(!conn||!conn.open)return;
+  try{conn.send({type:"story_state",state:publicStoryState()})}catch(e){}
+}
+function broadcastStoryState(){
+  updateStoryPc();
+  storyConnections.forEach(sendStoryState);
+  setTimeout(sendRemoteStatus,30);
+}
+function handleStoryScan(conn,raw){
+  if(!storyState||storyState.status!=="playing")return;
+  const code=String(raw||"").trim();
+  const idx=STORY_TEST_CODES.indexOf(code);
+  if(idx<0){
+    try{conn.send({type:"story_scan_result",result:"invalid",message:"Dieser QR-Code gehört nicht zu dieser Halloween Story."})}catch(e){}
+    return;
+  }
+  if(idx<storyState.progress){
+    try{conn.send({type:"story_scan_result",result:"already",message:"Diesen Hinweis habt ihr bereits gefunden."})}catch(e){}
+    return;
+  }
+  if(idx>storyState.progress){
+    try{conn.send({type:"story_scan_result",result:"early",message:"Dieser Hinweis ergibt noch keinen Sinn … Findet zuerst den vorherigen QR-Code."})}catch(e){}
+    return;
+  }
+  storyState.progress=idx+1;
+  storyState.lastCode=code;
+  if(storyState.progress>=storyState.total)storyState.status="finished";
+  try{conn.send({type:"story_scan_result",result:"ok",message:`Hinweis ${storyState.progress} gefunden!`})}catch(e){}
+  broadcastStoryState();
+}
+function acceptStoryRemote(conn){
+  conn._storyRole="story";
+  storyConnections.add(conn);
+  conn.on("open",()=>{sendStoryState(conn);broadcastStoryState()});
+  conn.on("data",msg=>{
+    if(!msg)return;
+    if(msg.type==="story_request"){sendStoryState(conn);return}
+    if(msg.type==="story_scan"){handleStoryScan(conn,msg.code);return}
+  });
+  conn.on("close",()=>{storyConnections.delete(conn);broadcastStoryState()});
+  conn.on("error",()=>{});
+}
+function startStoryDirectTest(){
+  halloweenStage="story";
+  $("settingsModal").classList.remove("open");
+  startHalloweenStory();
+}
 function startHalloweenStory(){
+  if(!remotePeerId){
+    alert("Die Online-Sitzung ist noch nicht bereit. Bitte kurz den QR-/Host-Status prüfen.");
+    return;
+  }
   clearAuto();stopAmbience();setReady(false);
+  storyConnections.forEach(c=>{try{c.close()}catch(e){}});
+  storyConnections.clear();
+  storyState=makeStoryState();
   show("halloweenStory");
+  renderStoryConnectQr();
+  updateStoryPc();
   setTimeout(sendRemoteStatus,80);
 }
 function startHalloweenEvent(){
@@ -1943,6 +2082,9 @@ function continueAfterHide(){
   },350);
 
   halloweenStage="story";
+  storyState=null;
+  storyConnections.forEach(c=>{try{c.close()}catch(e){}});
+  storyConnections.clear();
   hideState=null;
   clearHidePcMap();
   show("start");
@@ -2341,6 +2483,9 @@ function saveSettings(){
 let remotePeer=null,remoteConn=null,remoteStatusTimer=null,remoteConnected=false,onlineStarted=false;
 let remoteToken="",remotePeerId="";
 let halloweenStage="hide";
+const STORY_TEST_CODES=["H13-01-A7F2","H13-02-K9M4","H13-03-P3X8","H13-04-R6B1","H13-05-T2Q7","H13-06-V8N5","H13-07-Z4C9"];
+const STORY_CHAPTERS=[{"kicker":"DIE ERSTE NACHRICHT","title":"23:47 UHR","text":"Wenn ihr das hier lest, war ich zu langsam. Ich habe etwas Wertvolles auf diesem Grundstück versteckt. Jemand beobachtet mich.","clue":"Sucht dort weiter, wo Feuer normalerweise Wärme bringt."},{"kicker":"TAGEBUCHFRAGMENT 01","title":"DAS GERÄUSCH","text":"Ich hörte Schritte draußen. Immer drei Stück. Dann Stille. Als ich aus dem Fenster sah, stand dort niemand.","clue":"Der nächste Hinweis liegt dort, wo man sitzt, obwohl heute niemand sitzen sollte."},{"kicker":"TAGEBUCHFRAGMENT 02","title":"DIE GESTALT","text":"Im Spiegel hinter mir stand eine Gestalt. Als ich mich umdrehte, war sie verschwunden. Auf dem Glas blieb nur eine Zahl: 3.","clue":"Sucht an einem Ort, an dem etwas geöffnet und wieder verschlossen werden kann."},{"kicker":"TAGEBUCHFRAGMENT 03","title":"ICH WAR ES","text":"Ich habe die Aufnahmen angesehen. Die Gestalt draußen hatte meine Jacke an. Mein Gesicht. Aber ich war die ganze Zeit im Haus.","clue":"Der vierte Weg führt euch dorthin, wo Licht die Dunkelheit normalerweise vertreibt."},{"kicker":"TAGEBUCHFRAGMENT 04","title":"DER SCHATZ","text":"Jetzt weiß ich, wonach es sucht. Nicht nach mir. Nach dem, was ich versteckt habe. Ich habe den Schatz noch einmal verlegt.","clue":"Merkt euch die Zahl 7. Der nächste Hinweis wartet dort, wo Dinge für später aufbewahrt werden."},{"kicker":"LETZTE AUFNAHME","title":"00:13 UHR","text":"Wenn ich verschwinde, dürft ihr dem ersten Hinweis nicht vertrauen. Der Anfang war gleichzeitig das Ende.","clue":"Ihr seid fast dort. Findet den letzten QR-Code."},{"kicker":"VERMÄCHTNIS","title":"DER LETZTE HINWEIS","text":"Ihr habt meine letzte Nacht vollständig gefunden. Die Zahlen 3 und 7 waren kein Zufall. Der Schatz liegt dort, wo diese Geschichte begonnen hat.","clue":"FINALER SCHATZ-HINWEIS: Kehrt zum ersten Ort zurück. Dort wird später eure echte Schatzposition eingebaut."}];
+let storyState=null,storyConnections=new Set();
 let hideState=null,hideConnections=new Set(),hideTickTimer=null,hideLastBroadcastSecond=-1;
 let hidePcMap=null,hidePcMarkers={},hidePcMapFitted=false;
 
@@ -2432,6 +2577,10 @@ function remoteStatus(){
     streak:p?.streak||0,
     joker:settings.mode==="halloween"?0:(p?.joker||0),
     halloweenStage:settings.mode==="halloween"?halloweenStage:"",
+    storyProgress:settings.mode==="halloween"&&storyState?(storyState.progress||0):0,
+    storyTotal:settings.mode==="halloween"&&storyState?(storyState.total||0):0,
+    storyStatus:settings.mode==="halloween"&&storyState?(storyState.status||""):"",
+    storyPhones:settings.mode==="halloween"?[...storyConnections].filter(c=>c.open).length:0,
     hideStatus:settings.mode==="halloween"?(hideState?.status||""):"",
     hideResult:settings.mode==="halloween"?(hideState?.result||""):"",
     hideSeeker:settings.mode==="halloween"?(hideState?.seeker||""):"",
@@ -2495,6 +2644,10 @@ function acceptRemote(conn){
   }
   if(md.role==="seeker"||md.role==="hider"){
     acceptHideRemote(conn,md);
+    return;
+  }
+  if(md.role==="story"){
+    acceptStoryRemote(conn);
     return;
   }
   if(md.role!=="host"){
@@ -2637,6 +2790,9 @@ function runRemoteCommand(action,payload){
     if(game)showStats();
   }else if(action==="restart"){
     initGame(true);show("start");restartCountdown();
+  }else if(action==="story_test"){
+    halloweenStage="story";
+    startHalloweenStory();
   }
   setTimeout(sendRemoteStatus,80);
 }
@@ -2710,6 +2866,7 @@ $("addSongBtn").onclick=()=>{captureEditors();settings.songs.push({title:"",url:
 $("songsDropdownToggle").onclick=()=>$("songsDropdown").classList.toggle("open");
 $("hideSeekSettingsDropdownToggle").onclick=()=>$("hideSeekSettingsDropdown").classList.toggle("open");
 $("storySettingsDropdownToggle").onclick=()=>$("storySettingsDropdown").classList.toggle("open");
+$("storyDirectTestBtn").onclick=startStoryDirectTest;
 $("addLuckyBtn").onclick=()=>{captureEditors();settings.luckyRewards=settings.luckyRewards||[];settings.luckyRewards.push({label:"+1 Punkt",type:"points",value:1});renderLuckyRewards()};
 $("luckyDropdownToggle").onclick=()=>$("luckyDropdown").classList.toggle("open");
 $("saveBtn").onclick=autoSaveSettingsNow;

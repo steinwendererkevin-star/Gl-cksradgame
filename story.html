@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Halloween Story V19.6</title>
+<style>
+:root{color-scheme:dark;--bg:#080606;--card:#15100d;--orange:#ff7a22;--muted:#aaa4a0;--green:#6ee7a0}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#241008 0,#090707 42%,#050505 100%);color:#fff;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+.wrap{width:min(760px,94vw);margin:auto;padding:20px 0 40px}
+.brand{text-align:center;font-size:12px;font-weight:1000;letter-spacing:.18em;color:#ff9a4a;margin:6px 0 14px}
+.status{display:flex;justify-content:center;gap:8px;align-items:center;font-size:13px;color:var(--muted);font-weight:850;margin-bottom:12px}
+.dot{width:9px;height:9px;border-radius:50%;background:#e0a12e}.status.ok .dot{background:#45d77f}.status.bad .dot{background:#e55d5d}
+.card{border:1px solid rgba(255,130,35,.25);border-radius:24px;background:rgba(20,13,10,.94);padding:20px;box-shadow:0 25px 90px rgba(0,0,0,.55)}
+.kicker{font-size:12px;font-weight:1000;letter-spacing:.15em;color:#ff8c3d}
+h1{font-size:clamp(32px,8vw,56px);line-height:.97;margin:8px 0 12px}
+.progress{font-weight:950;margin-bottom:14px}
+.text{font-size:18px;line-height:1.5;font-weight:750}
+.clue{margin-top:16px;padding:14px;border-radius:16px;background:#1b1009;border:1px solid rgba(255,130,35,.22);font-size:17px;font-weight:900;line-height:1.45}
+.scanBtn{width:100%;min-height:62px;margin-top:16px;border:0;border-radius:18px;background:linear-gradient(180deg,#ff8a31,#e45f09);color:#fff;font-size:18px;font-weight:1000}
+.scanBtn:disabled{opacity:.45}
+#reader{display:none;margin-top:16px;border-radius:18px;overflow:hidden;background:#000}
+#reader.show{display:block}
+.msg{margin-top:12px;min-height:46px;padding:11px 12px;border-radius:13px;background:#101114;color:#d6d6d6;font-size:14px;font-weight:850}
+.msg.ok{border:1px solid rgba(67,217,127,.4);color:#9cf0bb}
+.msg.warn{border:1px solid rgba(255,178,55,.4);color:#ffd491}
+.msg.bad{border:1px solid rgba(235,90,90,.4);color:#ffabab}
+.finished{text-align:center;color:var(--green);font-weight:1000;font-size:22px;margin-top:18px}
+.note{text-align:center;color:#807b78;font-size:11px;margin-top:14px;line-height:1.4}
+</style>
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">🎃 HALLOWEEN STORY · V19.6</div>
+  <div id="status" class="status"><span class="dot"></span><span>Verbinde mit der Story …</span></div>
+  <div class="card">
+    <div id="kicker" class="kicker">HALLOWEEN STORY</div>
+    <h1 id="title">BEREIT?</h1>
+    <div id="progress" class="progress">Kapitel 0 / 7</div>
+    <div id="text" class="text">Findet Hinweis 1 und scannt den QR-Code.</div>
+    <div id="clue" class="clue">🔎 Für den Test: Öffne am PC das QR-PDF und scanne Hinweis 1.</div>
+    <button id="scanBtn" class="scanBtn" type="button">📷 QR-HINWEIS SCANNEN</button>
+    <div id="reader"></div>
+    <div id="msg" class="msg">Noch kein Hinweis gescannt.</div>
+    <div id="finished" class="finished" style="display:none">🏆 STORY ABGESCHLOSSEN</div>
+  </div>
+  <div class="note">Kamera-Zugriff erlauben. Für den Test kannst du die QR-Codes direkt vom PC-Bildschirm scannen.</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const qs=new URLSearchParams(location.search);
+const gamePeer=qs.get("peer"),token=qs.get("token");
+let peer=null,conn=null,state=null,scanner=null,scanning=false,lastScanAt=0;
+
+function setStatus(kind,text){
+  const el=$("status");el.classList.remove("ok","bad");
+  if(kind)el.classList.add(kind);
+  el.querySelector("span:last-child").textContent=text;
+}
+function setMsg(kind,text){
+  const el=$("msg");el.className="msg"+(kind?" "+kind:"");el.textContent=text;
+}
+function render(){
+  if(!state){
+    $("progress").textContent="Kapitel 0 / 7";
+    return;
+  }
+  $("progress").textContent=`Kapitel ${state.progress} / ${state.total}`;
+  if(state.chapter){
+    $("kicker").textContent=state.chapter.kicker||"HALLOWEEN STORY";
+    $("title").textContent=state.chapter.title||"KAPITEL";
+    $("text").textContent=state.chapter.text||"";
+    $("clue").textContent=`🔎 ${state.chapter.clue||""}`;
+  }else{
+    $("kicker").textContent="DIE ERSTE NACHRICHT";
+    $("title").textContent="HALLOWEEN STORY";
+    $("text").textContent="Findet Hinweis 1 und scannt den QR-Code.";
+    $("clue").textContent="🔎 Für den Test: Öffne am PC das QR-PDF und scanne Hinweis 1.";
+  }
+  const done=!!state.finished;
+  $("finished").style.display=done?"block":"none";
+  $("scanBtn").disabled=done;
+  if(done){
+    stopScanner();
+    setMsg("ok","Alle 7 Hinweise wurden gefunden.");
+  }
+}
+async function stopScanner(){
+  if(!scanner||!scanning)return;
+  try{await scanner.stop()}catch(e){}
+  try{await scanner.clear()}catch(e){}
+  scanning=false;
+  $("reader").classList.remove("show");
+  $("scanBtn").textContent="📷 QR-HINWEIS SCANNEN";
+}
+async function startScanner(){
+  if(scanning){await stopScanner();return}
+  if(typeof Html5Qrcode==="undefined"){setMsg("bad","QR-Scanner konnte nicht geladen werden.");return}
+  $("reader").classList.add("show");
+  $("scanBtn").textContent="✕ SCANNER SCHLIESSEN";
+  scanner=new Html5Qrcode("reader");
+  scanning=true;
+  try{
+    await scanner.start(
+      {facingMode:"environment"},
+      {fps:10,qrbox:{width:250,height:250},aspectRatio:1},
+      decoded=>{
+        const now=Date.now();
+        if(now-lastScanAt<1200)return;
+        lastScanAt=now;
+        if(conn&&conn.open)conn.send({type:"story_scan",code:String(decoded||"").trim()});
+      },
+      ()=>{}
+    );
+  }catch(e){
+    scanning=false;
+    $("reader").classList.remove("show");
+    $("scanBtn").textContent="📷 QR-HINWEIS SCANNEN";
+    setMsg("bad","Kamera konnte nicht geöffnet werden. Bitte Kamera-Berechtigung erlauben.");
+  }
+}
+function connect(){
+  if(!gamePeer||!token){setStatus("bad","Ungültiger Story-Link.");return}
+  if(typeof Peer==="undefined"){setStatus("bad","PeerJS konnte nicht geladen werden.");return}
+  try{
+    peer=new Peer(undefined,{debug:1});
+    peer.on("open",()=>{
+      conn=peer.connect(gamePeer,{reliable:true,metadata:{role:"story",token}});
+      conn.on("open",()=>{
+        setStatus("ok","Mit Halloween Story verbunden");
+        conn.send({type:"story_request"});
+      });
+      conn.on("data",m=>{
+        if(!m)return;
+        if(m.type==="story_state"){state=m.state;render()}
+        else if(m.type==="story_scan_result"){
+          const kind=m.result==="ok"?"ok":m.result==="early"?"warn":m.result==="already"?"warn":"bad";
+          setMsg(kind,m.message||"");
+          if(m.result==="ok")stopScanner();
+        }
+      });
+      conn.on("close",()=>setStatus("bad","Verbindung verloren"));
+      conn.on("error",()=>setStatus("bad","Verbindungsfehler"));
+    });
+    peer.on("error",()=>setStatus("bad","Story-Verbindung fehlgeschlagen"));
+  }catch(e){setStatus("bad","Story konnte nicht verbunden werden")}
+}
+$("scanBtn").onclick=startScanner;
+connect();
+})();
+</script>
+</body>
+</html>

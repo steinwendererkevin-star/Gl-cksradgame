@@ -1,37 +1,35 @@
-CHALLENGE ROULETTE V19.5 – ZWEI HALLOWEEN EVENTS
+CHALLENGE ROULETTE V19.6 – HALLOWEEN STORY QR TEST
 
-ABLAUF:
-1. Countdown 1 läuft bis zur eingestellten Hide-&-Seek-Uhrzeit.
-2. Danach erscheint JETZT STARTEN.
-3. Hide & Seek startet.
-4. Hide & Seek endet mit Sucher gewonnen / Hider gewonnen.
-5. Auf der Leinwand wird WEITER gedrückt.
-6. Danach geht es DIREKT zurück auf den Start-/Countdown-Screen.
-7. Countdown 2 läuft bis zur separat eingestellten Halloween-Story-Uhrzeit.
-8. Danach erscheint erneut JETZT STARTEN.
-9. Beim Drücken startet "HALLOWEEN EVENT 2 – HALLOWEEN STORY".
-10. Der eigentliche Story-Inhalt wird im nächsten Schritt ergänzt.
+NEU:
+- Halloween Story ist jetzt als kompletter QR-Test spielbar.
+- Beim Start von Event 2 erscheint auf der Leinwand ein "Story-Handy verbinden"-QR.
+- Dieser öffnet story.html und verbindet das Handy mit dem PC.
+- Auf dem Story-Handy gibt es "QR-HINWEIS SCANNEN".
+- Die Kamera scannt die ausgedruckten/versteckten QR-Hinweise.
+- 7 Hinweise sind in fester Reihenfolge eingebaut.
+- Richtiger nächster QR -> nächstes Story-Kapitel.
+- Zu früher QR -> "Dieser Hinweis ergibt noch keinen Sinn …"
+- Bereits gefundener QR -> entsprechender Hinweis.
+- Falscher/fremder QR -> wird abgelehnt.
+- Alle verbundenen Story-Handys und die Leinwand erhalten denselben Fortschritt.
+- Admin-Handy zeigt Kapitel X/7 und Zahl der verbundenen Story-Handys.
 
-HALLOWEEN EINSTELLUNGEN:
-- Dropdown "🔦 Hide and Seek Modus"
-  - Countdown 1 / Start-Uhrzeit
-  - Suchzeit des Seekers
-- Dropdown "📖 Halloween Story"
-  - Countdown 2 / Story-Start-Uhrzeit
-  - Story-Inhalt folgt später
+TEST:
+SCHNELLTEST: Im Dropdown "Halloween Story" auf "STORY TEST DIREKT STARTEN" drücken. So musst du Hide & Seek nicht vorher durchspielen.
 
-ADMIN-HANDY:
-- Sieht, ob gerade Event 1 oder Event 2 aktiv ist.
-- Countdown beenden bleibt für BEIDE Countdowns vorhanden.
-- Autosave bleibt aktiv.
-- Nach Hide & Seek gibt es WEITER.
-- Während Event 2 wird "Halloween Story" angezeigt.
+ODER KOMPLETTER ABLAUF:
+1. Halloween Story nach Countdown 2 starten.
+2. Story-Verbindungs-QR auf der Leinwand mit dem Handy scannen.
+3. PDF "Halloween-Story-Test-QR-Codes.pdf" am PC öffnen.
+4. Auf dem Handy "QR-HINWEIS SCANNEN".
+5. QR 1, dann QR 2, ... bis QR 7 vom PC-Bildschirm scannen.
 
-VERSION:
-- V19.5 steht über dem Main-QR-Code.
-
-UPLOAD:
+UPLOAD AUF GITHUB:
 index.html
 host.html
 seeker.html
 hider.html
+story.html
+
+WICHTIG:
+Für den Kamera-Scanner muss die Website über HTTPS laufen. GitHub Pages passt.
