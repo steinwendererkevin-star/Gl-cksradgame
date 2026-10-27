@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V20.0 Rabenstein Story</title>
+<title>Challenge Roulette V20.1 Rabenstein Story</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *{box-sizing:border-box}
@@ -383,7 +383,7 @@ body.halloween-mode #hostEnd{display:none!important}
   <div class="online-card">
     <h1>📱 Handy verbinden</h1>
     <p>Scanne den QR-Code mit deinem Handy. Die Host-Steuerung läuft komplett im Browser.</p>
-    <div class="version-badge">CHALLENGE ROULETTE · V20.0</div>
+    <div class="version-badge">CHALLENGE ROULETTE · V20.1</div>
     <div id="onlineQr" class="online-qr"></div>
     <div id="onlineUrl" class="online-url">Sitzung wird erstellt …</div>
     <div id="onlineState" class="online-state"><span class="online-dot"></span><span>Verbindung wird vorbereitet …</span></div>
@@ -745,7 +745,7 @@ body.halloween-mode #hostEnd{display:none!important}
       </div>
 
       <div id="halloweenExtrasPanel" class="mode-extra-panel">
-        <div class="mode-extra-title">🎃 Halloween V20.0 – Events</div>
+        <div class="mode-extra-title">🎃 Halloween V20.1 – Events</div>
 
         <div id="hideSeekSettingsDropdown" class="dropdown-section open">
           <button id="hideSeekSettingsDropdownToggle" class="dropdown-toggle" type="button">
@@ -1825,7 +1825,6 @@ function handleStoryScan(conn,raw){
   if(idx<0){try{conn.send({type:"story_scan_result",result:"invalid",message:"Dieser QR-Code gehört nicht zum Loot des Grafen."})}catch(e){};return}
   if(idx<storyState.progress){try{conn.send({type:"story_scan_result",result:"already",message:"Diesen Hinweis habt ihr bereits gefunden. Er ist im Archiv."})}catch(e){};return}
   if(idx>storyState.progress){try{conn.send({type:"story_scan_result",result:"early",message:"Dieser Teil gehört noch nicht zu eurem aktuellen Weg."})}catch(e){};return}
-  if(idx===6&&storyState.phase!=="code"){try{conn.send({type:"story_scan_result",result:"early",message:"Die letzte Regel im Hauptquartier wurde noch nicht gelöst."})}catch(e){};return}
   storyState.progress=idx+1;storyState.lastCode=code;
   if(idx===5){storyState.phase="return_hq";storyState.status="playing"}
   if(idx===6){storyState.phase="finished";storyState.status="finished"}
