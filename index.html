@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V19.6 Halloween Story QR Test</title>
+<title>Challenge Roulette V20.0 Rabenstein Story</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *{box-sizing:border-box}
@@ -365,21 +365,15 @@ body.halloween-mode #hostNext,
 body.halloween-mode #hostEnd{display:none!important}
 
 
-.story-shell{position:relative;z-index:4;width:min(1100px,94vw);display:grid;grid-template-columns:minmax(290px,390px) 1fr;gap:28px;align-items:center}
-.story-qr-card,.story-chapter-card{background:rgba(10,8,9,.92);border:1px solid rgba(255,120,35,.28);border-radius:28px;padding:24px;box-shadow:0 30px 100px rgba(0,0,0,.55)}
-.story-qr-card{text-align:center}
-.story-qr-card h2{font-size:24px;margin:4px 0 8px}
-.story-qr-card p{color:var(--muted);font-weight:750;line-height:1.45}
-.story-connect-qr{width:240px;height:240px;margin:16px auto;background:#fff;border-radius:18px;padding:10px;display:flex;align-items:center;justify-content:center}
-.story-connect-url{font-size:10px;color:#9fa6b2;word-break:break-all;margin-top:8px}
-.story-chapter-card .story-kicker{font-size:13px;font-weight:1000;letter-spacing:.16em;color:#ff8a32}
-.story-chapter-card h1{font-size:clamp(38px,6vw,76px);line-height:.96;margin:8px 0 16px}
-.story-progress{font-size:16px;font-weight:950;margin-bottom:16px}
-.story-text{font-size:clamp(17px,2.2vw,24px);line-height:1.45;font-weight:780}
-.story-clue{margin-top:20px;padding:16px;border-radius:17px;background:#17100c;border:1px solid rgba(255,132,23,.24);font-size:clamp(16px,2vw,21px);font-weight:900}
-.story-phone-count{display:inline-flex;margin-top:12px;padding:8px 12px;border-radius:999px;background:#15171c;border:1px solid rgba(255,255,255,.1);font-size:12px;font-weight:950}
-.story-finished{color:#8cf0b0}
-@media(max-width:800px){.story-shell{grid-template-columns:1fr;overflow:auto;max-height:94vh}.story-connect-qr{width:210px;height:210px}}
+.story-shell{position:relative;z-index:4;width:min(1540px,96vw);display:grid;grid-template-columns:300px minmax(420px,1fr) 300px;gap:18px;align-items:stretch;max-height:92vh}
+.story-qr-card,.story-chapter-card,.story-archive-card{background:rgba(10,8,9,.94);border:1px solid rgba(255,120,35,.28);border-radius:26px;padding:20px;box-shadow:0 30px 100px rgba(0,0,0,.55);min-height:0}
+.story-qr-card{text-align:center;overflow:auto}.story-qr-card h2{font-size:21px;margin:4px 0 8px}.story-qr-card p{color:var(--muted);font-weight:750;line-height:1.4;font-size:13px}
+.story-connect-qr{width:205px;height:205px;margin:14px auto;background:#fff;border-radius:17px;padding:9px;display:flex;align-items:center;justify-content:center}.story-connect-qr img,.story-connect-qr canvas{max-width:100%!important;max-height:100%!important}
+.story-connect-url{font-size:9px;color:#777f8b;word-break:break-all;margin-top:7px}.story-phone-count{display:inline-flex;margin-top:10px;padding:7px 10px;border-radius:999px;background:#15171c;border:1px solid rgba(255,255,255,.1);font-size:11px;font-weight:950}
+.story-chapter-card{display:flex;flex-direction:column;overflow:hidden}.story-chapter-card .story-kicker{font-size:12px;font-weight:1000;letter-spacing:.15em;color:#ff8a32}.story-chapter-card h1{font-size:clamp(31px,4vw,58px);line-height:.97;margin:7px 0 10px}.story-progress{font-size:14px;font-weight:950;margin-bottom:12px;color:#d9dce4}.story-scroll{overflow:auto;padding-right:6px}.story-text{font-size:clamp(15px,1.55vw,21px);white-space:pre-line;line-height:1.47;font-weight:760}.story-clue{margin-top:15px;padding:13px;border-radius:15px;background:#17100c;border:1px solid rgba(255,132,23,.24);font-size:clamp(14px,1.3vw,18px);font-weight:900;white-space:pre-line;line-height:1.42}.story-video{margin-top:14px;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#050505;border:1px solid rgba(255,255,255,.1)}.story-video iframe{width:100%;height:100%;border:0}.story-video-empty{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;color:#b8bdc7;font-weight:900;line-height:1.4}
+.story-archive-card{overflow:auto}.story-archive-card h3{margin:0 0 6px;font-size:20px}.story-archive-help{font-size:11px;color:var(--muted);font-weight:750;line-height:1.35;margin-bottom:10px}.story-archive-list{display:grid;gap:7px}.story-archive-btn{width:100%;text-align:left;border:1px solid rgba(255,255,255,.1);background:#14161b;color:#fff;border-radius:13px;padding:10px 11px;font-weight:900;font-size:12px;cursor:pointer}.story-archive-btn:hover{border-color:rgba(255,132,23,.5)}.story-archive-btn.video::before{content:"▶ ";color:#ff8a32}.story-archive-btn.current{border-color:#ff8a32;background:#23150d}.story-current-btn{margin-bottom:9px;background:#352015}.story-finished{color:#8cf0b0}
+@media(max-width:1050px){.story-shell{grid-template-columns:260px 1fr}.story-archive-card{grid-column:1/-1;max-height:220px}.story-archive-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.story-shell{grid-template-columns:1fr;overflow:auto;max-height:94vh}.story-archive-card{grid-column:auto}.story-archive-list{grid-template-columns:1fr}.story-connect-qr{width:190px;height:190px}}
 
 </style>
 </head>
@@ -389,7 +383,7 @@ body.halloween-mode #hostEnd{display:none!important}
   <div class="online-card">
     <h1>📱 Handy verbinden</h1>
     <p>Scanne den QR-Code mit deinem Handy. Die Host-Steuerung läuft komplett im Browser.</p>
-    <div class="version-badge">CHALLENGE ROULETTE · V19.6</div>
+    <div class="version-badge">CHALLENGE ROULETTE · V20.0</div>
     <div id="onlineQr" class="online-qr"></div>
     <div id="onlineUrl" class="online-url">Sitzung wird erstellt …</div>
     <div id="onlineState" class="online-state"><span class="online-dot"></span><span>Verbindung wird vorbereitet …</span></div>
@@ -498,19 +492,29 @@ body.halloween-mode #hostEnd{display:none!important}
   <div class="theme-decor halloween-decor"><div class="bat a">🦇</div><div class="bat b">🦇</div><div class="pumpkin">🎃</div></div>
   <div class="story-shell">
     <div class="story-qr-card">
-      <div class="halloween-event-kicker">🎃 HALLOWEEN EVENT 2</div>
+      <div class="halloween-event-kicker">👑 DER LOOT DES GRAFEN</div>
       <h2>📱 Story-Handy verbinden</h2>
-      <p>Einmal scannen. Danach könnt ihr mit dem Handy die versteckten Hinweis-QR-Codes finden und scannen.</p>
+      <p>Einmal verbinden. Danach scannt ihr damit die gefundenen Story-QR-Codes.</p>
       <div id="storyConnectQr" class="story-connect-qr"></div>
       <div id="storyConnectUrl" class="story-connect-url">Story-Link wird erstellt …</div>
       <div id="storyPhoneCount" class="story-phone-count">📱 0 Story-Handys verbunden</div>
     </div>
     <div class="story-chapter-card">
-      <div id="storyPcKicker" class="story-kicker">DIE ERSTE NACHRICHT</div>
-      <h1 id="storyPcTitle">HALLOWEEN STORY</h1>
-      <div id="storyPcProgress" class="story-progress">Kapitel 0 / 7</div>
-      <div id="storyPcText" class="story-text">Verbindet mindestens ein Handy und findet danach Hinweis 1.</div>
-      <div id="storyPcClue" class="story-clue">🔎 Der erste Test-QR-Code ist „Hinweis 1“ im PDF.</div>
+      <div id="storyPcKicker" class="story-kicker">DER LOOT DES GRAFEN VON RABENSTEIN</div>
+      <h1 id="storyPcTitle">DIE GESCHICHTE DES GRUNDSTÜCKS</h1>
+      <div id="storyPcProgress" class="story-progress">AUSGANGSGESCHICHTE</div>
+      <div class="story-scroll">
+        <div id="storyPcText" class="story-text"></div>
+        <div id="storyPcVideo" class="story-video" style="display:none"></div>
+        <div id="storyPcClue" class="story-clue"></div>
+      </div>
+    </div>
+    <div class="story-archive-card">
+      <h3>📚 Story-Archiv</h3>
+      <div class="story-archive-help">Nur bereits gefundene Hinweise erscheinen hier. Zuschauer können sie jederzeit erneut öffnen.</div>
+      <button id="storyPcCurrentBtn" class="story-archive-btn story-current-btn" type="button">● AKTUELLER STORY-STAND</button>
+      <button id="storyPcCodeBtn" class="story-archive-btn" type="button" style="display:none;border-color:#ff8a32">🔐 FINAL-RÄTSEL ANZEIGEN</button>
+      <div id="storyPcArchive" class="story-archive-list"></div>
     </div>
   </div>
 </section>
@@ -741,7 +745,7 @@ body.halloween-mode #hostEnd{display:none!important}
       </div>
 
       <div id="halloweenExtrasPanel" class="mode-extra-panel">
-        <div class="mode-extra-title">🎃 Halloween V19.6 – Events</div>
+        <div class="mode-extra-title">🎃 Halloween V20.0 – Events</div>
 
         <div id="hideSeekSettingsDropdown" class="dropdown-section open">
           <button id="hideSeekSettingsDropdownToggle" class="dropdown-toggle" type="button">
@@ -777,8 +781,21 @@ body.halloween-mode #hostEnd{display:none!important}
               <span class="help">Nach Hide &amp; Seek und „WEITER“ läuft der zweite Countdown bis zu dieser Uhrzeit. Danach wieder „JETZT STARTEN“ drücken.</span>
             </div>
             <div class="field halloween-only-setting">
-              <label>📖 Story-Inhalt</label>
-              <span class="help">Testversion: 7 QR-Hinweise in fester Reihenfolge. Die echten Orte und Texte können wir danach an dein Grundstück anpassen.</span>
+              <label>🎬 Video 1 – 00:17 Uhr</label>
+              <input id="storyVideo1Url" type="url" placeholder="YouTube-Link (nicht gelistet)">
+            </div>
+            <div class="field halloween-only-setting">
+              <label>🎬 Video 2 – 00:49 Uhr</label>
+              <input id="storyVideo2Url" type="url" placeholder="YouTube-Link (nicht gelistet)">
+            </div>
+            <div class="field halloween-only-setting">
+              <label>🎬 Video 3 – 01:26 Uhr</label>
+              <input id="storyVideo3Url" type="url" placeholder="YouTube-Link (nicht gelistet)">
+              <span class="help">Die Videos können später ersetzt werden, ohne neue QR-Codes zu drucken. Ohne Link zeigt die Testversion das Videoskript an.</span>
+            </div>
+            <div class="field halloween-only-setting">
+              <label>🔐 Schlüsseltresor</label>
+              <span class="help">Story-Code: 3814 · Im Tresor liegt die alte Karte mit dem X.</span>
             </div>
             <button id="storyDirectTestBtn" class="add" type="button">🧪 STORY TEST DIREKT STARTEN</button>
           </div>
@@ -920,7 +937,7 @@ const screens={
 };
 
 let settings={
-  mode:"standard",hours:0,minutes:0,seconds:30,roundHours:0,roundMinutes:5,roundSeconds:0,rounds:10,halloweenStartTime:"22:00",halloweenStoryStartTime:"00:00",hideSeekMinutes:20,hideSeekSeconds:0,
+  mode:"standard",hours:0,minutes:0,seconds:30,roundHours:0,roundMinutes:5,roundSeconds:0,rounds:10,halloweenStartTime:"22:00",halloweenStoryStartTime:"00:00",hideSeekMinutes:20,hideSeekSeconds:0,storyVideo1Url:"",storyVideo2Url:"",storyVideo3Url:"",
   soundPack:"creepy",mysteryChance:5,
   noRepeatPlayer:true,noRepeatChallenge:true,doubleEnabled:true,tvMode:false,hostMode:false,
 
@@ -1017,7 +1034,7 @@ function validSongs(){return (settings.songs||[]).filter(x=>x.title&&isYouTubeUr
 
 function load(){
   try{
-    const raw=localStorage.getItem("challengeRouletteSettingsV19_6")||localStorage.getItem("challengeRouletteSettingsV19_5")||localStorage.getItem("challengeRouletteSettingsV19_3")||localStorage.getItem("challengeRouletteSettingsV19_HALLOWEEN_TEST")||localStorage.getItem("challengeRouletteSettingsV18_3")||localStorage.getItem("challengeRouletteSettingsV18_2")||localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
+    const raw=localStorage.getItem("challengeRouletteSettingsV20_0")||localStorage.getItem("challengeRouletteSettingsV19_6")||localStorage.getItem("challengeRouletteSettingsV19_5")||localStorage.getItem("challengeRouletteSettingsV19_3")||localStorage.getItem("challengeRouletteSettingsV19_HALLOWEEN_TEST")||localStorage.getItem("challengeRouletteSettingsV18_3")||localStorage.getItem("challengeRouletteSettingsV18_2")||localStorage.getItem("challengeRouletteSettingsV18_1")||localStorage.getItem("challengeRouletteSettingsV18")||localStorage.getItem("challengeRouletteSettingsV17_2")||localStorage.getItem("challengeRouletteSettingsV17_1")||localStorage.getItem("challengeRouletteSettingsV17")||localStorage.getItem("challengeRouletteSettingsV16")||localStorage.getItem("challengeRouletteSettingsV15")||localStorage.getItem("challengeRouletteSettingsV11")||localStorage.getItem("challengeRouletteSettingsV10");
     if(!raw)return;
     const s=JSON.parse(raw);
     if(!s)return;
@@ -1058,7 +1075,7 @@ function load(){
     }
   }catch(e){}
 }
-function save(){try{localStorage.setItem("challengeRouletteSettingsV19_6",JSON.stringify(settings))}catch(e){}}
+function save(){try{localStorage.setItem("challengeRouletteSettingsV20_0",JSON.stringify(settings))}catch(e){}}
 
 function initGame(reset=true){
   if(!reset&&game)return;
@@ -1745,119 +1762,92 @@ function startCurrentHalloweenEvent(){
   else startHalloweenEvent();
 }
 function makeStoryState(){
-  return {progress:0,total:STORY_TEST_CODES.length,status:"playing",startedAt:Date.now(),lastCode:""};
+  return {progress:0,total:STORY_TEST_CODES.length,status:"playing",phase:"hunt",startedAt:Date.now(),lastCode:""};
 }
+let storyPcView={mode:"current",index:null,autoplay:false};
 function storyUrl(){
-  const u=new URL("story.html",location.href);
-  u.search="";
-  u.hash="";
-  u.searchParams.set("peer",remotePeerId);
-  u.searchParams.set("token",remoteToken);
-  return u.toString();
+  const u=new URL("story.html",location.href);u.search="";u.hash="";u.searchParams.set("peer",remotePeerId);u.searchParams.set("token",remoteToken);return u.toString();
 }
 function renderStoryConnectQr(){
-  if(!remotePeerId)return;
-  const url=storyUrl();
-  $("storyConnectUrl").textContent=url;
-  $("storyConnectQr").innerHTML="";
-  if(typeof QRCode!=="undefined"){
-    new QRCode($("storyConnectQr"),{text:url,width:220,height:220,correctLevel:QRCode.CorrectLevel.M});
-  }
+  if(!remotePeerId)return;const url=storyUrl();$("storyConnectUrl").textContent=url;$("storyConnectQr").innerHTML="";
+  if(typeof QRCode!=="undefined")new QRCode($("storyConnectQr"),{text:url,width:185,height:185,correctLevel:QRCode.CorrectLevel.M});
 }
-function currentStoryChapter(){
-  if(!storyState||storyState.progress<=0)return null;
-  return STORY_CHAPTERS[Math.min(storyState.progress,STORY_CHAPTERS.length)-1]||null;
+function youtubeId(value){
+  try{const u=new URL(String(value||"").trim());const h=u.hostname.toLowerCase().replace(/^www\./,"");if(h==="youtu.be")return u.pathname.split("/").filter(Boolean)[0]||"";if(h==="youtube.com"||h==="m.youtube.com"||h==="music.youtube.com"||h.endsWith(".youtube.com")){if(u.pathname==="/watch")return u.searchParams.get("v")||"";const p=u.pathname.split("/").filter(Boolean);if(["embed","shorts","live"].includes(p[0]))return p[1]||"";}return ""}catch(e){return ""}
+}
+function storyVideoUrl(entry){if(!entry?.videoKey)return "";const v=String(settings[entry.videoKey]||"").trim();return youtubeId(v)?v:""}
+function storyEmbedUrl(value,autoplay=false){const id=youtubeId(value);return id?`https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0&playsinline=1${autoplay?"&autoplay=1":""}`:""}
+function storyDecorate(entry,index){if(!entry)return null;return {...entry,index,videoUrl:storyVideoUrl(entry)} }
+function currentStoryChapter(){if(!storyState||storyState.progress<=0)return null;return storyDecorate(STORY_CHAPTERS[Math.min(storyState.progress,STORY_CHAPTERS.length)-1],Math.min(storyState.progress,STORY_CHAPTERS.length)-1)}
+function storyArchiveFull(){
+  if(!storyState)return [];
+  return STORY_CHAPTERS.slice(0,Math.min(storyState.progress,STORY_CHAPTERS.length)).map((x,i)=>storyDecorate(x,i));
+}
+function storyArchiveMeta(){return storyArchiveFull().map(x=>({index:x.index,label:x.archive||x.title,type:x.type||"text"}))}
+function storyPcEntry(){
+  if(storyPcView.mode==="intro")return {...STORY_INTRO,_progress:"AUSGANGSGESCHICHTE"};
+  if(storyPcView.mode==="archive"&&Number.isInteger(storyPcView.index)&&storyPcView.index>=0&&storyPcView.index<Math.min(storyState?.progress||0,STORY_CHAPTERS.length)){
+    const e=storyDecorate(STORY_CHAPTERS[storyPcView.index],storyPcView.index);return {...e,_progress:`ARCHIV · ${e.archive||e.title}`};
+  }
+  if(storyState?.phase==="code"&&storyState.progress===6)return {...STORY_CODE_RIDDLE,_progress:STORY_CODE_RIDDLE.progress};
+  const c=currentStoryChapter();
+  if(c)return {...c,_progress:c.type==="ending"?"FINALE":`GEFUNDENER HINWEIS ${Math.min(storyState.progress,6)} / 6`};
+  return {...STORY_INTRO,_progress:"AUSGANGSGESCHICHTE"};
+}
+function renderStoryPcVideo(entry){
+  const box=$("storyPcVideo");box.innerHTML="";box.style.display="none";
+  if(entry?.type!=="video")return;
+  box.style.display="block";const url=storyVideoUrl(entry);const embed=storyEmbedUrl(url,!!storyPcView.autoplay);
+  if(embed){box.innerHTML=`<iframe src="${embed}" title="${escapeHtml(entry.title||"Story Video")}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`}
+  else{box.innerHTML=`<div class="story-video-empty">🎬 Noch kein YouTube-Link hinterlegt.<br>Im Test wird deshalb das Videoskript unten angezeigt.</div>`}
 }
 function updateStoryPc(){
   if(!storyState)return;
-  const chapter=currentStoryChapter();
-  const p=storyState.progress;
-  $("storyPhoneCount").textContent=`📱 ${[...storyConnections].filter(c=>c.open).length} Story-Handy${[...storyConnections].filter(c=>c.open).length===1?"":"s"} verbunden`;
-  $("storyPcProgress").textContent=`Kapitel ${p} / ${storyState.total}`;
-  if(!chapter){
-    $("storyPcKicker").textContent="DIE ERSTE NACHRICHT";
-    $("storyPcTitle").textContent="HALLOWEEN STORY";
-    $("storyPcText").textContent="Die Geschichte beginnt erst, wenn ihr Hinweis 1 gefunden und gescannt habt.";
-    $("storyPcClue").textContent="🔎 Findet Hinweis 1.";
-    return;
-  }
-  $("storyPcKicker").textContent=chapter.kicker;
-  $("storyPcTitle").textContent=chapter.title;
-  $("storyPcText").textContent=chapter.text;
-  $("storyPcClue").textContent=`🔎 ${chapter.clue}`;
-  $("storyPcProgress").classList.toggle("story-finished",p>=storyState.total);
+  const connected=[...storyConnections].filter(c=>c.open).length;$("storyPhoneCount").textContent=`📱 ${connected} Story-Handy${connected===1?"":"s"} verbunden`;
+  const entry=storyPcEntry();$("storyPcKicker").textContent=entry.kicker||"DER LOOT DES GRAFEN";$("storyPcTitle").textContent=entry.title||"HALLOWEEN STORY";$("storyPcProgress").textContent=entry._progress||"";
+  const hasVideo=entry.type==="video";const url=hasVideo?storyVideoUrl(entry):"";$("storyPcText").textContent=hasVideo&&url?"":(hasVideo?(entry.fallback||""):(entry.text||""));
+  $("storyPcClue").textContent=entry.note||"";$("storyPcClue").style.display=entry.note?"block":"none";renderStoryPcVideo(entry);
+  const root=$("storyPcArchive");root.innerHTML="";
+  const introBtn=document.createElement("button");introBtn.type="button";introBtn.className="story-archive-btn"+(storyPcView.mode==="intro"?" current":"");introBtn.textContent="START · Ausgangsgeschichte";introBtn.onclick=()=>{storyPcView={mode:"intro",index:null,autoplay:false};updateStoryPc()};root.appendChild(introBtn);
+  storyArchiveFull().forEach(e=>{const b=document.createElement("button");b.type="button";b.className=`story-archive-btn ${e.type==="video"?"video":""}${storyPcView.mode==="archive"&&storyPcView.index===e.index?" current":""}`;b.textContent=e.archive||e.title;b.onclick=()=>{storyPcView={mode:"archive",index:e.index,autoplay:e.type==="video"};updateStoryPc()};root.appendChild(b)});
+  $("storyPcCurrentBtn").onclick=()=>{storyPcView={mode:"current",index:null,autoplay:false};updateStoryPc()};
+  $("storyPcCodeBtn").style.display=storyState.phase==="return_hq"?"block":"none";
+  $("storyPcCodeBtn").onclick=activateStoryCodeRiddle;
 }
 function publicStoryState(){
-  if(!storyState)return null;
-  return {
-    progress:storyState.progress,
-    total:storyState.total,
-    status:storyState.status,
-    chapter:currentStoryChapter(),
-    finished:storyState.progress>=storyState.total
-  };
+  if(!storyState)return null;return {progress:storyState.progress,total:storyState.total,status:storyState.status,phase:storyState.phase,intro:STORY_INTRO,chapter:currentStoryChapter(),archive:storyArchiveFull(),finished:storyState.status==="finished"};
 }
-function sendStoryState(conn){
-  if(!conn||!conn.open)return;
-  try{conn.send({type:"story_state",state:publicStoryState()})}catch(e){}
-}
-function broadcastStoryState(){
-  updateStoryPc();
-  storyConnections.forEach(sendStoryState);
-  setTimeout(sendRemoteStatus,30);
-}
+function sendStoryState(conn){if(conn&&conn.open){try{conn.send({type:"story_state",state:publicStoryState()})}catch(e){}}}
+function broadcastStoryState(){storyPcView={mode:"current",index:null,autoplay:true};updateStoryPc();storyConnections.forEach(sendStoryState);setTimeout(sendRemoteStatus,30)}
+function activateStoryCodeRiddle(){if(!storyState||storyState.progress!==6)return;storyState.phase="code";storyState.status="code";storyPcView={mode:"current",index:null,autoplay:false};updateStoryPc();storyConnections.forEach(sendStoryState);setTimeout(sendRemoteStatus,30)}
 function handleStoryScan(conn,raw){
-  if(!storyState||storyState.status!=="playing")return;
-  const code=String(raw||"").trim();
-  const idx=STORY_TEST_CODES.indexOf(code);
-  if(idx<0){
-    try{conn.send({type:"story_scan_result",result:"invalid",message:"Dieser QR-Code gehört nicht zu dieser Halloween Story."})}catch(e){}
-    return;
-  }
-  if(idx<storyState.progress){
-    try{conn.send({type:"story_scan_result",result:"already",message:"Diesen Hinweis habt ihr bereits gefunden."})}catch(e){}
-    return;
-  }
-  if(idx>storyState.progress){
-    try{conn.send({type:"story_scan_result",result:"early",message:"Dieser Hinweis ergibt noch keinen Sinn … Findet zuerst den vorherigen QR-Code."})}catch(e){}
-    return;
-  }
-  storyState.progress=idx+1;
-  storyState.lastCode=code;
-  if(storyState.progress>=storyState.total)storyState.status="finished";
-  try{conn.send({type:"story_scan_result",result:"ok",message:`Hinweis ${storyState.progress} gefunden!`})}catch(e){}
+  if(!storyState||storyState.status==="finished")return;const code=String(raw||"").trim();const idx=STORY_TEST_CODES.indexOf(code);
+  if(idx<0){try{conn.send({type:"story_scan_result",result:"invalid",message:"Dieser QR-Code gehört nicht zum Loot des Grafen."})}catch(e){};return}
+  if(idx<storyState.progress){try{conn.send({type:"story_scan_result",result:"already",message:"Diesen Hinweis habt ihr bereits gefunden. Er ist im Archiv."})}catch(e){};return}
+  if(idx>storyState.progress){try{conn.send({type:"story_scan_result",result:"early",message:"Dieser Teil gehört noch nicht zu eurem aktuellen Weg."})}catch(e){};return}
+  if(idx===6&&storyState.phase!=="code"){try{conn.send({type:"story_scan_result",result:"early",message:"Die letzte Regel im Hauptquartier wurde noch nicht gelöst."})}catch(e){};return}
+  storyState.progress=idx+1;storyState.lastCode=code;
+  if(idx===5){storyState.phase="return_hq";storyState.status="playing"}
+  if(idx===6){storyState.phase="finished";storyState.status="finished"}
+  try{conn.send({type:"story_scan_result",result:"ok",message:idx===6?"Schatz gefunden!":`Hinweis ${idx+1} freigeschaltet.`})}catch(e){}
   broadcastStoryState();
 }
 function acceptStoryRemote(conn){
-  conn._storyRole="story";
-  storyConnections.add(conn);
-  conn.on("open",()=>{sendStoryState(conn);broadcastStoryState()});
-  conn.on("data",msg=>{
-    if(!msg)return;
-    if(msg.type==="story_request"){sendStoryState(conn);return}
-    if(msg.type==="story_scan"){handleStoryScan(conn,msg.code);return}
-  });
-  conn.on("close",()=>{storyConnections.delete(conn);broadcastStoryState()});
-  conn.on("error",()=>{});
+  conn._storyRole="story";storyConnections.add(conn);conn.on("open",()=>{sendStoryState(conn);broadcastStoryState()});
+  conn.on("data",msg=>{if(!msg)return;if(msg.type==="story_request"){sendStoryState(conn);return}if(msg.type==="story_scan"){handleStoryScan(conn,msg.code);return}});
+  conn.on("close",()=>{storyConnections.delete(conn);updateStoryPc();setTimeout(sendRemoteStatus,30)});conn.on("error",()=>{});
 }
-function startStoryDirectTest(){
-  halloweenStage="story";
-  $("settingsModal").classList.remove("open");
-  startHalloweenStory();
-}
-function startHalloweenStory(){
-  if(!remotePeerId){
-    alert("Die Online-Sitzung ist noch nicht bereit. Bitte kurz den QR-/Host-Status prüfen.");
-    return;
-  }
-  clearAuto();stopAmbience();setReady(false);
-  storyConnections.forEach(c=>{try{c.close()}catch(e){}});
-  storyConnections.clear();
-  storyState=makeStoryState();
-  show("halloweenStory");
-  renderStoryConnectQr();
+function showStoryPcFromRemote(payload){
+  if(!storyState)return;
+  if(payload==="current"){storyPcView={mode:"current",index:null,autoplay:false}}
+  else if(payload==="intro"){storyPcView={mode:"intro",index:null,autoplay:false}}
+  else{const i=Number(payload);if(Number.isInteger(i)&&i>=0&&i<Math.min(storyState.progress,STORY_CHAPTERS.length))storyPcView={mode:"archive",index:i,autoplay:STORY_CHAPTERS[i]?.type==="video"}}
   updateStoryPc();
-  setTimeout(sendRemoteStatus,80);
+}
+function startStoryDirectTest(){halloweenStage="story";$("settingsModal").classList.remove("open");startHalloweenStory()}
+function startHalloweenStory(){
+  if(!remotePeerId){alert("Die Online-Sitzung ist noch nicht bereit. Bitte kurz den QR-/Host-Status prüfen.");return}
+  clearAuto();stopAmbience();setReady(false);storyConnections.forEach(c=>{try{c.close()}catch(e){}});storyConnections.clear();storyState=makeStoryState();storyPcView={mode:"current",index:null,autoplay:false};show("halloweenStory");renderStoryConnectQr();updateStoryPc();setTimeout(sendRemoteStatus,80);
 }
 function startHalloweenEvent(){
   if(activePlayers().length<2){
@@ -2366,7 +2356,7 @@ function updateModeSpecificSettings(){
 }
 function syncSettingsUI(){
   document.querySelector(`input[name="mode"][value="${settings.mode}"]`).checked=true;
-  $("hoursInput").value=settings.hours;$("minutesInput").value=settings.minutes;$("secondsInput").value=settings.seconds;$("roundHoursInput").value=settings.roundHours;$("roundMinutesInput").value=settings.roundMinutes;$("roundSecondsInput").value=settings.roundSeconds;$("roundsInput").value=settings.rounds;$("halloweenStartTime").value=settings.halloweenStartTime||"22:00";$("halloweenStoryStartTime").value=settings.halloweenStoryStartTime||"00:00";$("hideSeekMinutes").value=settings.hideSeekMinutes??20;$("hideSeekSeconds").value=settings.hideSeekSeconds??0;
+  $("hoursInput").value=settings.hours;$("minutesInput").value=settings.minutes;$("secondsInput").value=settings.seconds;$("roundHoursInput").value=settings.roundHours;$("roundMinutesInput").value=settings.roundMinutes;$("roundSecondsInput").value=settings.roundSeconds;$("roundsInput").value=settings.rounds;$("halloweenStartTime").value=settings.halloweenStartTime||"22:00";$("halloweenStoryStartTime").value=settings.halloweenStoryStartTime||"00:00";$("hideSeekMinutes").value=settings.hideSeekMinutes??20;$("hideSeekSeconds").value=settings.hideSeekSeconds??0;$("storyVideo1Url").value=settings.storyVideo1Url||"";$("storyVideo2Url").value=settings.storyVideo2Url||"";$("storyVideo3Url").value=settings.storyVideo3Url||"";
   $("soundPack").value=settings.soundPack;$("mysteryChance").value=String(settings.mysteryChance);
   $("noRepeatPlayer").checked=settings.noRepeatPlayer;$("noRepeatChallenge").checked=settings.noRepeatChallenge;$("doubleEnabled").checked=settings.doubleEnabled;$("tvModeEnabled").checked=settings.tvMode;$("hostModeEnabled").checked=settings.hostMode;
 
@@ -2393,6 +2383,9 @@ function collectSettingsFromUiNoValidation(){
   settings.halloweenStoryStartTime=$("halloweenStoryStartTime").value||"00:00";
   settings.hideSeekMinutes=clamp($("hideSeekMinutes").value,0,180);
   settings.hideSeekSeconds=clamp($("hideSeekSeconds").value,0,59);
+  settings.storyVideo1Url=$("storyVideo1Url").value.trim();
+  settings.storyVideo2Url=$("storyVideo2Url").value.trim();
+  settings.storyVideo3Url=$("storyVideo3Url").value.trim();
   settings.soundPack=$("soundPack").value;
   settings.mysteryChance=pct($("mysteryChance").value);
   settings.noRepeatPlayer=$("noRepeatPlayer").checked;
@@ -2466,7 +2459,7 @@ function saveSettings(){
     if(bad){alert("Bitte bei jedem Musik-Song einen Namen und einen gültigen YouTube-Link eintragen.");return}
   }
 
-  settings.mode=mode;settings.hours=clamp($("hoursInput").value,0,99);settings.minutes=clamp($("minutesInput").value,0,59);settings.seconds=clamp($("secondsInput").value,0,59);settings.roundHours=clamp($("roundHoursInput").value,0,99);settings.roundMinutes=clamp($("roundMinutesInput").value,0,59);settings.roundSeconds=clamp($("roundSecondsInput").value,0,59);settings.rounds=clamp($("roundsInput").value,0,99);settings.halloweenStartTime=$("halloweenStartTime").value||"22:00";settings.halloweenStoryStartTime=$("halloweenStoryStartTime").value||"00:00";settings.hideSeekMinutes=clamp($("hideSeekMinutes").value,0,180);settings.hideSeekSeconds=clamp($("hideSeekSeconds").value,0,59);
+  settings.mode=mode;settings.hours=clamp($("hoursInput").value,0,99);settings.minutes=clamp($("minutesInput").value,0,59);settings.seconds=clamp($("secondsInput").value,0,59);settings.roundHours=clamp($("roundHoursInput").value,0,99);settings.roundMinutes=clamp($("roundMinutesInput").value,0,59);settings.roundSeconds=clamp($("roundSecondsInput").value,0,59);settings.rounds=clamp($("roundsInput").value,0,99);settings.halloweenStartTime=$("halloweenStartTime").value||"22:00";settings.halloweenStoryStartTime=$("halloweenStoryStartTime").value||"00:00";settings.hideSeekMinutes=clamp($("hideSeekMinutes").value,0,180);settings.hideSeekSeconds=clamp($("hideSeekSeconds").value,0,59);settings.storyVideo1Url=$("storyVideo1Url").value.trim();settings.storyVideo2Url=$("storyVideo2Url").value.trim();settings.storyVideo3Url=$("storyVideo3Url").value.trim();
   settings.soundPack=$("soundPack").value;settings.mysteryChance=pct($("mysteryChance").value);
   settings.noRepeatPlayer=$("noRepeatPlayer").checked;settings.noRepeatChallenge=$("noRepeatChallenge").checked;settings.doubleEnabled=$("doubleEnabled").checked;settings.tvMode=$("tvModeEnabled").checked;settings.hostMode=$("hostModeEnabled").checked;
 
@@ -2483,8 +2476,10 @@ function saveSettings(){
 let remotePeer=null,remoteConn=null,remoteStatusTimer=null,remoteConnected=false,onlineStarted=false;
 let remoteToken="",remotePeerId="";
 let halloweenStage="hide";
-const STORY_TEST_CODES=["H13-01-A7F2","H13-02-K9M4","H13-03-P3X8","H13-04-R6B1","H13-05-T2Q7","H13-06-V8N5","H13-07-Z4C9"];
-const STORY_CHAPTERS=[{"kicker":"DIE ERSTE NACHRICHT","title":"23:47 UHR","text":"Wenn ihr das hier lest, war ich zu langsam. Ich habe etwas Wertvolles auf diesem Grundstück versteckt. Jemand beobachtet mich.","clue":"Sucht dort weiter, wo Feuer normalerweise Wärme bringt."},{"kicker":"TAGEBUCHFRAGMENT 01","title":"DAS GERÄUSCH","text":"Ich hörte Schritte draußen. Immer drei Stück. Dann Stille. Als ich aus dem Fenster sah, stand dort niemand.","clue":"Der nächste Hinweis liegt dort, wo man sitzt, obwohl heute niemand sitzen sollte."},{"kicker":"TAGEBUCHFRAGMENT 02","title":"DIE GESTALT","text":"Im Spiegel hinter mir stand eine Gestalt. Als ich mich umdrehte, war sie verschwunden. Auf dem Glas blieb nur eine Zahl: 3.","clue":"Sucht an einem Ort, an dem etwas geöffnet und wieder verschlossen werden kann."},{"kicker":"TAGEBUCHFRAGMENT 03","title":"ICH WAR ES","text":"Ich habe die Aufnahmen angesehen. Die Gestalt draußen hatte meine Jacke an. Mein Gesicht. Aber ich war die ganze Zeit im Haus.","clue":"Der vierte Weg führt euch dorthin, wo Licht die Dunkelheit normalerweise vertreibt."},{"kicker":"TAGEBUCHFRAGMENT 04","title":"DER SCHATZ","text":"Jetzt weiß ich, wonach es sucht. Nicht nach mir. Nach dem, was ich versteckt habe. Ich habe den Schatz noch einmal verlegt.","clue":"Merkt euch die Zahl 7. Der nächste Hinweis wartet dort, wo Dinge für später aufbewahrt werden."},{"kicker":"LETZTE AUFNAHME","title":"00:13 UHR","text":"Wenn ich verschwinde, dürft ihr dem ersten Hinweis nicht vertrauen. Der Anfang war gleichzeitig das Ende.","clue":"Ihr seid fast dort. Findet den letzten QR-Code."},{"kicker":"VERMÄCHTNIS","title":"DER LETZTE HINWEIS","text":"Ihr habt meine letzte Nacht vollständig gefunden. Die Zahlen 3 und 7 waren kein Zufall. Der Schatz liegt dort, wo diese Geschichte begonnen hat.","clue":"FINALER SCHATZ-HINWEIS: Kehrt zum ersten Ort zurück. Dort wird später eure echte Schatzposition eingebaut."}];
+const STORY_TEST_CODES=["RBX-A7KM-P2QF","RBX-L9VD-T5HN","RBX-C4ZR-W8SJ","RBX-P6YX-M3GK","RBX-U2NE-K7RA","RBX-H5QT-V9LC","RBX-Z8BW-F4DM"];
+const STORY_INTRO={"kicker":"DER LOOT DES GRAFEN VON RABENSTEIN","title":"DIE GESCHICHTE DES GRUNDSTÜCKS","text":"Vor mehr als 200 Jahren gehörte dieses Grundstück angeblich zu den Ländereien des Grafen Leopold von Rabenstein.\n\nDer Graf war für seinen großen Reichtum bekannt: Gold, Schmuck, Münzen und Dinge, über deren Herkunft niemand sprach.\n\nIm Herbst 1813 erfuhr Leopold, dass Männer auf dem Weg zu seinem Anwesen waren. Sie wollten seinen Besitz. In der Nacht vom 31. Oktober auf den 1. November begann der Graf deshalb, seinen wertvollsten Besitz zu verstecken.\n\nEine einzige Truhe enthielt seinen wirklichen Schatz - den LOOT VON RABENSTEIN.\n\nAm Morgen des 1. November war Leopold verschwunden. Sein Mantel lag noch im Haus. Sein Pferd befand sich noch auf dem Grundstück. Der Graf wurde nie wieder gesehen. Auch sein Schatz blieb verschwunden.\n\nFast zwei Jahrhunderte später begann David Kern, die Geschichte zu untersuchen. Er fand alte Dokumente des Grafen und versuchte dessen letzte Nacht Schritt für Schritt nachzuvollziehen. Dabei nahm er Videos auf.\n\nDavids letzte bekannte Nachricht lautete:\n\n„Der Schatz ist noch hier.“\n\nDanach verschwanden auch seine Aufzeichnungen - bis heute Nacht.","note":"Nach der Ausgangsgeschichte wird der erste QR-Code zusammen mit der ersten Taschenlampe übergeben."};
+const STORY_CHAPTERS=[{"id":"q1","type":"text","kicker":"AUFZEICHNUNG DES GRAFEN","title":"1. NOVEMBER - 00:05 UHR","archive":"00:05 · Der letzte Abend","text":"David fand die erste erhaltene Seite von Rabensteins Aufzeichnungen.\n\n„Der letzte meiner Gäste ist fort. Ich blieb noch dort sitzen, wo wir den Abend gemeinsam verbracht hatten. Von meinem Platz aus konnte ich über mein Land blicken.\n\nAm Rand des Gartens stand eine Gestalt. Sie bewegte sich nicht. Ich beobachtete sie weiter von dem Ort, an dem wir zuvor gemeinsam saßen und tranken. Als ich schließlich aufstand, war sie verschwunden.“\n\nAm Rand der Seite befindet sich das Wappen des Hauses Rabenstein: drei schwarze Raben. Darunter steht:\n\n„Solange meine Wächter über mein Land blicken, bleibt mein Besitz sicher.“","note":"Der nächste Ort steckt in Rabensteins Beschreibung."},{"id":"q2","type":"video","videoKey":"storyVideo1Url","kicker":"DAVIDS AUFNAHME 01","title":"1. NOVEMBER - 00:17 UHR","archive":"00:17 · Video 1","fallback":"Kamera läuft bereits. David steht nahe dem Sitzplatz und schaut in den Garten.\n\nDAVID: „00:17 Uhr. Ich glaube, ich hab verstanden, was Rabenstein hier gesehen hat.“\n\nEr schaut hinaus. „Natürlich steht jetzt nichts da. Aber ich hab etwas anderes gefunden.“\n\nDavid hält einen alten Schlüssel in die Kamera. Der Anhänger mit der Zahl 8 ist für 2-3 Sekunden deutlich sichtbar, wird aber NICHT erwähnt.\n\n„Den habe ich heute Nachmittag gefunden. In einer kleinen Metallbox. Ich weiß nicht, welche Tür er öffnet. Ich werde ihn wieder dort hinlegen, wo ich ihn gefunden habe. Falls Rabensteins Aufzeichnungen stimmen, brauche ich ihn später.“\n\n„Die Box lag bei dem alten Baum. Nicht direkt am Stamm. Dort, wo die Wurzeln den Boden leicht anheben.“\n\nEin Geräusch. David schaut weg.\n\n„Rabenstein erwähnt danach nur noch einen Satz: Der Vorrat, der erst im Feuer verschwindet.“\n\nDavid: „Keine Ahnung, was das heißen soll.“\n\nVIDEO ENDE.","note":"Hört genau zu. Nicht jedes Detail wird ausgesprochen."},{"id":"q3","type":"text","kicker":"RABENSTEINS VERSTECKTER SCHLÜSSEL","title":"1. NOVEMBER - 00:32 UHR","archive":"00:32 · Die verschlossene Tür","text":"Zwischen den Aufzeichnungen findet David einen weiteren Eintrag des Grafen:\n\n„Ich trage den Schlüssel bei mir. Niemand außer mir darf wissen, welche Tür er öffnet.\n\nSollten sie das Haus durchsuchen, werden sie oben nichts finden. Ich brachte meine wichtigsten Aufzeichnungen in den unteren Teil des Hauses.\n\nDort gibt es eine Tür, die seit Jahren niemand außer mir geöffnet hat. Was dahinter liegt, darf nicht gefunden werden.“\n\nDavid schrieb darunter:\n\n„Wenn der Schlüssel wirklich noch existiert, müsste er genau dort hineinpassen.“","note":"Ihr besitzt inzwischen etwas, das zu diesem Eintrag passen könnte."},{"id":"q4","type":"video","videoKey":"storyVideo2Url","kicker":"DAVIDS AUFNAHME 02","title":"1. NOVEMBER - 00:49 UHR","archive":"00:49 · Video 2","fallback":"Die Kamera steht fest. David sitzt in dem dunklen Raum hinter der verschlossenen Tür. Vor ihm liegt der verbrannte Brief. Im Raum brennt genau EINE einzige Laterne bzw. Lampe.\n\nDAVID: „00:49 Uhr. Ich hab den Brief gefunden.“\n\nEr hält ihn hoch. „Das ist wirklich Rabensteins Handschrift.“\n\nDavid liest: „Wo Eisen und Holz von Händen berührt werden ...“\n\nEr denkt kurz nach. „Ich glaube, ich weiß, welchen Raum er meint.“\n\nEin Geräusch vor der Tür.\n\nDAVID: „Hallo?“\n\nStille. Wieder ein Geräusch.\n\n„Da draußen ist jemand.“\n\nDavid greift die einzige brennende Lampe. „Ich gehe nachsehen.“\n\nVIDEO ENDE.","note":"Der verbrannte Brief selbst enthält die eigentliche Spur zum nächsten Ort."},{"id":"q5","type":"text","kicker":"DIE FALSCHE TRUHE","title":"1. NOVEMBER - 01:07 UHR","archive":"01:07 · Die falsche Truhe","text":"Rabenstein begann, falsche Spuren zu legen.\n\n„Ich ließ eine zweite Truhe zurück, damit meine Verfolger glaubten, sie hätten meinen Schatz gefunden. Die falsche Truhe muss alt aussehen.\n\nIch schlug an jeder Ecke des Deckels einen eisernen Nagel ein. Niemand soll erkennen, dass sie erst heute gebaut wurde.“\n\nDanach brachte Leopold die echte Truhe weiter.\n\nSeine nächste Notiz lautet:\n\n„Ich ging dorthin, wo Dinge lagern, die im Haus keinen Platz mehr finden. Dort wartete ich, bis der Hof wieder still war.“","note":"Auch in diesem Eintrag steckt mehr als nur der nächste Ort."},{"id":"q6","type":"video","videoKey":"storyVideo3Url","kicker":"DAVIDS LETZTE AUFNAHME","title":"1. NOVEMBER - 01:26 UHR","archive":"01:26 · Letzte Aufnahme","fallback":"Kamera an. David steht beim Schuppen bzw. draußen davor und atmet schneller.\n\nDAVID: „01:26 Uhr. Ich hab jetzt mehrere Teile. Den Schlüssel. Rabensteins Zeichen. Die Aufzeichnungen. Ich glaube, die Truhe existiert wirklich.“\n\nEin Geräusch draußen. Weit hinten steht eine Person mit Laterne.\n\nDAVID: „Hallo? Wer ist da?“\n\nEine tiefe Stimme: „Was mir gehört ... bleibt hier.“\n\nDavid geht zurück. „Nein.“ Die Gestalt bewegt sich langsam.\n\nDavid rennt ein Stück, stoppt und hält einen Zettel hoch.\n\n„Ich hab noch einen letzten Eintrag gefunden. Aber ich verstehe ihn nicht.“\n\nEr liest: „Nicht die Reihenfolge der Funde.“\n\n„Mehr steht da nicht. Ich gehe zurück dorthin, wo ich angefangen habe.“\n\nSchritte hinter ihm. Das Video bricht ab.\n\nVIDEO ENDE.","note":"Davids Kamera wurde später gefunden. David selbst nicht. Kehrt ins Hauptquartier zurück."},{"id":"final","type":"ending","kicker":"SCHATZ GEFUNDEN","title":"DER LOOT DES GRAFEN WURDE GEFUNDEN","archive":"Finale · Schatz gefunden","text":"Nach über 200 Jahren wurde Rabensteins Truhe wieder entdeckt.\n\nAm Morgen des 1. November 1813 wurde Graf Leopold von Rabenstein als vermisst gemeldet. Sein Pferd befand sich noch auf dem Grundstück. Sein Mantel lag noch im Haus. Von Leopold selbst fehlte jede Spur.\n\nDER GRAF WURDE NIE WIEDER GEFUNDEN.\n\nDrei Tage später, am 4. November 1813, sah ein Bewohner nachts eine Laterne über das Grundstück wandern. Hinter ihr ging ein Mann. Der Mann sah aus wie Leopold von Rabenstein.\n\nDer Bewohner rief: „Herr Graf?“\n\nDer Mann blieb stehen. Er sah ihn an und sagte:\n\n„WO IST MEINE TRUHE?“\n\nDer Loot gehört jetzt euch.\n\nDavid Kern suchte fast 200 Jahre später nach genau dieser Truhe. Auch David wurde nach seiner letzten Aufnahme nie wieder gesehen.\n\nVIELLEICHT HÄTTE DIE TRUHE VERSTECKT BLEIBEN SOLLEN.\n\nWenn ihr heute Nacht eine Laterne auf dem Grundstück seht ...\n\nNEHMT DEN LOOT. UND GEHT.","note":"DER LOOT DES GRAFEN VON RABENSTEIN · ENDE"}];
+const STORY_CODE_RIDDLE={"kicker":"FINAL-RÄTSEL · HAUPTQUARTIER","title":"RABENSTEINS LETZTE REGEL","progress":"DIE VIER ZEICHEN","text":"Vier Zeichen bewahrten meinen Weg.\n\nDoch nicht die Reihenfolge, in der ihr sie gefunden habt, öffnet mein Versteck.\n\nEisen kam nach dem Licht.\n\nDas Licht kam nach dem, was Türen öffnet.\n\nUnd bevor irgendetwas geöffnet wurde, wachten die Wächter.","note":"Benutzt eure bereits gefundenen Hinweise und Videos. Die Lösung befindet sich seit Beginn im Hauptquartier."};
 let storyState=null,storyConnections=new Set();
 let hideState=null,hideConnections=new Set(),hideTickTimer=null,hideLastBroadcastSecond=-1;
 let hidePcMap=null,hidePcMarkers={},hidePcMapFitted=false;
@@ -2581,6 +2576,8 @@ function remoteStatus(){
     storyTotal:settings.mode==="halloween"&&storyState?(storyState.total||0):0,
     storyStatus:settings.mode==="halloween"&&storyState?(storyState.status||""):"",
     storyPhones:settings.mode==="halloween"?[...storyConnections].filter(c=>c.open).length:0,
+    storyPhase:settings.mode==="halloween"&&storyState?(storyState.phase||""):"",
+    storyArchive:settings.mode==="halloween"&&storyState?storyArchiveMeta():[],
     hideStatus:settings.mode==="halloween"?(hideState?.status||""):"",
     hideResult:settings.mode==="halloween"?(hideState?.result||""):"",
     hideSeeker:settings.mode==="halloween"?(hideState?.seeker||""):"",
@@ -2702,6 +2699,7 @@ function sanitizeRemoteSettings(s){
   if(/^([01]\d|2[0-3]):[0-5]\d$/.test(String(s.halloweenStoryStartTime||"")))out.halloweenStoryStartTime=String(s.halloweenStoryStartTime);
   out.hideSeekMinutes=clamp(s.hideSeekMinutes??out.hideSeekMinutes,0,180);
   out.hideSeekSeconds=clamp(s.hideSeekSeconds??out.hideSeekSeconds,0,59);
+  ["storyVideo1Url","storyVideo2Url","storyVideo3Url"].forEach(k=>{if(s[k]!=null)out[k]=String(s[k]||"").trim().slice(0,500)});
   if(["creepy","gameshow","funny","dramatic"].includes(s.soundPack))out.soundPack=s.soundPack;
   out.mysteryChance=pct(s.mysteryChance);
   ["noRepeatPlayer","noRepeatChallenge","doubleEnabled","tvMode","hostMode"].forEach(k=>{if(typeof s[k]==="boolean")out[k]=s[k]});
@@ -2793,6 +2791,10 @@ function runRemoteCommand(action,payload){
   }else if(action==="story_test"){
     halloweenStage="story";
     startHalloweenStory();
+  }else if(action==="story_view"){
+    showStoryPcFromRemote(payload);
+  }else if(action==="story_code"){
+    activateStoryCodeRiddle();
   }
   setTimeout(sendRemoteStatus,80);
 }

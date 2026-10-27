@@ -1,0 +1,48 @@
+DER LOOT DES GRAFEN VON RABENSTEIN - V20.0
+
+SCHLUESSELTRESOR-CODE: 3814
+
+START
+- Ausgangsgeschichte auf Leinwand starten.
+- Story-Handy ueber Verbindungs-QR koppeln.
+- QR 1 + Taschenlampe 1 persoenlich uebergeben: „Ab jetzt startet die Story.“
+
+QR-PLATZIERUNG
+1. QR 1: persoenlich uebergeben.
+2. QR 2: Terrasse / Sitzplatz.
+3. QR 3: Holzlager hinter dem dunkleren Holzstueck. Auf die Rueckseite des QR-Kaertchens kommen die drei Raben (Code-Hinweis = 3).
+4. QR 4: Rueckseite des verbrannten Briefes im verschlossenen Raum im unteren Stock.
+5. QR 5: Werkstatt, Innenseite der Schranktuer.
+6. QR 6: Schuppen.
+7. FINAL-QR: in die Schatzkiste.
+
+REIHENFOLGE / REQUISITEN
+- Nach QR 2 wird beim alten Baum eine kleine Box ausgegraben. Darin liegt der alte Schluessel.
+- Im VIDEO 1 muss auf dem Schluessel-Anhaenger fuer 2-3 Sekunden die Zahl 8 sichtbar sein. Spaeter am echten Schluessel die 8 am besten verschmutzen/verdecken, damit das Video als Archiv-Hinweis wichtig bleibt.
+- Der Schluessel oeffnet spaeter die Tuer im unteren Stock.
+- Im Raum liegt der verbrannte Brief. QR 4 kommt auf dessen Rueckseite.
+- Direkt danach fuehrt die Story in die Werkstatt. Roboter dort seitlich/versteckt aufstellen.
+- Taschenlampe 2 im Gewand des Roboters verstecken.
+- QR 5 sitzt innen an der Schranktuer.
+- QR 5 enthaelt den Code-Hinweis EISEN = 4 (vier Ecken / vier Naegel).
+- VIDEO 2: genau EINE Laterne/Lampe sichtbar = Code-Hinweis 1.
+- QR 3 Rueckseite: drei Raben = Code-Hinweis 3.
+- VIDEO 1 Schluesselanhaenger = Code-Hinweis 8.
+- Nach QR 6 zurueck ins Garage-HQ. Leinwand zeigt das Ordnungsraetsel.
+- Loesung: Waechter (3) -> Schluessel (8) -> Licht (1) -> Eisen (4) = 3814.
+- Im auffaelligen Schluesseltresor an der Garagenwand liegt die alte Grundstueckskarte mit einem X in der letzten Ecke.
+- Schatzkiste dort unter Laub / im hohen Gras verstecken. Inhalt: Suessigkeiten/Loot + FINAL-QR.
+
+VERBRANNTER BRIEF - TEXT
+Falls jemand diesen Brief findet, ist mein Versteck nicht mehr sicher.
+
+Ich habe heute Nacht etwas gesehen, das keiner meiner Maenner bemerkt hat. Jemand folgt meinem Weg. Jedes Mal, wenn ich einen Ort verlasse, hoere ich kurz danach Schritte hinter mir.
+
+Ich werde meine naechste Nachricht dort zuruecklassen, wo Eisen und Holz jeden Tag von Haenden beruehrt werden. Doch offen werde ich sie nicht liegen lassen.
+
+Was ein Arbeiter nicht mehr in der Hand benoetigt, verschwindet dort, wo auch die uebrigen Dinge den Blicken entzogen werden.
+
+Einer meiner Waechter steht dort noch immer. Er traegt das Licht. Doch die Nachricht traegt er nicht.
+
+VIDEO-LINKS
+In Einstellungen -> Halloween Story drei nicht gelistete YouTube-Links eintragen. Ohne Links zeigt die Seite automatisch die Drehskripte als Testinhalt.

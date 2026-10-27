@@ -1,159 +1,22 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Halloween Story V19.6</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#080606">
+<title>Der Loot des Grafen · Story-Handy V20.0</title>
 <style>
-:root{color-scheme:dark;--bg:#080606;--card:#15100d;--orange:#ff7a22;--muted:#aaa4a0;--green:#6ee7a0}
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at top,#241008 0,#090707 42%,#050505 100%);color:#fff;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
-.wrap{width:min(760px,94vw);margin:auto;padding:20px 0 40px}
-.brand{text-align:center;font-size:12px;font-weight:1000;letter-spacing:.18em;color:#ff9a4a;margin:6px 0 14px}
-.status{display:flex;justify-content:center;gap:8px;align-items:center;font-size:13px;color:var(--muted);font-weight:850;margin-bottom:12px}
-.dot{width:9px;height:9px;border-radius:50%;background:#e0a12e}.status.ok .dot{background:#45d77f}.status.bad .dot{background:#e55d5d}
-.card{border:1px solid rgba(255,130,35,.25);border-radius:24px;background:rgba(20,13,10,.94);padding:20px;box-shadow:0 25px 90px rgba(0,0,0,.55)}
-.kicker{font-size:12px;font-weight:1000;letter-spacing:.15em;color:#ff8c3d}
-h1{font-size:clamp(32px,8vw,56px);line-height:.97;margin:8px 0 12px}
-.progress{font-weight:950;margin-bottom:14px}
-.text{font-size:18px;line-height:1.5;font-weight:750}
-.clue{margin-top:16px;padding:14px;border-radius:16px;background:#1b1009;border:1px solid rgba(255,130,35,.22);font-size:17px;font-weight:900;line-height:1.45}
-.scanBtn{width:100%;min-height:62px;margin-top:16px;border:0;border-radius:18px;background:linear-gradient(180deg,#ff8a31,#e45f09);color:#fff;font-size:18px;font-weight:1000}
-.scanBtn:disabled{opacity:.45}
-#reader{display:none;margin-top:16px;border-radius:18px;overflow:hidden;background:#000}
-#reader.show{display:block}
-.msg{margin-top:12px;min-height:46px;padding:11px 12px;border-radius:13px;background:#101114;color:#d6d6d6;font-size:14px;font-weight:850}
-.msg.ok{border:1px solid rgba(67,217,127,.4);color:#9cf0bb}
-.msg.warn{border:1px solid rgba(255,178,55,.4);color:#ffd491}
-.msg.bad{border:1px solid rgba(235,90,90,.4);color:#ffabab}
-.finished{text-align:center;color:var(--green);font-weight:1000;font-size:22px;margin-top:18px}
-.note{text-align:center;color:#807b78;font-size:11px;margin-top:14px;line-height:1.4}
+:root{color-scheme:dark;--orange:#ff7a22;--muted:#aaa4a0;--green:#6ee7a0}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#281107 0,#090707 42%,#050505 100%);color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}.wrap{width:min(780px,94vw);margin:auto;padding:18px 0 42px}.brand{text-align:center;font-size:11px;font-weight:1000;letter-spacing:.16em;color:#ff9a4a;margin:5px 0 12px}.status{display:flex;justify-content:center;gap:8px;align-items:center;font-size:12px;color:var(--muted);font-weight:850;margin-bottom:12px}.dot{width:9px;height:9px;border-radius:50%;background:#e0a12e}.status.ok .dot{background:#45d77f}.status.bad .dot{background:#e55d5d}.card,.archive{border:1px solid rgba(255,130,35,.25);border-radius:23px;background:rgba(20,13,10,.95);padding:19px;box-shadow:0 25px 90px rgba(0,0,0,.55)}.kicker{font-size:11px;font-weight:1000;letter-spacing:.14em;color:#ff8c3d}h1{font-size:clamp(30px,8vw,52px);line-height:.98;margin:7px 0 10px}.progress{font-weight:950;margin-bottom:13px;font-size:13px}.text{font-size:17px;white-space:pre-line;line-height:1.5;font-weight:730}.note{margin-top:15px;padding:13px;border-radius:15px;background:#1b1009;border:1px solid rgba(255,130,35,.22);font-size:15px;font-weight:900;white-space:pre-line;line-height:1.42}.video{display:none;margin-top:14px;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.1)}.video.show{display:block}.video iframe{width:100%;height:100%;border:0}.video-empty{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;color:#c1c4ca;font-weight:900;line-height:1.4}.scanBtn{width:100%;min-height:60px;margin-top:16px;border:0;border-radius:17px;background:linear-gradient(180deg,#ff8a31,#e45f09);color:#fff;font-size:17px;font-weight:1000}.scanBtn:disabled{opacity:.4}#reader{display:none;margin-top:15px;border-radius:17px;overflow:hidden;background:#000}#reader.show{display:block}.msg{margin-top:11px;min-height:44px;padding:10px 11px;border-radius:12px;background:#101114;color:#d6d6d6;font-size:13px;font-weight:850}.msg.ok{border:1px solid rgba(67,217,127,.4);color:#9cf0bb}.msg.warn{border:1px solid rgba(255,178,55,.4);color:#ffd491}.msg.bad{border:1px solid rgba(235,90,90,.4);color:#ffabab}.archive{margin-top:14px}.archive h2{font-size:20px;margin:0 0 5px}.archive p{font-size:12px;color:var(--muted);font-weight:700;margin:0 0 10px}.archive-list{display:grid;gap:7px}.archive-btn{width:100%;text-align:left;border:1px solid rgba(255,255,255,.1);background:#14161b;color:#fff;border-radius:13px;padding:11px;font-weight:900}.archive-btn.video::before{content:"▶ ";color:#ff8a32}.archive-btn.active{border-color:#ff8a32;background:#25150c}.finished{text-align:center;color:var(--green);font-weight:1000;font-size:20px;margin-top:15px}.note-small{text-align:center;color:#807b78;font-size:10px;margin-top:12px;line-height:1.4}
 </style>
-<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-</head>
-<body>
-<div class="wrap">
-  <div class="brand">🎃 HALLOWEEN STORY · V19.6</div>
-  <div id="status" class="status"><span class="dot"></span><span>Verbinde mit der Story …</span></div>
-  <div class="card">
-    <div id="kicker" class="kicker">HALLOWEEN STORY</div>
-    <h1 id="title">BEREIT?</h1>
-    <div id="progress" class="progress">Kapitel 0 / 7</div>
-    <div id="text" class="text">Findet Hinweis 1 und scannt den QR-Code.</div>
-    <div id="clue" class="clue">🔎 Für den Test: Öffne am PC das QR-PDF und scanne Hinweis 1.</div>
-    <button id="scanBtn" class="scanBtn" type="button">📷 QR-HINWEIS SCANNEN</button>
-    <div id="reader"></div>
-    <div id="msg" class="msg">Noch kein Hinweis gescannt.</div>
-    <div id="finished" class="finished" style="display:none">🏆 STORY ABGESCHLOSSEN</div>
-  </div>
-  <div class="note">Kamera-Zugriff erlauben. Für den Test kannst du die QR-Codes direkt vom PC-Bildschirm scannen.</div>
-</div>
-
-<script>
-(function(){
-"use strict";
-const $=id=>document.getElementById(id);
-const qs=new URLSearchParams(location.search);
-const gamePeer=qs.get("peer"),token=qs.get("token");
-let peer=null,conn=null,state=null,scanner=null,scanning=false,lastScanAt=0;
-
-function setStatus(kind,text){
-  const el=$("status");el.classList.remove("ok","bad");
-  if(kind)el.classList.add(kind);
-  el.querySelector("span:last-child").textContent=text;
-}
-function setMsg(kind,text){
-  const el=$("msg");el.className="msg"+(kind?" "+kind:"");el.textContent=text;
-}
-function render(){
-  if(!state){
-    $("progress").textContent="Kapitel 0 / 7";
-    return;
-  }
-  $("progress").textContent=`Kapitel ${state.progress} / ${state.total}`;
-  if(state.chapter){
-    $("kicker").textContent=state.chapter.kicker||"HALLOWEEN STORY";
-    $("title").textContent=state.chapter.title||"KAPITEL";
-    $("text").textContent=state.chapter.text||"";
-    $("clue").textContent=`🔎 ${state.chapter.clue||""}`;
-  }else{
-    $("kicker").textContent="DIE ERSTE NACHRICHT";
-    $("title").textContent="HALLOWEEN STORY";
-    $("text").textContent="Findet Hinweis 1 und scannt den QR-Code.";
-    $("clue").textContent="🔎 Für den Test: Öffne am PC das QR-PDF und scanne Hinweis 1.";
-  }
-  const done=!!state.finished;
-  $("finished").style.display=done?"block":"none";
-  $("scanBtn").disabled=done;
-  if(done){
-    stopScanner();
-    setMsg("ok","Alle 7 Hinweise wurden gefunden.");
-  }
-}
-async function stopScanner(){
-  if(!scanner||!scanning)return;
-  try{await scanner.stop()}catch(e){}
-  try{await scanner.clear()}catch(e){}
-  scanning=false;
-  $("reader").classList.remove("show");
-  $("scanBtn").textContent="📷 QR-HINWEIS SCANNEN";
-}
-async function startScanner(){
-  if(scanning){await stopScanner();return}
-  if(typeof Html5Qrcode==="undefined"){setMsg("bad","QR-Scanner konnte nicht geladen werden.");return}
-  $("reader").classList.add("show");
-  $("scanBtn").textContent="✕ SCANNER SCHLIESSEN";
-  scanner=new Html5Qrcode("reader");
-  scanning=true;
-  try{
-    await scanner.start(
-      {facingMode:"environment"},
-      {fps:10,qrbox:{width:250,height:250},aspectRatio:1},
-      decoded=>{
-        const now=Date.now();
-        if(now-lastScanAt<1200)return;
-        lastScanAt=now;
-        if(conn&&conn.open)conn.send({type:"story_scan",code:String(decoded||"").trim()});
-      },
-      ()=>{}
-    );
-  }catch(e){
-    scanning=false;
-    $("reader").classList.remove("show");
-    $("scanBtn").textContent="📷 QR-HINWEIS SCANNEN";
-    setMsg("bad","Kamera konnte nicht geöffnet werden. Bitte Kamera-Berechtigung erlauben.");
-  }
-}
-function connect(){
-  if(!gamePeer||!token){setStatus("bad","Ungültiger Story-Link.");return}
-  if(typeof Peer==="undefined"){setStatus("bad","PeerJS konnte nicht geladen werden.");return}
-  try{
-    peer=new Peer(undefined,{debug:1});
-    peer.on("open",()=>{
-      conn=peer.connect(gamePeer,{reliable:true,metadata:{role:"story",token}});
-      conn.on("open",()=>{
-        setStatus("ok","Mit Halloween Story verbunden");
-        conn.send({type:"story_request"});
-      });
-      conn.on("data",m=>{
-        if(!m)return;
-        if(m.type==="story_state"){state=m.state;render()}
-        else if(m.type==="story_scan_result"){
-          const kind=m.result==="ok"?"ok":m.result==="early"?"warn":m.result==="already"?"warn":"bad";
-          setMsg(kind,m.message||"");
-          if(m.result==="ok")stopScanner();
-        }
-      });
-      conn.on("close",()=>setStatus("bad","Verbindung verloren"));
-      conn.on("error",()=>setStatus("bad","Verbindungsfehler"));
-    });
-    peer.on("error",()=>setStatus("bad","Story-Verbindung fehlgeschlagen"));
-  }catch(e){setStatus("bad","Story konnte nicht verbunden werden")}
-}
-$("scanBtn").onclick=startScanner;
-connect();
-})();
-</script>
-</body>
-</html>
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script><script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+</head><body><div class="wrap"><div class="brand">👑 DER LOOT DES GRAFEN · STORY-HANDY · V20.0</div><div id="status" class="status"><span class="dot"></span><span>Verbinde mit der Story …</span></div>
+<div class="card"><div id="kicker" class="kicker">DER LOOT DES GRAFEN</div><h1 id="title">VERBINDE …</h1><div id="progress" class="progress"></div><div id="text" class="text"></div><div id="video" class="video"></div><div id="note" class="note"></div><button id="scanBtn" class="scanBtn" type="button">📷 STORY-QR SCANNEN</button><div id="reader"></div><div id="msg" class="msg">Noch kein QR-Code gescannt.</div><div id="finished" class="finished" style="display:none">🏆 DER LOOT WURDE GEFUNDEN</div></div>
+<div class="archive"><h2>📚 Gefundene Hinweise</h2><p>Hier erscheinen ausschließlich Storyteile, die ihr bereits gefunden habt.</p><div id="archiveList" class="archive-list"></div></div><div class="note-small">Kamera-Zugriff erlauben. Bereits gefundene Videos und Hinweise können jederzeit erneut geöffnet werden.</div></div>
+<script>(function(){"use strict";const $=id=>document.getElementById(id),qs=new URLSearchParams(location.search),gamePeer=qs.get("peer"),token=qs.get("token");let peer=null,conn=null,state=null,scanner=null,scanning=false,lastScanAt=0,view={mode:"current",index:null};
+function setStatus(kind,text){const el=$("status");el.classList.remove("ok","bad");if(kind)el.classList.add(kind);el.querySelector("span:last-child").textContent=text}function setMsg(kind,text){const el=$("msg");el.className="msg"+(kind?" "+kind:"");el.textContent=text}
+function youtubeId(value){try{const u=new URL(String(value||"").trim()),h=u.hostname.toLowerCase().replace(/^www\./,"");if(h==="youtu.be")return u.pathname.split("/").filter(Boolean)[0]||"";if(h==="youtube.com"||h==="m.youtube.com"||h==="music.youtube.com"||h.endsWith(".youtube.com")){if(u.pathname==="/watch")return u.searchParams.get("v")||"";const p=u.pathname.split("/").filter(Boolean);if(["embed","shorts","live"].includes(p[0]))return p[1]||""}return ""}catch(e){return ""}}function embedUrl(v,auto=false){const id=youtubeId(v);return id?`https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0&playsinline=1${auto?"&autoplay=1":""}`:""}
+function selectedEntry(){if(!state)return null;if(view.mode==="intro")return {...state.intro,_progress:"AUSGANGSGESCHICHTE"};if(view.mode==="archive"){const e=(state.archive||[]).find(x=>x.index===view.index);if(e)return {...e,_progress:`ARCHIV · ${e.archive||e.title}`}}if(state.chapter)return {...state.chapter,_progress:state.chapter.type==="ending"?"FINALE":`GEFUNDENER HINWEIS ${Math.min(state.progress,6)} / 6`};return {...state.intro,_progress:"AUSGANGSGESCHICHTE"}}
+function renderEntry(entry,autoplay=false){if(!entry)return;$("kicker").textContent=entry.kicker||"DER LOOT DES GRAFEN";$("title").textContent=entry.title||"STORY";$("progress").textContent=entry._progress||"";const box=$("video");box.innerHTML="";box.classList.remove("show");const isVideo=entry.type==="video",url=isVideo?String(entry.videoUrl||""):"",emb=embedUrl(url,autoplay);if(isVideo){box.classList.add("show");if(emb)box.innerHTML=`<iframe src="${emb}" title="Story Video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;else box.innerHTML='<div class="video-empty">🎬 Noch kein YouTube-Link hinterlegt.<br>Für den Test wird das Videoskript angezeigt.</div>'}$("text").textContent=isVideo&&url?"":(isVideo?(entry.fallback||""):(entry.text||""));$("note").textContent=entry.note||"";$("note").style.display=entry.note?"block":"none"}
+function render(){if(!state)return;const entry=selectedEntry();renderEntry(entry,view.mode==="current"&&entry?.type==="video");$("finished").style.display=state.finished?"block":"none";$("scanBtn").disabled=!!state.finished;const root=$("archiveList");root.innerHTML="";const start=document.createElement("button");start.type="button";start.className="archive-btn"+(view.mode==="intro"?" active":"");start.textContent="START · Ausgangsgeschichte";start.onclick=()=>{view={mode:"intro",index:null};render()};root.appendChild(start);(state.archive||[]).forEach(e=>{const b=document.createElement("button");b.type="button";b.className=`archive-btn ${e.type==="video"?"video":""}${view.mode==="archive"&&view.index===e.index?" active":""}`;b.textContent=e.archive||e.title;b.onclick=()=>{view={mode:"archive",index:e.index};render()};root.appendChild(b)});if(state.phase==="code"&&view.mode==="current")setMsg("warn","Kehrt ins Hauptquartier zurück. Dort wartet Rabensteins letzte Regel.");if(state.finished){stopScanner();setMsg("ok","Schatz gefunden. Die Story ist abgeschlossen.")}}
+async function stopScanner(){if(!scanner||!scanning)return;try{await scanner.stop()}catch(e){}try{await scanner.clear()}catch(e){}scanning=false;$("reader").classList.remove("show");$("scanBtn").textContent="📷 STORY-QR SCANNEN"}
+async function startScanner(){if(scanning){await stopScanner();return}if(typeof Html5Qrcode==="undefined"){setMsg("bad","QR-Scanner konnte nicht geladen werden.");return}$("reader").classList.add("show");$("scanBtn").textContent="✕ SCANNER SCHLIESSEN";scanner=new Html5Qrcode("reader");scanning=true;try{await scanner.start({facingMode:"environment"},{fps:10,qrbox:{width:250,height:250},aspectRatio:1},decoded=>{const now=Date.now();if(now-lastScanAt<1200)return;lastScanAt=now;if(conn&&conn.open)conn.send({type:"story_scan",code:String(decoded||"").trim()})},()=>{})}catch(e){scanning=false;$("reader").classList.remove("show");$("scanBtn").textContent="📷 STORY-QR SCANNEN";setMsg("bad","Kamera konnte nicht geöffnet werden. Bitte Kamera-Berechtigung erlauben.")}}
+function connect(){if(!gamePeer||!token){setStatus("bad","Ungültiger Story-Link.");return}if(typeof Peer==="undefined"){setStatus("bad","PeerJS konnte nicht geladen werden.");return}try{peer=new Peer(undefined,{debug:1});peer.on("open",()=>{conn=peer.connect(gamePeer,{reliable:true,metadata:{role:"story",token}});conn.on("open",()=>{setStatus("ok","Mit der Rabenstein-Story verbunden");conn.send({type:"story_request"})});conn.on("data",m=>{if(!m)return;if(m.type==="story_state"){state=m.state;view={mode:"current",index:null};render()}else if(m.type==="story_scan_result"){const kind=m.result==="ok"?"ok":m.result==="early"||m.result==="already"?"warn":"bad";setMsg(kind,m.message||"");if(m.result==="ok")stopScanner()}});conn.on("close",()=>setStatus("bad","Verbindung verloren"));conn.on("error",()=>setStatus("bad","Verbindungsfehler"))});peer.on("error",()=>setStatus("bad","Story-Verbindung fehlgeschlagen"))}catch(e){setStatus("bad","Story konnte nicht verbunden werden")}}
+$("scanBtn").onclick=startScanner;connect()})();</script></body></html>

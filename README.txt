@@ -1,35 +1,32 @@
-CHALLENGE ROULETTE V19.6 – HALLOWEEN STORY QR TEST
+CHALLENGE ROULETTE V20.0 - DER LOOT DES GRAFEN VON RABENSTEIN
 
-NEU:
-- Halloween Story ist jetzt als kompletter QR-Test spielbar.
-- Beim Start von Event 2 erscheint auf der Leinwand ein "Story-Handy verbinden"-QR.
-- Dieser öffnet story.html und verbindet das Handy mit dem PC.
-- Auf dem Story-Handy gibt es "QR-HINWEIS SCANNEN".
-- Die Kamera scannt die ausgedruckten/versteckten QR-Hinweise.
-- 7 Hinweise sind in fester Reihenfolge eingebaut.
-- Richtiger nächster QR -> nächstes Story-Kapitel.
-- Zu früher QR -> "Dieser Hinweis ergibt noch keinen Sinn …"
-- Bereits gefundener QR -> entsprechender Hinweis.
-- Falscher/fremder QR -> wird abgelehnt.
-- Alle verbundenen Story-Handys und die Leinwand erhalten denselben Fortschritt.
-- Admin-Handy zeigt Kapitel X/7 und Zahl der verbundenen Story-Handys.
+NEU IN V20.0
+- Vollstaendige Rabenstein-Schatzsuche statt Teststory.
+- Ausgangsgeschichte auf Leinwand und Story-Handy.
+- 6 Story-QR-Codes + finaler QR in der Schatzkiste.
+- Story-Handy zeigt nur bereits gefundene Hinweise im Archiv.
+- Bereits gefundene Videos koennen beliebig oft erneut abgespielt werden.
+- Leinwand hat ebenfalls ein klickbares Archiv nur fuer gefundene Inhalte.
+- Admin-Handy kann gefundene Archiv-Inhalte auf der Leinwand oeffnen.
+- 3 frei eintragbare YouTube-Links fuer nicht gelistete Story-Videos.
+- Ohne Video-Link wird zum Test automatisch das Videoskript angezeigt.
+- Finales HQ-Code-Raetsel fuehrt auf 3814.
+- Schluesseltresor -> alte Karte mit X -> versteckte Schatzkiste -> FINAL-QR.
 
-TEST:
-SCHNELLTEST: Im Dropdown "Halloween Story" auf "STORY TEST DIREKT STARTEN" drücken. So musst du Hide & Seek nicht vorher durchspielen.
-
-ODER KOMPLETTER ABLAUF:
-1. Halloween Story nach Countdown 2 starten.
-2. Story-Verbindungs-QR auf der Leinwand mit dem Handy scannen.
-3. PDF "Halloween-Story-Test-QR-Codes.pdf" am PC öffnen.
-4. Auf dem Handy "QR-HINWEIS SCANNEN".
-5. QR 1, dann QR 2, ... bis QR 7 vom PC-Bildschirm scannen.
-
-UPLOAD AUF GITHUB:
+GITHUB UPLOAD
 index.html
 host.html
+story.html
 seeker.html
 hider.html
-story.html
 
-WICHTIG:
-Für den Kamera-Scanner muss die Website über HTTPS laufen. GitHub Pages passt.
+OPTIONAL
+STORY-ASSETS/alte-grundstueckskarte.png ist nur eine Kopie deiner alten Karte. Das X bitte selbst an der echten Schatzposition einzeichnen.
+
+DRUCK
+Die fertige QR-PDF liegt separat bei und zusaetzlich im Ordner PRINT, sobald sie erzeugt wurde.
+
+WICHTIG
+- Story-Seite braucht HTTPS fuer Kamera-Zugriff (GitHub Pages passt).
+- Schluesseltresor vor dem Spiel auf 3814 stellen.
+- Werkstatt/Wege fuer Taschenlampenbetrieb sicher und stolperfrei vorbereiten.
