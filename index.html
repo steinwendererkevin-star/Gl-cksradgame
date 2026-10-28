@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>Challenge Roulette V20.2 Rabenstein Story</title>
+<title>Challenge Roulette V20.4 Rabenstein Story</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *{box-sizing:border-box}
@@ -373,7 +373,46 @@ body.halloween-mode #hostEnd{display:none!important}
 .story-chapter-card{display:flex;flex-direction:column;overflow:hidden}.story-chapter-card .story-kicker{font-size:12px;font-weight:1000;letter-spacing:.15em;color:#ff8a32}.story-chapter-card h1{font-size:clamp(31px,4vw,58px);line-height:.97;margin:7px 0 10px}.story-progress{font-size:14px;font-weight:950;margin-bottom:12px;color:#d9dce4}.story-scroll{overflow:auto;padding-right:6px}.story-text{font-size:clamp(15px,1.55vw,21px);white-space:pre-line;line-height:1.47;font-weight:760}.story-clue{margin-top:15px;padding:13px;border-radius:15px;background:#17100c;border:1px solid rgba(255,132,23,.24);font-size:clamp(14px,1.3vw,18px);font-weight:900;white-space:pre-line;line-height:1.42}.story-video{margin-top:14px;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#050505;border:1px solid rgba(255,255,255,.1)}.story-video iframe{width:100%;height:100%;border:0}.story-video-empty{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;color:#b8bdc7;font-weight:900;line-height:1.4}
 .story-archive-card{overflow:auto}.story-archive-card h3{margin:0 0 6px;font-size:20px}.story-archive-help{font-size:11px;color:var(--muted);font-weight:750;line-height:1.35;margin-bottom:10px}.story-archive-list{display:grid;gap:7px}.story-archive-btn{width:100%;text-align:left;border:1px solid rgba(255,255,255,.1);background:#14161b;color:#fff;border-radius:13px;padding:10px 11px;font-weight:900;font-size:12px;cursor:pointer}.story-archive-btn:hover{border-color:rgba(255,132,23,.5)}.story-archive-btn.video::before{content:"▶ ";color:#ff8a32}.story-archive-btn.current{border-color:#ff8a32;background:#23150d}.story-current-btn{margin-bottom:9px;background:#352015}.story-finished{color:#8cf0b0}
 @media(max-width:1050px){.story-shell{grid-template-columns:260px 1fr}.story-archive-card{grid-column:1/-1;max-height:220px}.story-archive-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:760px){.story-shell{grid-template-columns:1fr;overflow:auto;max-height:94vh}.story-archive-card{grid-column:auto}.story-archive-list{grid-template-columns:1fr}.story-connect-qr{width:190px;height:190px}}
+.story-shell.story-waiting{grid-template-columns:minmax(320px,520px);justify-content:center}
+.story-shell.story-waiting .story-chapter-card,.story-shell.story-waiting .story-archive-card{display:none}
+.story-shell.story-started{grid-template-columns:minmax(520px,1fr) 320px}
+.story-shell.story-started .story-qr-card{display:none}
+.story-reconnect-btn{display:none;position:fixed;left:18px;bottom:18px;z-index:30;border:1px solid rgba(255,138,50,.55);background:rgba(18,12,10,.94);color:#fff;border-radius:15px;padding:11px 14px;font-weight:950;font-size:12px;box-shadow:0 14px 45px rgba(0,0,0,.45);cursor:pointer}
+.story-reconnect-btn.show{display:block}
+.story-reconnect-btn.warn{border-color:#ff9d39;animation:storyReconnectPulse 1.6s ease-in-out infinite}
+@keyframes storyReconnectPulse{0%,100%{box-shadow:0 14px 45px rgba(0,0,0,.45)}50%{box-shadow:0 0 0 5px rgba(255,132,35,.13),0 14px 45px rgba(0,0,0,.45)}}
+.story-reconnect-overlay{display:none;position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.78);backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:20px}
+.story-reconnect-overlay.open{display:flex}
+.story-reconnect-card{width:min(430px,94vw);background:#0d0b0b;border:1px solid rgba(255,132,35,.35);border-radius:25px;padding:22px;text-align:center;box-shadow:0 35px 120px rgba(0,0,0,.7)}
+.story-reconnect-card h2{margin:4px 0 8px;font-size:24px}.story-reconnect-card p{color:var(--muted);font-weight:750;font-size:13px;line-height:1.4}
+.story-reconnect-qr{width:230px;height:230px;margin:14px auto;background:#fff;border-radius:18px;padding:10px;display:flex;align-items:center;justify-content:center}
+.story-reconnect-close{width:100%;min-height:46px;margin-top:12px;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:#17191f;color:#fff;font-weight:950;cursor:pointer}
+.story-wait-hint{margin-top:12px;color:#d5c9bf;font-size:12px;font-weight:850;line-height:1.45}
+@media(max-width:1050px){.story-shell.story-started{grid-template-columns:1fr}.story-shell.story-started .story-archive-card{grid-column:auto;max-height:230px}}
+@media(max-width:760px){.story-shell{grid-template-columns:1fr;overflow:auto;max-height:94vh}.story-archive-card{grid-column:auto}.story-archive-list{grid-template-columns:1fr}.story-connect-qr{width:190px;height:190px}.story-shell.story-started{grid-template-columns:1fr}.story-reconnect-btn{left:10px;bottom:10px}.story-reconnect-qr{width:205px;height:205px}}
+.story-crest{display:inline-flex;align-items:center;gap:8px;margin:0 0 7px;padding:6px 10px;border:1px solid rgba(255,132,35,.25);border-radius:999px;background:rgba(32,18,11,.72);font-size:10px;font-weight:1000;letter-spacing:.13em;color:#d7b38f}
+.story-crest .birds{letter-spacing:-.18em;font-size:15px;filter:grayscale(1) brightness(.86)}
+.story-disconnect-notice{display:none;position:fixed;left:18px;bottom:68px;z-index:29;padding:8px 11px;border-radius:12px;border:1px solid rgba(255,103,76,.45);background:rgba(28,9,8,.94);color:#ffb3a6;font-weight:950;font-size:11px;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.story-disconnect-notice.show{display:block}
+.story-clue-toast{position:fixed;inset:0;z-index:85;display:none;align-items:center;justify-content:center;pointer-events:none;background:rgba(0,0,0,.28);backdrop-filter:blur(2px)}
+.story-clue-toast.show{display:flex}
+.story-clue-toast-card{min-width:min(560px,88vw);padding:28px 34px;border-radius:25px;border:1px solid rgba(255,132,35,.5);background:rgba(10,7,6,.97);text-align:center;box-shadow:0 35px 120px rgba(0,0,0,.75);animation:storyToastIn .35s ease-out}
+.story-clue-toast-card .crest{font-size:24px;margin-bottom:7px;filter:grayscale(1)}
+.story-clue-toast-card strong{display:block;font-size:clamp(25px,4vw,48px);letter-spacing:.06em}
+.story-clue-toast-card span{display:block;margin-top:8px;color:#cdbbac;font-weight:850}
+@keyframes storyToastIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+.story-cinematic{display:none;position:fixed;inset:0;z-index:100;background:#000;color:#fff;align-items:center;justify-content:center;text-align:center;padding:5vw}
+.story-cinematic.show{display:flex}
+.story-cinematic-inner{width:min(980px,92vw)}
+.story-cinematic-crest{font-size:34px;filter:grayscale(1);opacity:.88;margin-bottom:18px}
+.story-cinematic-kicker{font-size:13px;font-weight:1000;letter-spacing:.2em;color:#ff8a32;margin-bottom:12px}
+.story-cinematic-main{font-size:clamp(31px,5.2vw,72px);font-weight:1000;line-height:1.04;white-space:pre-line;text-shadow:0 4px 30px rgba(255,110,25,.14)}
+.story-cinematic-sub{font-size:clamp(15px,2vw,24px);line-height:1.45;color:#d6d0cb;font-weight:800;white-space:pre-line;margin-top:18px}
+.story-cinematic.black .story-cinematic-inner{opacity:0}
+.story-code-status{margin-top:12px;padding:10px;border-radius:12px;background:#150d09;border:1px solid rgba(255,132,35,.24);font-size:13px;font-weight:900;color:#dbb793;display:none}
+.story-code-status.show{display:block}
+@media(max-width:760px){.story-disconnect-notice{left:10px;bottom:61px}.story-clue-toast-card{padding:22px 18px}}
+
 
 </style>
 </head>
@@ -383,7 +422,7 @@ body.halloween-mode #hostEnd{display:none!important}
   <div class="online-card">
     <h1>📱 Handy verbinden</h1>
     <p>Scanne den QR-Code mit deinem Handy. Die Host-Steuerung läuft komplett im Browser.</p>
-    <div class="version-badge">CHALLENGE ROULETTE · V20.2</div>
+    <div class="version-badge">CHALLENGE ROULETTE · V20.4</div>
     <div id="onlineQr" class="online-qr"></div>
     <div id="onlineUrl" class="online-url">Sitzung wird erstellt …</div>
     <div id="onlineState" class="online-state"><span class="online-dot"></span><span>Verbindung wird vorbereitet …</span></div>
@@ -490,7 +529,7 @@ body.halloween-mode #hostEnd{display:none!important}
 <section id="halloweenStoryScreen" class="screen">
   <div class="noise"></div>
   <div class="theme-decor halloween-decor"><div class="bat a">🦇</div><div class="bat b">🦇</div><div class="pumpkin">🎃</div></div>
-  <div class="story-shell">
+  <div id="storyShell" class="story-shell story-waiting">
     <div class="story-qr-card">
       <div class="halloween-event-kicker">👑 DER LOOT DES GRAFEN</div>
       <h2>📱 Story-Handy verbinden</h2>
@@ -498,8 +537,10 @@ body.halloween-mode #hostEnd{display:none!important}
       <div id="storyConnectQr" class="story-connect-qr"></div>
       <div id="storyConnectUrl" class="story-connect-url">Story-Link wird erstellt …</div>
       <div id="storyPhoneCount" class="story-phone-count">📱 0 Story-Handys verbunden</div>
+      <div class="story-wait-hint">Die Ausgangsgeschichte erscheint erst, sobald das Story-Handy verbunden ist.</div>
     </div>
     <div class="story-chapter-card">
+      <div class="story-crest"><span class="birds">🐦‍⬛🐦‍⬛🐦‍⬛</span><span>WAPPEN DES HAUSES RABENSTEIN</span></div>
       <div id="storyPcKicker" class="story-kicker">DER LOOT DES GRAFEN VON RABENSTEIN</div>
       <h1 id="storyPcTitle">DIE GESCHICHTE DES GRUNDSTÜCKS</h1>
       <div id="storyPcProgress" class="story-progress">AUSGANGSGESCHICHTE</div>
@@ -507,6 +548,7 @@ body.halloween-mode #hostEnd{display:none!important}
         <div id="storyPcText" class="story-text"></div>
         <div id="storyPcVideo" class="story-video" style="display:none"></div>
         <div id="storyPcClue" class="story-clue"></div>
+        <div id="storyCodeStatus" class="story-code-status"></div>
       </div>
     </div>
     <div class="story-archive-card">
@@ -515,6 +557,33 @@ body.halloween-mode #hostEnd{display:none!important}
       <button id="storyPcCurrentBtn" class="story-archive-btn story-current-btn" type="button">● AKTUELLER STORY-STAND</button>
       <button id="storyPcCodeBtn" class="story-archive-btn" type="button" style="display:none;border-color:#ff8a32">🔐 FINAL-RÄTSEL ANZEIGEN</button>
       <div id="storyPcArchive" class="story-archive-list"></div>
+    </div>
+  </div>
+  <div id="storyDisconnectNotice" class="story-disconnect-notice">⚠ STORY-HANDY VERBINDUNG VERLOREN</div>
+  <button id="storyReconnectBtn" class="story-reconnect-btn" type="button">📱 STORY-HANDY NEU VERBINDEN</button>
+  <div id="storyClueToast" class="story-clue-toast">
+    <div class="story-clue-toast-card">
+      <div class="crest">🐦‍⬛ 🐦‍⬛ 🐦‍⬛</div>
+      <strong>NEUER HINWEIS GEFUNDEN</strong>
+      <span id="storyClueToastSub">Aufzeichnung wiederhergestellt</span>
+    </div>
+  </div>
+  <div id="storyCinematic" class="story-cinematic">
+    <div class="story-cinematic-inner">
+      <div class="story-cinematic-crest">🐦‍⬛ 🐦‍⬛ 🐦‍⬛</div>
+      <div id="storyCinematicKicker" class="story-cinematic-kicker">HAUS RABENSTEIN</div>
+      <div id="storyCinematicMain" class="story-cinematic-main"></div>
+      <div id="storyCinematicSub" class="story-cinematic-sub"></div>
+    </div>
+  </div>
+  <div id="storyReconnectOverlay" class="story-reconnect-overlay">
+    <div class="story-reconnect-card">
+      <div class="halloween-event-kicker">👑 DER LOOT DES GRAFEN</div>
+      <h2>Story-Handy verbinden</h2>
+      <p>Scanne den QR-Code erneut. Der aktuelle Story-Fortschritt und alle bereits gefundenen Hinweise bleiben erhalten.</p>
+      <div id="storyReconnectQr" class="story-reconnect-qr"></div>
+      <div id="storyReconnectUrl" class="story-connect-url"></div>
+      <button id="storyReconnectClose" class="story-reconnect-close" type="button">SCHLIESSEN</button>
     </div>
   </div>
 </section>
@@ -745,7 +814,7 @@ body.halloween-mode #hostEnd{display:none!important}
       </div>
 
       <div id="halloweenExtrasPanel" class="mode-extra-panel">
-        <div class="mode-extra-title">🎃 Halloween V20.2 – Events</div>
+        <div class="mode-extra-title">🎃 Halloween V20.4 – Events</div>
 
         <div id="hideSeekSettingsDropdown" class="dropdown-section open">
           <button id="hideSeekSettingsDropdownToggle" class="dropdown-toggle" type="button">
@@ -988,7 +1057,7 @@ let autoTimer=null,challengeTimerHandle=null,penaltyTimerHandle=null,wheelClickT
 let settingsAutoSaveTimer=null,settingsAutoSaveBusy=false;
 let autoEndsAt=0,challengeEndsAt=0,penaltyEndsAt=0;
 let autoRunning=false,challengeExpired=false,fakeUsed=false;
-let audioCtx=null,masterGain=null,ambienceNodes=[],ambienceTimer=null,audioUnlocked=false;
+let audioCtx=null,masterGain=null,ambienceNodes=[],ambienceTimer=null,audioUnlocked=false,storyAmbienceNodes=[],storyAmbienceTimer=null,storyToastTimer=null,storyFinaleTimers=[];
 
 function clone(x){return JSON.parse(JSON.stringify(x))}
 function clamp(n,a,b){n=Number(n);if(!Number.isFinite(n))return a;return Math.max(a,Math.min(b,n))}
@@ -1762,15 +1831,23 @@ function startCurrentHalloweenEvent(){
   else startHalloweenEvent();
 }
 function makeStoryState(){
-  return {progress:0,total:STORY_TEST_CODES.length,status:"playing",phase:"hunt",startedAt:Date.now(),lastCode:""};
+  return {progress:0,total:STORY_TEST_CODES.length,status:"waiting",phase:"hunt",started:false,startedAt:0,lastCode:"",codeSolved:false};
 }
 let storyPcView={mode:"current",index:null,autoplay:false};
 function storyUrl(){
   const u=new URL("story.html",location.href);u.search="";u.hash="";u.searchParams.set("peer",remotePeerId);u.searchParams.set("token",remoteToken);return u.toString();
 }
 function renderStoryConnectQr(){
-  if(!remotePeerId)return;const url=storyUrl();$("storyConnectUrl").textContent=url;$("storyConnectQr").innerHTML="";
-  if(typeof QRCode!=="undefined")new QRCode($("storyConnectQr"),{text:url,width:185,height:185,correctLevel:QRCode.CorrectLevel.M});
+  if(!remotePeerId)return;
+  const url=storyUrl();
+  $("storyConnectUrl").textContent=url;
+  $("storyReconnectUrl").textContent=url;
+  $("storyConnectQr").innerHTML="";
+  $("storyReconnectQr").innerHTML="";
+  if(typeof QRCode!=="undefined"){
+    new QRCode($("storyConnectQr"),{text:url,width:185,height:185,correctLevel:QRCode.CorrectLevel.M});
+    new QRCode($("storyReconnectQr"),{text:url,width:210,height:210,correctLevel:QRCode.CorrectLevel.M});
+  }
 }
 function youtubeId(value){
   try{const u=new URL(String(value||"").trim());const h=u.hostname.toLowerCase().replace(/^www\./,"");if(h==="youtu.be")return u.pathname.split("/").filter(Boolean)[0]||"";if(h==="youtube.com"||h==="m.youtube.com"||h==="music.youtube.com"||h.endsWith(".youtube.com")){if(u.pathname==="/watch")return u.searchParams.get("v")||"";const p=u.pathname.split("/").filter(Boolean);if(["embed","shorts","live"].includes(p[0]))return p[1]||"";}return ""}catch(e){return ""}
@@ -1785,11 +1862,13 @@ function storyArchiveFull(){
 }
 function storyArchiveMeta(){return storyArchiveFull().map(x=>({index:x.index,label:x.archive||x.title,type:x.type||"text"}))}
 function storyPcEntry(){
+  if(!storyState?.started)return {kicker:"STORY-HANDY",title:"WARTET AUF VERBINDUNG",text:"",note:"",_progress:"NOCH NICHT GESTARTET"};
   if(storyPcView.mode==="intro")return {...STORY_INTRO,_progress:"AUSGANGSGESCHICHTE"};
   if(storyPcView.mode==="archive"&&Number.isInteger(storyPcView.index)&&storyPcView.index>=0&&storyPcView.index<Math.min(storyState?.progress||0,STORY_CHAPTERS.length)){
     const e=storyDecorate(STORY_CHAPTERS[storyPcView.index],storyPcView.index);return {...e,_progress:`ARCHIV · ${e.archive||e.title}`};
   }
   if(storyState?.phase==="code"&&storyState.progress===6)return {...STORY_CODE_RIDDLE,_progress:STORY_CODE_RIDDLE.progress};
+  if(storyState?.phase==="map_unlocked"&&storyState.progress===6)return {kicker:"RABENSTEINS LETZTER WEG",title:"DIE KARTE WURDE FREIGEGEBEN",text:"Der richtige Code wurde erkannt.\n\nÖffnet jetzt den Schlüsseltresor im Hauptquartier mit demselben Code.\n\nDarin wartet Rabensteins alte Karte.",note:"Der letzte Weg führt euch danach zum markierten X.",_progress:"🔓 ZUGANG FREIGEGEBEN"};
   const c=currentStoryChapter();
   if(c)return {...c,_progress:c.type==="ending"?"FINALE":`GEFUNDENER HINWEIS ${Math.min(storyState.progress,6)} / 6`};
   return {...STORY_INTRO,_progress:"AUSGANGSGESCHICHTE"};
@@ -1803,25 +1882,137 @@ function renderStoryPcVideo(entry){
 }
 function updateStoryPc(){
   if(!storyState)return;
-  const connected=[...storyConnections].filter(c=>c.open).length;$("storyPhoneCount").textContent=`📱 ${connected} Story-Handy${connected===1?"":"s"} verbunden`;
+  const connected=[...storyConnections].filter(c=>c.open).length;
+  $("storyPhoneCount").textContent=`📱 ${connected} Story-Handy${connected===1?"":"s"} verbunden`;
+  const started=!!storyState.started;
+  $("storyShell").classList.toggle("story-waiting",!started);
+  $("storyShell").classList.toggle("story-started",started);
+  const reconnect=$("storyReconnectBtn");
+  reconnect.classList.toggle("show",started&&connected===0);
+  reconnect.classList.toggle("warn",started&&connected===0);
+  $("storyDisconnectNotice").classList.toggle("show",started&&connected===0);
+  if(connected>0)$("storyReconnectOverlay").classList.remove("open");
+  if(screens.halloweenStory.classList.contains("active"))syncAudio();
   const entry=storyPcEntry();$("storyPcKicker").textContent=entry.kicker||"DER LOOT DES GRAFEN";$("storyPcTitle").textContent=entry.title||"HALLOWEEN STORY";$("storyPcProgress").textContent=entry._progress||"";
   const hasVideo=entry.type==="video";const url=hasVideo?storyVideoUrl(entry):"";$("storyPcText").textContent=hasVideo&&url?"":(hasVideo?(entry.fallback||""):(entry.text||""));
   $("storyPcClue").textContent=entry.note||"";$("storyPcClue").style.display=entry.note?"block":"none";renderStoryPcVideo(entry);
+  const codeStatus=$("storyCodeStatus");
+  if(storyState.phase==="map_unlocked"){codeStatus.textContent="🔓 RABENSTEINS LETZTER WEG IST FREIGEGEBEN";codeStatus.classList.add("show")}
+  else{codeStatus.textContent="";codeStatus.classList.remove("show")}
   const root=$("storyPcArchive");root.innerHTML="";
-  const introBtn=document.createElement("button");introBtn.type="button";introBtn.className="story-archive-btn"+(storyPcView.mode==="intro"?" current":"");introBtn.textContent="START · Ausgangsgeschichte";introBtn.onclick=()=>{storyPcView={mode:"intro",index:null,autoplay:false};updateStoryPc()};root.appendChild(introBtn);
+  if(storyState.started){
+    const introBtn=document.createElement("button");introBtn.type="button";introBtn.className="story-archive-btn"+(storyPcView.mode==="intro"?" current":"");introBtn.textContent="START · Ausgangsgeschichte";introBtn.onclick=()=>{storyPcView={mode:"intro",index:null,autoplay:false};updateStoryPc()};root.appendChild(introBtn);
+  }
   storyArchiveFull().forEach(e=>{const b=document.createElement("button");b.type="button";b.className=`story-archive-btn ${e.type==="video"?"video":""}${storyPcView.mode==="archive"&&storyPcView.index===e.index?" current":""}`;b.textContent=e.archive||e.title;b.onclick=()=>{storyPcView={mode:"archive",index:e.index,autoplay:e.type==="video"};updateStoryPc()};root.appendChild(b)});
   $("storyPcCurrentBtn").onclick=()=>{storyPcView={mode:"current",index:null,autoplay:false};updateStoryPc()};
   $("storyPcCodeBtn").style.display=storyState.phase==="return_hq"?"block":"none";
   $("storyPcCodeBtn").onclick=activateStoryCodeRiddle;
 }
 function publicStoryState(){
-  if(!storyState)return null;return {progress:storyState.progress,total:storyState.total,status:storyState.status,phase:storyState.phase,intro:STORY_INTRO,chapter:currentStoryChapter(),archive:storyArchiveFull(),finished:storyState.status==="finished"};
+  if(!storyState)return null;return {progress:storyState.progress,total:storyState.total,status:storyState.status,phase:storyState.phase,started:!!storyState.started,codeSolved:!!storyState.codeSolved,intro:STORY_INTRO,chapter:currentStoryChapter(),archive:storyArchiveFull(),finished:storyState.status==="finished"};
 }
 function sendStoryState(conn){if(conn&&conn.open){try{conn.send({type:"story_state",state:publicStoryState()})}catch(e){}}}
 function broadcastStoryState(){storyPcView={mode:"current",index:null,autoplay:true};updateStoryPc();storyConnections.forEach(sendStoryState);setTimeout(sendRemoteStatus,30)}
 function activateStoryCodeRiddle(){if(!storyState||storyState.progress!==6)return;storyState.phase="code";storyState.status="code";storyPcView={mode:"current",index:null,autoplay:false};updateStoryPc();storyConnections.forEach(sendStoryState);setTimeout(sendRemoteStatus,30)}
+function showStoryClueToast(index){
+  const el=$("storyClueToast"),sub=$("storyClueToastSub");
+  if(!el)return;
+  if(storyToastTimer)clearTimeout(storyToastTimer);
+  sub.textContent=index===5?"LETZTE AUFZEICHNUNG WIEDERHERGESTELLT":`AUFZEICHNUNG ${index+1} WIEDERHERGESTELLT`;
+  el.classList.add("show");
+  storyClueSound();
+  storyToastTimer=setTimeout(()=>el.classList.remove("show"),2400);
+}
+function storyClueSound(){
+  if(!ensureAudio())return;
+  tone(98,.42,.055,"sine");
+  tone(147,.58,.035,"triangle",.10);
+  tone(220,.75,.025,"sine",.22);
+}
+function storyLockSound(){
+  if(!ensureAudio())return;
+  noise(.10,.06);tone(120,.18,.08,"square");
+  setTimeout(()=>{noise(.08,.045);tone(92,.30,.07,"sine")},240);
+  setTimeout(()=>{tone(330,.55,.045,"triangle");tone(495,.70,.028,"sine",.08)},520);
+}
+function runStoryMapUnlock(){
+  const ov=$("storyCinematic");
+  if(!ov)return;
+  storyFinaleTimers.forEach(clearTimeout);storyFinaleTimers=[];
+  ov.classList.remove("black");ov.classList.add("show");
+  $("storyCinematicKicker").textContent="🔓 HAUS RABENSTEIN";
+  $("storyCinematicMain").textContent="RABENSTEINS LETZTER WEG\nWURDE FREIGEGEBEN";
+  $("storyCinematicSub").textContent="Öffnet den Schlüsseltresor im Hauptquartier.\nDie Karte wartet darin.";
+  storyLockSound();
+  storyFinaleTimers.push(setTimeout(()=>ov.classList.remove("show"),5200));
+}
+function storyFootstep(delay=0){
+  if(!ensureAudio())return;
+  const t=audioCtx.currentTime+delay;
+  const sr=audioCtx.sampleRate,b=audioCtx.createBuffer(1,Math.floor(sr*.22),sr),a=b.getChannelData(0);
+  for(let i=0;i<a.length;i++){const x=i/a.length;a[i]=(Math.random()*2-1)*Math.pow(1-x,3)}
+  const src=audioCtx.createBufferSource(),filter=audioCtx.createBiquadFilter(),g=audioCtx.createGain();
+  src.buffer=b;filter.type="lowpass";filter.frequency.value=430;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.12,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+.20);
+  src.connect(filter);filter.connect(g);g.connect(masterGain);src.start(t);src.stop(t+.23);
+  tone(58,.16,.09,"sine",delay);
+}
+function runStoryFinaleSequence(){
+  const ov=$("storyCinematic");
+  if(!ov)return;
+  storyFinaleTimers.forEach(clearTimeout);storyFinaleTimers=[];
+  ov.classList.remove("black");ov.classList.add("show");
+  const setScene=(k,m,sub="")=>{$("storyCinematicKicker").textContent=k;$("storyCinematicMain").textContent=m;$("storyCinematicSub").textContent=sub};
+  setScene("🐦‍⬛ 🐦‍⬛ 🐦‍⬛","DER LOOT DES GRAFEN\nWURDE GEFUNDEN","Nach über 200 Jahren wurde Rabensteins Truhe wiederentdeckt.");
+  storyLockSound();
+  storyFinaleTimers.push(setTimeout(()=>setScene("1. NOVEMBER 1813","DER GRAF WURDE NIE\nWIEDER GEFUNDEN","Sein Pferd blieb zurück. Sein Mantel lag noch im Haus."),5200));
+  storyFinaleTimers.push(setTimeout(()=>setScene("4. NOVEMBER 1813","„WO IST MEINE TRUHE?“","Ein Bewohner sah nachts einen Mann mit einer Laterne über das Grundstück gehen."),10500));
+  storyFinaleTimers.push(setTimeout(()=>setScene("DER LOOT GEHÖRT JETZT EUCH","VIELLEICHT HÄTTE DIE TRUHE\nVERSTECKT BLEIBEN SOLLEN.","David Kern wurde nach seiner letzten Aufnahme ebenfalls nie wieder gesehen."),16000));
+  storyFinaleTimers.push(setTimeout(()=>setScene("LETZTE WARNUNG","NEHMT DEN LOOT.\nUND GEHT.","Wenn ihr heute Nacht eine Laterne auf dem Grundstück seht …"),22000));
+  storyFinaleTimers.push(setTimeout(()=>{
+    setScene("","","");
+    storyFootstep(0);storyFootstep(1.25);storyFootstep(2.5);
+  },27500));
+  storyFinaleTimers.push(setTimeout(()=>{ov.classList.add("black")},31200));
+}
+function unlockStoryMap(sourceConn=null){
+  if(!storyState||storyState.progress!==6)return false;
+  storyState.codeSolved=true;
+  storyState.phase="map_unlocked";
+  storyState.status="playing";
+  storyPcView={mode:"current",index:null,autoplay:false};
+  updateStoryPc();
+  storyConnections.forEach(sendStoryState);
+  runStoryMapUnlock();
+  if(sourceConn&&sourceConn.open){try{sourceConn.send({type:"story_code_result",ok:true,message:"Rabensteins letzter Weg wurde freigegeben. Öffnet den Schlüsseltresor mit demselben Code."})}catch(e){}}
+  setTimeout(sendRemoteStatus,30);
+  return true;
+}
+function handleStoryCodeAttempt(conn,value){
+  if(!storyState||storyState.phase!=="code"||storyState.progress!==6)return;
+  const code=String(value||"").replace(/\D/g,"").slice(0,4);
+  if(code!=="3814"){
+    try{conn.send({type:"story_code_result",ok:false,message:"Rabenstein verweigert den Zugang."})}catch(e){}
+    tone(72,.35,.06,"sawtooth");noise(.16,.035);
+    return;
+  }
+  unlockStoryMap(conn);
+}
+function forceStoryNext(){
+  if(!storyState||!storyState.started||storyState.status==="finished")return;
+  if(storyState.progress<6){
+    const idx=storyState.progress;
+    storyState.progress=idx+1;
+    storyState.lastCode="ADMIN-NOTFALL";
+    if(idx===5){storyState.phase="return_hq";storyState.status="playing"}
+    showStoryClueToast(idx);
+    broadcastStoryState();
+    return;
+  }
+  if(storyState.phase==="return_hq"){activateStoryCodeRiddle();return}
+  if(storyState.phase==="code"){unlockStoryMap(null);return}
+}
 function handleStoryScan(conn,raw){
-  if(!storyState||storyState.status==="finished")return;const code=String(raw||"").trim();const idx=STORY_TEST_CODES.indexOf(code);
+  if(!storyState||!storyState.started||storyState.status==="finished")return;const code=String(raw||"").trim();const idx=STORY_TEST_CODES.indexOf(code);
   if(idx<0){try{conn.send({type:"story_scan_result",result:"invalid",message:"Dieser QR-Code gehört nicht zum Loot des Grafen."})}catch(e){};return}
   if(idx<storyState.progress){try{conn.send({type:"story_scan_result",result:"already",message:"Diesen Hinweis habt ihr bereits gefunden. Er ist im Archiv."})}catch(e){};return}
   if(idx>storyState.progress){try{conn.send({type:"story_scan_result",result:"early",message:"Dieser Teil gehört noch nicht zu eurem aktuellen Weg."})}catch(e){};return}
@@ -1829,12 +2020,29 @@ function handleStoryScan(conn,raw){
   if(idx===5){storyState.phase="return_hq";storyState.status="playing"}
   if(idx===6){storyState.phase="finished";storyState.status="finished"}
   try{conn.send({type:"story_scan_result",result:"ok",message:idx===6?"Schatz gefunden!":`Hinweis ${idx+1} freigeschaltet.`})}catch(e){}
+  if(idx<6)showStoryClueToast(idx);
   broadcastStoryState();
+  if(idx===6)setTimeout(runStoryFinaleSequence,350);
 }
 function acceptStoryRemote(conn){
-  conn._storyRole="story";storyConnections.add(conn);conn.on("open",()=>{sendStoryState(conn);broadcastStoryState()});
-  conn.on("data",msg=>{if(!msg)return;if(msg.type==="story_request"){sendStoryState(conn);return}if(msg.type==="story_scan"){handleStoryScan(conn,msg.code);return}});
-  conn.on("close",()=>{storyConnections.delete(conn);updateStoryPc();setTimeout(sendRemoteStatus,30)});conn.on("error",()=>{});
+  conn._storyRole="story";
+  storyConnections.add(conn);
+  conn.on("open",()=>{
+    if(storyState&&!storyState.started){
+      storyState.started=true;
+      storyState.status="playing";
+      storyState.startedAt=Date.now();
+      storyPcView={mode:"current",index:null,autoplay:false};
+    }
+    sendStoryState(conn);
+    updateStoryPc();
+    storyConnections.forEach(sendStoryState);
+    syncAudio();
+    setTimeout(sendRemoteStatus,30);
+  });
+  conn.on("data",msg=>{if(!msg)return;if(msg.type==="story_request"){sendStoryState(conn);return}if(msg.type==="story_scan"){handleStoryScan(conn,msg.code);return}if(msg.type==="story_code_attempt"){handleStoryCodeAttempt(conn,msg.code);return}});
+  conn.on("close",()=>{storyConnections.delete(conn);updateStoryPc();setTimeout(sendRemoteStatus,30)});
+  conn.on("error",()=>{});
 }
 function showStoryPcFromRemote(payload){
   if(!storyState)return;
@@ -1843,10 +2051,20 @@ function showStoryPcFromRemote(payload){
   else{const i=Number(payload);if(Number.isInteger(i)&&i>=0&&i<Math.min(storyState.progress,STORY_CHAPTERS.length))storyPcView={mode:"archive",index:i,autoplay:STORY_CHAPTERS[i]?.type==="video"}}
   updateStoryPc();
 }
+function openStoryReconnect(){
+  renderStoryConnectQr();
+  $("storyReconnectOverlay").classList.add("open");
+}
+function closeStoryReconnect(){
+  $("storyReconnectOverlay").classList.remove("open");
+}
+$("storyReconnectBtn").onclick=openStoryReconnect;
+$("storyReconnectClose").onclick=closeStoryReconnect;
+$("storyReconnectOverlay").onclick=e=>{if(e.target===$("storyReconnectOverlay"))closeStoryReconnect()};
 function startStoryDirectTest(){halloweenStage="story";$("settingsModal").classList.remove("open");startHalloweenStory()}
 function startHalloweenStory(){
   if(!remotePeerId){alert("Die Online-Sitzung ist noch nicht bereit. Bitte kurz den QR-/Host-Status prüfen.");return}
-  clearAuto();stopAmbience();setReady(false);storyConnections.forEach(c=>{try{c.close()}catch(e){}});storyConnections.clear();storyState=makeStoryState();storyPcView={mode:"current",index:null,autoplay:false};show("halloweenStory");renderStoryConnectQr();updateStoryPc();setTimeout(sendRemoteStatus,80);
+  clearAuto();stopAmbience();stopStoryHqAmbience();setReady(false);storyFinaleTimers.forEach(clearTimeout);storyFinaleTimers=[];$("storyCinematic").classList.remove("show","black");$("storyClueToast").classList.remove("show");storyConnections.forEach(c=>{try{c.close()}catch(e){}});storyConnections.clear();storyState=makeStoryState();storyPcView={mode:"current",index:null,autoplay:false};$("storyReconnectOverlay").classList.remove("open");show("halloweenStory");renderStoryConnectQr();updateStoryPc();setTimeout(sendRemoteStatus,80);
 }
 function startHalloweenEvent(){
   if(activePlayers().length<2){
@@ -2218,7 +2436,35 @@ function startAmbience(){
   ambienceTimer=setInterval(()=>{if(settings.mode==="halloween"&&screens.start.classList.contains("active")&&autoRunning)tone([146,155,174,196][rand(4)],1.7,.016*mv,"sine")},4300)
 }
 function stopAmbience(){if(ambienceTimer){clearInterval(ambienceTimer);ambienceTimer=null}ambienceNodes.forEach(n=>{try{n.stop()}catch(e){}try{n.disconnect()}catch(e){}});ambienceNodes=[]}
-function syncAudio(){if(settings.mode==="halloween"&&screens.start.classList.contains("active")&&autoRunning)startAmbience();else stopAmbience()}
+function startStoryHqAmbience(){
+  if(settings.mode!=="halloween"||!storyState?.started||!screens.halloweenStory.classList.contains("active")||!ensureAudio()||storyAmbienceNodes.length)return;
+  const mv=Math.max(.18,vol("musicVolume"));
+  const sr=audioCtx.sampleRate,len=sr*4,b=audioCtx.createBuffer(1,len,sr),a=b.getChannelData(0);
+  let last=0;
+  for(let i=0;i<len;i++){last=.985*last+(Math.random()*2-1)*.035;a[i]=last}
+  const src=audioCtx.createBufferSource(),filter=audioCtx.createBiquadFilter(),g=audioCtx.createGain();
+  src.buffer=b;src.loop=true;filter.type="lowpass";filter.frequency.value=520;g.gain.value=.025*mv;
+  src.connect(filter);filter.connect(g);g.connect(masterGain);src.start();
+  const hum=audioCtx.createOscillator(),hg=audioCtx.createGain();hum.type="sine";hum.frequency.value=43;hg.gain.value=.012*mv;hum.connect(hg);hg.connect(masterGain);hum.start();
+  storyAmbienceNodes=[src,hum,g,hg,filter];
+  storyAmbienceTimer=setInterval(()=>{
+    if(!storyState?.started||!screens.halloweenStory.classList.contains("active"))return;
+    const r=rand(6);
+    if(r<=2){noise(.07,.018*mv);tone(72,.16,.025*mv,"sine",.03)}
+    else if(r===3){tone(196,1.5,.009*mv,"sine");tone(293,1.9,.006*mv,"sine",.25)}
+  },6500);
+}
+function stopStoryHqAmbience(){
+  if(storyAmbienceTimer){clearInterval(storyAmbienceTimer);storyAmbienceTimer=null}
+  storyAmbienceNodes.forEach(n=>{try{n.stop()}catch(e){}try{n.disconnect()}catch(e){}});
+  storyAmbienceNodes=[];
+}
+function syncAudio(){
+  const countdown=settings.mode==="halloween"&&screens.start.classList.contains("active")&&autoRunning;
+  const story=settings.mode==="halloween"&&screens.halloweenStory.classList.contains("active")&&!!storyState?.started&&storyState.status!=="finished";
+  if(countdown){stopStoryHqAmbience();startAmbience()}
+  else{stopAmbience();if(story)startStoryHqAmbience();else stopStoryHqAmbience()}
+}
 
 function spawnConfetti(count=100){
   const overlay=$("birthdayNameFx");
@@ -2576,6 +2822,7 @@ function remoteStatus(){
     storyStatus:settings.mode==="halloween"&&storyState?(storyState.status||""):"",
     storyPhones:settings.mode==="halloween"?[...storyConnections].filter(c=>c.open).length:0,
     storyPhase:settings.mode==="halloween"&&storyState?(storyState.phase||""):"",
+    storyCodeSolved:settings.mode==="halloween"&&storyState?!!storyState.codeSolved:false,
     storyArchive:settings.mode==="halloween"&&storyState?storyArchiveMeta():[],
     hideStatus:settings.mode==="halloween"?(hideState?.status||""):"",
     hideResult:settings.mode==="halloween"?(hideState?.result||""):"",
@@ -2794,6 +3041,8 @@ function runRemoteCommand(action,payload){
     showStoryPcFromRemote(payload);
   }else if(action==="story_code"){
     activateStoryCodeRiddle();
+  }else if(action==="story_force_next"){
+    forceStoryNext();
   }
   setTimeout(sendRemoteStatus,80);
 }
@@ -2859,7 +3108,7 @@ $("settingsClose").onclick=()=>{autoSaveSettingsNow();$("settingsModal").classLi
 $("hostBtn").onclick=()=>$("hostModal").classList.add("open");
 $("hostClose").onclick=()=>$("hostModal").classList.remove("open");
 $("hostShowQr").onclick=showConnectOverlayAgain;
-$("soundBtn").onclick=()=>{ensureAudio();if(settings.mode==="halloween"&&screens.start.classList.contains("active")&&autoRunning)startAmbience()};
+$("soundBtn").onclick=()=>{ensureAudio();syncAudio()};
 $("addPlayerBtn").onclick=()=>{captureEditors();settings.players.push({name:"Neuer Spieler",active:true,birthday:false});renderPlayers()};
 $("addChallengeBtn").onclick=()=>{captureEditors();settings.challenges.push({text:"Neue Challenge",seconds:60,difficulty:"mittel",chance:0});renderChallenges()};
 $("addPenaltyBtn").onclick=()=>{captureEditors();settings.penalties.push({text:"Neue Strafe",seconds:30,chance:0});renderPenalties()};

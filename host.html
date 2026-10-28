@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080a0f">
-<title>Challenge Roulette Host V20.2 Rabenstein Story</title>
+<title>Challenge Roulette Host V20.4 Rabenstein Story</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#080a0f;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -119,7 +119,7 @@ body.halloween-host #hostHideStatusCard{display:block}
 #hostHideStatusCard{display:none;border:1px solid rgba(255,130,35,.25);border-radius:20px;background:#130b07;padding:14px;margin:12px 0}
 #hostHideStatusCard h3{margin:0 0 8px;font-size:19px}
 #hostHidePeople{display:grid;gap:7px}
-#hostStoryArchive{display:none;margin-top:12px;border-top:1px solid rgba(255,255,255,.1);padding-top:10px}#hostStoryArchive.show{display:block}#hostStoryArchive h4{margin:0 0 8px;font-size:13px;color:#c8cbd3}#hostStoryArchiveList{display:grid;gap:7px}.host-story-btn{min-height:43px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:#18131a;color:#fff;font-weight:900;text-align:left;padding:9px 10px}.host-story-btn.video::before{content:"▶ ";color:#ff8a32}
+#hostStoryArchive{display:none;margin-top:12px;border-top:1px solid rgba(255,255,255,.1);padding-top:10px}#hostStoryArchive.show{display:block}#hostStoryArchive h4{margin:0 0 8px;font-size:13px;color:#c8cbd3}#hostStoryArchiveList{display:grid;gap:7px}.host-story-btn{min-height:43px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:#18131a;color:#fff;font-weight:900;text-align:left;padding:9px 10px}.host-story-btn.video::before{content:"▶ ";color:#ff8a32}.host-story-emergency{border-color:rgba(255,80,80,.5)!important;background:#2a1010!important;color:#ffc2c2!important}
 .host-hide-person{display:flex;justify-content:space-between;gap:8px;padding:9px 11px;border-radius:12px;background:#151518;border:1px solid rgba(255,255,255,.08);font-size:13px;font-weight:900}
 .host-hide-person.ready{border-color:#41cc7d;color:#98efb9}
 .host-hide-person.found{opacity:.55;text-decoration:line-through}
@@ -262,7 +262,7 @@ body.halloween-host .player-row .remove{grid-column:3}
       </div>
 
       <div id="halloweenExtrasPanel" class="mode-extra-panel">
-        <div class="mode-extra-title">🎃 Halloween V20.2 – Events</div>
+        <div class="mode-extra-title">🎃 Halloween V20.4 – Events</div>
 
         <div id="hideSeekSettingsDropdown" class="dropdown-section open">
           <button id="hideSeekSettingsDropdownToggle" class="dropdown-toggle" type="button">
@@ -443,7 +443,7 @@ function render(s){
     }else{
       if(s.screen==="start")summary=s.ready?"📖 Halloween Story ist startbereit.":"⏱️ Countdown 2 läuft.";
       else if(s.screen==="halloweenStory"){
-        summary=s.storyPhase==="code"?`🔐 Final-Rätsel im HQ · 📱 ${s.storyPhones||0} verbunden`:s.storyPhase==="return_hq"?`🏠 Gruppe soll ins HQ zurück · 📱 ${s.storyPhones||0} verbunden`:`📖 Story läuft · ${s.storyProgress||0}/${s.storyTotal||7} · 📱 ${s.storyPhones||0} verbunden`;
+        summary=s.storyPhase==="map_unlocked"?`🔓 Karte freigegeben · Schlüsseltresor öffnen · 📱 ${s.storyPhones||0} verbunden`:s.storyPhase==="code"?`🔐 Final-Rätsel im HQ · 📱 ${s.storyPhones||0} verbunden`:s.storyPhase==="return_hq"?`🏠 Gruppe soll ins HQ zurück · 📱 ${s.storyPhones||0} verbunden`:`📖 Story läuft · ${s.storyProgress||0}/${s.storyTotal||7} · 📱 ${s.storyPhones||0} verbunden`;
         if(s.storyStatus==="finished")summary="🏆 Der Loot des Grafen wurde gefunden.";
       }
     }
@@ -456,9 +456,10 @@ function render(s){
     storyArchive.classList.toggle("show",stage==="story"&&s.screen==="halloweenStory");
     if(stage==="story"&&s.screen==="halloweenStory"){
       const items=s.storyArchive||[];
-      storyList.innerHTML=`<button class="host-story-btn" data-view="current">● Aktueller Story-Stand</button>${s.storyPhase==="return_hq"?`<button class="host-story-btn" data-code="1" style="border-color:#ff8a32">🔐 FINAL-RÄTSEL ANZEIGEN</button>`:""}<button class="host-story-btn" data-view="intro">START · Ausgangsgeschichte</button>`+items.map(x=>`<button class="host-story-btn ${x.type==="video"?"video":""}" data-view="${x.index}">${esc(x.label)}</button>`).join("");
+      storyList.innerHTML=`<button class="host-story-btn" data-view="current">● Aktueller Story-Stand</button>${s.storyPhase==="return_hq"?`<button class="host-story-btn" data-code="1" style="border-color:#ff8a32">🔐 FINAL-RÄTSEL ANZEIGEN</button>`:""}<button class="host-story-btn host-story-emergency" data-emergency="1">🚨 NOTFALL · NÄCHSTEN SCHRITT FREIGEBEN</button><button class="host-story-btn" data-view="intro">START · Ausgangsgeschichte</button>`+items.map(x=>`<button class="host-story-btn ${x.type==="video"?"video":""}" data-view="${x.index}">${esc(x.label)}</button>`).join("");
       storyList.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>sendCommand("story_view",b.dataset.view));
       storyList.querySelectorAll("[data-code]").forEach(b=>b.onclick=()=>sendCommand("story_code"));
+      storyList.querySelectorAll("[data-emergency]").forEach(b=>b.onclick=()=>{if(confirm("Nur im Notfall verwenden. Der nächste Story-Schritt wird ohne QR bzw. Prüfung freigegeben. Fortfahren?"))sendCommand("story_force_next")});
     }else storyList.innerHTML="";
     $("hostHideContinueBtn").style.display=stage==="hide"&&hs==="finished"?"block":"none";
     $("hostHideSkipBtn").style.display=s.screen==="start"?"block":"none";
